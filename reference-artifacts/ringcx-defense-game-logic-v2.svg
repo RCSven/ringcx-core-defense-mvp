@@ -1,0 +1,184 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2100" height="1500" viewBox="0 0 2100 1500">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#eef7ff"/>
+      <stop offset="55%" stop-color="#fbfdff"/>
+      <stop offset="100%" stop-color="#fff3e8"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="14" markerHeight="14" refX="11" refY="7" orient="auto">
+      <path d="M2,2 L12,7 L2,12 Z" fill="#24405f"/>
+    </marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="13" flood-color="#10233f" flood-opacity="0.15"/>
+    </filter>
+    <style>
+      text { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; letter-spacing: 0; }
+      .title { font-size: 50px; font-weight: 900; fill: #10233f; }
+      .sub { font-size: 23px; font-weight: 650; fill: #617184; }
+      .h { font-size: 25px; font-weight: 900; fill: #10233f; }
+      .b { font-size: 18px; font-weight: 650; fill: #617184; }
+      .s { font-size: 15px; font-weight: 750; fill: #617184; }
+      .tiny { font-size: 13px; font-weight: 750; fill: #617184; }
+      .box { fill: rgba(255,255,255,.96); stroke: #d9e5ef; stroke-width: 2; rx: 18; filter: url(#shadow); }
+      .blue { fill: #eff7ff; stroke: #9bc8f8; stroke-width: 2; rx: 18; filter: url(#shadow); }
+      .green { fill: #f0fbf6; stroke: #a5dfb7; stroke-width: 2; rx: 18; filter: url(#shadow); }
+      .orange { fill: #fff5e9; stroke: #ffc17d; stroke-width: 2; rx: 18; filter: url(#shadow); }
+      .red { fill: #fff1f1; stroke: #f0a3a3; stroke-width: 2; rx: 18; filter: url(#shadow); }
+      .purple { fill: #f4f1ff; stroke: #b7a8ff; stroke-width: 2; rx: 18; filter: url(#shadow); }
+      .decision { fill: #fff8df; stroke: #ffc83d; stroke-width: 3; filter: url(#shadow); }
+      .danger { fill: #ffe8e8; stroke: #d64545; stroke-width: 3; filter: url(#shadow); }
+      .line { fill: none; stroke: #24405f; stroke-width: 4; marker-end: url(#arrow); }
+      .loop { fill: none; stroke: #ff7a1a; stroke-width: 4; stroke-dasharray: 10 9; marker-end: url(#arrow); }
+      .weak { fill: none; stroke: #91a8bd; stroke-width: 3; marker-end: url(#arrow); }
+      .label { font-size: 16px; font-weight: 850; fill: #24405f; }
+      .fail { font-size: 16px; font-weight: 900; fill: #d64545; }
+      .ok { font-size: 16px; font-weight: 900; fill: #27854c; }
+      .chip { fill: #10233f; rx: 999; }
+      .chip-text { font-size: 16px; font-weight: 900; fill: #fff; }
+      .cell { fill: #fff; stroke: #d9e5ef; stroke-width: 1.5; rx: 8; }
+      .cell-hot { fill: #fff0dc; stroke: #ffb15c; stroke-width: 1.5; rx: 8; }
+      .cell-lock { fill: #ffe5e5; stroke: #d64545; stroke-width: 1.5; rx: 8; }
+    </style>
+  </defs>
+
+  <rect width="2100" height="1500" fill="url(#bg)"/>
+  <circle cx="1780" cy="170" r="220" fill="#1f7ae0" opacity="0.08"/>
+  <circle cx="280" cy="1260" r="260" fill="#ff7a1a" opacity="0.08"/>
+
+  <text x="70" y="82" class="title">RingCX Core Defense - Logic Model V2</text>
+  <text x="72" y="124" class="sub">V2 改动：先做硬性门槛判断，再做能力匹配分；避免 PM 修代码也能赢、SE 独自客户同步也能赢的问题</text>
+
+  <rect x="70" y="170" width="360" height="155" class="blue"/>
+  <text x="100" y="216" class="h">1. Spawn Attack</text>
+  <text x="100" y="250" class="b">生成攻击对象</text>
+  <text x="100" y="278" class="b">source + type + severity + timer</text>
+  <text x="100" y="306" class="s">Customer / Boss / Quality / Meeting / Team Event</text>
+
+  <rect x="530" y="170" width="390" height="155" class="orange"/>
+  <text x="560" y="216" class="h">2. Classify Requirements</text>
+  <text x="560" y="250" class="b">requiredRole: 必须主防角色</text>
+  <text x="560" y="278" class="b">requiredCapability: 最低能力门槛</text>
+  <text x="560" y="306" class="s">例如 PM presence、SE debug、QA gate</text>
+
+  <polygon points="1130,145 1345,248 1130,350 915,248" class="decision"/>
+  <text x="1043" y="238" class="h">Hard Gate?</text>
+  <text x="1028" y="270" class="b">是否有必须在场能力?</text>
+
+  <polygon points="1630,145 1845,248 1630,350 1415,248" class="danger"/>
+  <text x="1540" y="238" class="h">Gate Satisfied?</text>
+  <text x="1527" y="270" class="b">主防/协作是否满足?</text>
+
+  <rect x="1450" y="415" width="360" height="140" class="red"/>
+  <text x="1480" y="462" class="h">Immediate Breakthrough</text>
+  <text x="1480" y="496" class="b">硬门槛失败，不能靠分数补救</text>
+  <text x="1480" y="524" class="s">例：PM 不在场的客户同步直接失败</text>
+
+  <rect x="70" y="460" width="360" height="155" class="green"/>
+  <text x="100" y="506" class="h">3. Select Defense Team</text>
+  <text x="100" y="540" class="b">选择 Primary Defender</text>
+  <text x="100" y="568" class="b">可选择 0-2 个 Assist Defender</text>
+  <text x="100" y="596" class="s">Assist 消耗 Energy / cooldown</text>
+
+  <rect x="530" y="460" width="390" height="155" class="purple"/>
+  <text x="560" y="506" class="h">4. Capability Check</text>
+  <text x="560" y="540" class="b">primary capability 是否达到最低值</text>
+  <text x="560" y="568" class="b">assist 只能补一部分，不能替代主防</text>
+  <text x="560" y="596" class="s">防止低匹配角色硬扛核心问题</text>
+
+  <polygon points="1130,440 1345,542 1130,645 915,542" class="decision"/>
+  <text x="1042" y="532" class="h">Primary Fit?</text>
+  <text x="1018" y="564" class="b">主防是否能处理核心挑战?</text>
+
+  <rect x="1450" y="660" width="360" height="140" class="red"/>
+  <text x="1480" y="707" class="h">Partial / Failed Defense</text>
+  <text x="1480" y="741" class="b">可降低伤害，但不能完全清除敌人</text>
+  <text x="1480" y="769" class="s">例：PM 可解释 bug 影响，但不能修复代码</text>
+
+  <rect x="70" y="760" width="360" height="155" class="blue"/>
+  <text x="100" y="806" class="h">5. Soft Score</text>
+  <text x="100" y="840" class="b">affinity × attack tags</text>
+  <text x="100" y="868" class="b">+ level + evidence + assist + skill card</text>
+  <text x="100" y="896" class="s">只有通过 gate 后才进入加权分</text>
+
+  <polygon points="725,735 940,838 725,940 510,838" class="decision"/>
+  <text x="657" y="828" class="h">Mini-game?</text>
+  <text x="627" y="860" class="b">是否触发职业小游戏?</text>
+
+  <rect x="1060" y="760" width="395" height="155" class="orange"/>
+  <text x="1090" y="806" class="h">6. Mini-game Modifier</text>
+  <text x="1090" y="840" class="b">VIP Route / Debug Trace / Risk Sweep</text>
+  <text x="1090" y="868" class="b">成功加分，失败增加损失</text>
+  <text x="1090" y="896" class="s">小游戏让关键关卡更像 game</text>
+
+  <rect x="1530" y="760" width="360" height="155" class="green"/>
+  <text x="1560" y="806" class="h">7. Resolve Attack</text>
+  <text x="1560" y="840" class="b">score ≥ threshold: clear</text>
+  <text x="1560" y="868" class="b">score &lt; threshold: damage defense line</text>
+  <text x="1560" y="896" class="s">输出 replay reason，告诉玩家为什么赢/输</text>
+
+  <rect x="70" y="1045" width="360" height="155" class="box"/>
+  <text x="100" y="1091" class="h">8. Reward / Damage</text>
+  <text x="100" y="1125" class="b">Clear: Evidence、XP、Skill Point</text>
+  <text x="100" y="1153" class="b">Fail: Trust / SLA / Morale 损失</text>
+  <text x="100" y="1181" class="s">不同敌人损失不同指标</text>
+
+  <rect x="530" y="1045" width="390" height="155" class="orange"/>
+  <text x="560" y="1091" class="h">9. Enemy Deck Progression</text>
+  <text x="560" y="1125" class="b">Tutorial → Mixed → Elite</text>
+  <text x="560" y="1153" class="b">Specific Lock → Team Event → Boss</text>
+  <text x="560" y="1181" class="s">所有类型都出现后进入组合变体</text>
+
+  <polygon points="1190,1020 1395,1122 1190,1225 985,1122" class="decision"/>
+  <text x="1106" y="1112" class="h">Promotion Ready?</text>
+  <text x="1088" y="1144" class="b">Evidence + role skill 是否达标?</text>
+
+  <rect x="1530" y="1045" width="360" height="155" class="green"/>
+  <text x="1560" y="1091" class="h">10. Level Up / Retry</text>
+  <text x="1560" y="1125" class="b">Pass: unlock stronger role skills</text>
+  <text x="1560" y="1153" class="b">Fail: targeted remediation waves</text>
+  <text x="1560" y="1181" class="s">升级后敌人要求更高</text>
+
+  <rect x="70" y="1290" width="1910" height="145" class="box"/>
+  <text x="100" y="1332" class="h">Examples of Hard Gates</text>
+  <rect x="100" y="1360" width="280" height="46" class="cell-lock"/>
+  <text x="118" y="1389" class="b">Customer Sync: PM required</text>
+  <rect x="410" y="1360" width="300" height="46" class="cell-lock"/>
+  <text x="428" y="1389" class="b">Code Hotfix: SE/SDET required</text>
+  <rect x="740" y="1360" width="300" height="46" class="cell-lock"/>
+  <text x="758" y="1389" class="b">Release Gate: QA required</text>
+  <rect x="1070" y="1360" width="330" height="46" class="cell-lock"/>
+  <text x="1088" y="1389" class="b">Flaky Automation: SDET required</text>
+  <rect x="1430" y="1360" width="360" height="46" class="cell-hot"/>
+  <text x="1448" y="1389" class="b">Hackathon: all roles contribute</text>
+
+  <path d="M430 248 H525" class="line"/>
+  <path d="M920 248 H915" class="line"/>
+  <path d="M1345 248 H1410" class="line"/>
+  <path d="M1630 350 V410" class="line"/>
+  <text x="1660" y="385" class="fail">no</text>
+  <path d="M1415 248 C1110 365 520 365 250 460" class="line"/>
+  <text x="1320" y="330" class="ok">yes / no hard gate</text>
+  <path d="M430 538 H525" class="line"/>
+  <path d="M920 542 H915" class="line"/>
+  <path d="M1345 542 C1430 565 1570 610 1630 660" class="line"/>
+  <text x="1370" y="570" class="fail">no</text>
+  <path d="M1130 645 C1040 710 520 705 250 760" class="line"/>
+  <text x="1030" y="700" class="ok">yes</text>
+  <path d="M430 838 H510" class="line"/>
+  <path d="M940 838 H1055" class="line"/>
+  <text x="965" y="815" class="ok">yes</text>
+  <path d="M725 940 C900 1000 1390 950 1710 915" class="line"/>
+  <text x="925" y="982" class="label">no mini-game</text>
+  <path d="M1455 838 H1525" class="line"/>
+  <path d="M1710 915 C1560 1005 665 1010 250 1045" class="line"/>
+  <path d="M430 1122 H525" class="line"/>
+  <path d="M920 1122 H985" class="line"/>
+  <path d="M1395 1122 H1525" class="line"/>
+  <path d="M1190 1225 C1070 1280 770 1260 725 1200" class="loop"/>
+  <text x="990" y="1282" class="fail">not ready</text>
+  <path d="M1890 1122 C2050 880 2010 450 1810 320" class="loop"/>
+  <text x="1888" y="810" class="label">harder deck after promotion</text>
+
+  <rect x="70" y="370" width="645" height="48" class="chip"/>
+  <text x="95" y="401" class="chip-text">Rule: hard gates create role identity; soft score creates nuance and replayability</text>
+</svg>

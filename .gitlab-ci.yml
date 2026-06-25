@@ -1,0 +1,13 @@
+stages:
+  - deploy
+
+pages:
+  stage: deploy
+  script:
+    - sh tools/build_gitlab_pages.sh
+  artifacts:
+    paths:
+      - public
+    expire_in: never
+  only:
+    - main

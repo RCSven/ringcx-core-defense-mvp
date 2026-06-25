@@ -1,0 +1,145 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1120" viewBox="0 0 1800 1120">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#eef7ff"/>
+      <stop offset="55%" stop-color="#fbfdff"/>
+      <stop offset="100%" stop-color="#fff3e8"/>
+    </linearGradient>
+    <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1f7ae0"/>
+      <stop offset="100%" stop-color="#10b8c8"/>
+    </linearGradient>
+    <linearGradient id="orange" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ff7a1a"/>
+      <stop offset="100%" stop-color="#ffc83d"/>
+    </linearGradient>
+    <linearGradient id="green" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#61b934"/>
+      <stop offset="100%" stop-color="#15b58a"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="14" markerHeight="14" refX="11" refY="7" orient="auto">
+      <path d="M2,2 L12,7 L2,12 Z" fill="#24405f"/>
+    </marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="12" flood-color="#10233f" flood-opacity="0.16"/>
+    </filter>
+    <style>
+      text { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; letter-spacing: 0; }
+      .title { font-size: 48px; font-weight: 900; fill: #10233f; }
+      .subtitle { font-size: 23px; font-weight: 650; fill: #617184; }
+      .lane { font-size: 24px; font-weight: 900; fill: #10233f; }
+      .node-title { font-size: 25px; font-weight: 900; fill: #10233f; }
+      .node-body { font-size: 18px; font-weight: 650; fill: #617184; }
+      .small { font-size: 16px; font-weight: 700; fill: #617184; }
+      .box { fill: rgba(255,255,255,0.94); stroke: #d9e5ef; stroke-width: 2; rx: 18; filter: url(#shadow); }
+      .box-blue { fill: #eff7ff; stroke: #9bc8f8; stroke-width: 2; rx: 18; filter: url(#shadow); }
+      .box-green { fill: #f0fbf6; stroke: #a5dfb7; stroke-width: 2; rx: 18; filter: url(#shadow); }
+      .box-orange { fill: #fff5e9; stroke: #ffc17d; stroke-width: 2; rx: 18; filter: url(#shadow); }
+      .box-red { fill: #fff1f1; stroke: #f0a3a3; stroke-width: 2; rx: 18; filter: url(#shadow); }
+      .decision { fill: #fff8df; stroke: #ffc83d; stroke-width: 3; filter: url(#shadow); }
+      .line { fill: none; stroke: #24405f; stroke-width: 4; marker-end: url(#arrow); }
+      .loop { fill: none; stroke: #ff7a1a; stroke-width: 4; stroke-dasharray: 10 9; marker-end: url(#arrow); }
+      .label { font-size: 16px; font-weight: 850; fill: #24405f; }
+      .badge { fill: #10233f; rx: 999; }
+      .badge-text { font-size: 17px; font-weight: 900; fill: white; }
+    </style>
+  </defs>
+
+  <rect width="1800" height="1120" fill="url(#bg)"/>
+  <circle cx="1450" cy="130" r="170" fill="#1f7ae0" opacity="0.08"/>
+  <circle cx="220" cy="880" r="210" fill="#ff7a1a" opacity="0.08"/>
+  <path d="M70 170 H1730" stroke="#d9e5ef" stroke-width="2"/>
+
+  <text x="80" y="88" class="title">RingCX Core Defense - Early Game Flow Reference</text>
+  <text x="82" y="128" class="subtitle">目标：从 VSX Intern 出发，通过岗位筛选、路线选择、RingCX 小游戏、Promotion Review 完成成长循环</text>
+
+  <rect x="70" y="195" width="270" height="130" class="box-blue"/>
+  <text x="100" y="242" class="node-title">Start</text>
+  <text x="100" y="276" class="node-body">VSX Intern</text>
+  <text x="100" y="304" class="node-body">进入职业地图</text>
+
+  <rect x="430" y="185" width="350" height="150" class="box-orange"/>
+  <text x="460" y="232" class="node-title">Act 1: Workstation Sort</text>
+  <text x="460" y="266" class="node-body">随机掉落 RingCX 工单</text>
+  <text x="460" y="294" class="node-body">投递到 SE / SDET / QA / PM</text>
+  <text x="460" y="322" class="small">不是问卷，是工单分拣小游戏</text>
+
+  <polygon points="900,185 1090,260 900,335 710,260" class="decision"/>
+  <text x="826" y="254" class="node-title">Role Fit</text>
+  <text x="815" y="285" class="node-body">分数是否足够?</text>
+
+  <rect x="1210" y="185" width="360" height="150" class="box-blue"/>
+  <text x="1240" y="232" class="node-title">Act 2: Track Fork</text>
+  <text x="1240" y="266" class="node-body">选择 Technical / Management</text>
+  <text x="1240" y="294" class="node-body">确定当前职级 ladder</text>
+  <text x="1240" y="322" class="small">影响后续 promotion 体验</text>
+
+  <rect x="680" y="450" width="440" height="150" class="box-green"/>
+  <text x="710" y="497" class="node-title">Core Loop: Dice Career Board</text>
+  <text x="710" y="531" class="node-body">掷骰子移动到环形地图格子</text>
+  <text x="710" y="559" class="node-body">触发任务、小游戏、学习、Review</text>
+  <text x="710" y="587" class="small">每回合随机，保持 replayability</text>
+
+  <rect x="85" y="690" width="320" height="160" class="box-blue"/>
+  <text x="115" y="735" class="node-title">Mini-game A</text>
+  <text x="115" y="769" class="node-body">Routing Rush</text>
+  <text x="115" y="797" class="node-body">把 Contact 路由到 Agent / Queue / Bot</text>
+  <text x="115" y="825" class="small">产出: Impact + Mastery</text>
+
+  <rect x="500" y="690" width="320" height="160" class="box-red"/>
+  <text x="530" y="735" class="node-title">Mini-game B</text>
+  <text x="530" y="769" class="node-body">Contact Center Crisis</text>
+  <text x="530" y="797" class="node-body">用 Action Cards 保 SLA / CSAT</text>
+  <text x="530" y="825" class="small">产出: Quality + Influence</text>
+
+  <rect x="915" y="690" width="320" height="160" class="box"/>
+  <text x="945" y="735" class="node-title">Learning / Project</text>
+  <text x="945" y="769" class="node-body">Wiki、AI Assist、Sprint Delivery</text>
+  <text x="945" y="797" class="node-body">沉淀 Evidence</text>
+  <text x="945" y="825" class="small">产出: Mastery + Evidence</text>
+
+  <polygon points="1430,670 1640,770 1430,870 1220,770" class="decision"/>
+  <text x="1348" y="752" class="node-title">Promotion Gate</text>
+  <text x="1341" y="785" class="node-body">Meters + Evidence</text>
+  <text x="1375" y="813" class="node-body">是否达标?</text>
+
+  <rect x="1320" y="950" width="360" height="110" class="box-green"/>
+  <text x="1350" y="995" class="node-title">Pass: Promote</text>
+  <text x="1350" y="1029" class="node-body">升级到下一职级，解锁更高 scope</text>
+
+  <rect x="500" y="950" width="360" height="110" class="box-orange"/>
+  <text x="530" y="995" class="node-title">Fail: Stay Current Level</text>
+  <text x="530" y="1029" class="node-body">继续打怪、补 evidence、再 review</text>
+
+  <path d="M340 260 H425" class="line"/>
+  <path d="M780 260 H710" class="line"/>
+  <path d="M1090 260 H1205" class="line"/>
+  <text x="1112" y="238" class="label">Role selected</text>
+  <path d="M1390 335 C1390 400 1120 410 1035 450" class="line"/>
+  <path d="M900 600 C795 650 445 640 300 690" class="line"/>
+  <path d="M900 600 C820 655 710 645 665 690" class="line"/>
+  <path d="M900 600 C990 660 1050 650 1075 690" class="line"/>
+  <path d="M1120 525 C1320 535 1418 615 1430 670" class="line"/>
+  <path d="M1430 870 V945" class="line"/>
+  <text x="1538" y="910" class="label">Pass</text>
+  <path d="M1220 770 C1040 900 850 900 680 950" class="loop"/>
+  <text x="940" y="920" class="label">Fail: loop back</text>
+  <path d="M680 950 C555 900 375 880 245 850" class="loop"/>
+  <path d="M680 950 C770 900 845 660 900 600" class="loop"/>
+  <path d="M900 335 C820 390 605 390 605 335" class="loop"/>
+  <text x="675" y="390" class="label">Role unclear: more sort tasks</text>
+  <path d="M1500 950 C1540 900 1570 870 1600 820" class="loop"/>
+
+  <rect x="85" y="410" width="420" height="105" class="box"/>
+  <text x="115" y="450" class="lane">Career Ladders</text>
+  <text x="115" y="482" class="node-body">Technical: SE/SDET/QA/PM → Sr → Staff/Group</text>
+  <text x="115" y="508" class="node-body">Management: Lead → Manager path</text>
+
+  <rect x="1260" y="420" width="420" height="105" class="box"/>
+  <text x="1290" y="460" class="lane">Promotion Signals</text>
+  <text x="1290" y="492" class="node-body">Impact · Quality · Mastery · Influence</text>
+  <text x="1290" y="518" class="node-body">Evidence unlocks review confidence</text>
+
+  <rect x="80" y="1040" width="380" height="46" class="badge"/>
+  <text x="105" y="1070" class="badge-text">Review focus: choose game presentation direction first</text>
+</svg>

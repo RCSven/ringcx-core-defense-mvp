@@ -1,0 +1,167 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1900" height="1180" viewBox="0 0 1900 1180">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#eef7ff"/>
+      <stop offset="54%" stop-color="#fbfdff"/>
+      <stop offset="100%" stop-color="#fff3e8"/>
+    </linearGradient>
+    <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1f7ae0"/>
+      <stop offset="100%" stop-color="#10b8c8"/>
+    </linearGradient>
+    <linearGradient id="green" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#61b934"/>
+      <stop offset="100%" stop-color="#15b58a"/>
+    </linearGradient>
+    <linearGradient id="orange" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ff7a1a"/>
+      <stop offset="100%" stop-color="#ffc83d"/>
+    </linearGradient>
+    <linearGradient id="red" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d64545"/>
+      <stop offset="100%" stop-color="#ff7a1a"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="14" markerHeight="14" refX="11" refY="7" orient="auto">
+      <path d="M2,2 L12,7 L2,12 Z" fill="#24405f"/>
+    </marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="13" flood-color="#10233f" flood-opacity="0.15"/>
+    </filter>
+    <style>
+      text { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; letter-spacing: 0; }
+      .title { font-size: 48px; font-weight: 900; fill: #10233f; }
+      .subtitle { font-size: 23px; font-weight: 650; fill: #617184; }
+      .h { font-size: 26px; font-weight: 900; fill: #10233f; }
+      .b { font-size: 18px; font-weight: 650; fill: #617184; }
+      .s { font-size: 15px; font-weight: 750; fill: #617184; }
+      .box { fill: rgba(255,255,255,.95); stroke: #d9e5ef; stroke-width: 2; rx: 18; filter: url(#shadow); }
+      .blue { fill: #eff7ff; stroke: #9bc8f8; stroke-width: 2; rx: 18; filter: url(#shadow); }
+      .green { fill: #f0fbf6; stroke: #a5dfb7; stroke-width: 2; rx: 18; filter: url(#shadow); }
+      .orange { fill: #fff5e9; stroke: #ffc17d; stroke-width: 2; rx: 18; filter: url(#shadow); }
+      .red { fill: #fff1f1; stroke: #f0a3a3; stroke-width: 2; rx: 18; filter: url(#shadow); }
+      .purple { fill: #f4f1ff; stroke: #b7a8ff; stroke-width: 2; rx: 18; filter: url(#shadow); }
+      .decision { fill: #fff8df; stroke: #ffc83d; stroke-width: 3; filter: url(#shadow); }
+      .line { fill: none; stroke: #24405f; stroke-width: 4; marker-end: url(#arrow); }
+      .loop { fill: none; stroke: #ff7a1a; stroke-width: 4; stroke-dasharray: 10 9; marker-end: url(#arrow); }
+      .label { font-size: 16px; font-weight: 850; fill: #24405f; }
+      .lane { font-size: 20px; font-weight: 900; fill: white; }
+      .lane-bg { rx: 999; }
+    </style>
+  </defs>
+
+  <rect width="1900" height="1180" fill="url(#bg)"/>
+  <circle cx="1570" cy="160" r="190" fill="#1f7ae0" opacity="0.08"/>
+  <circle cx="260" cy="970" r="230" fill="#ff7a1a" opacity="0.08"/>
+
+  <text x="70" y="82" class="title">RingCX Core Defense - Game Flow</text>
+  <text x="72" y="124" class="subtitle">核心：不同挑战作为进攻波次进入 RingCX 防线，PM / QA / SE / SDET 作为守擂角色防守、成长、晋升</text>
+
+  <rect x="70" y="165" width="330" height="135" class="blue"/>
+  <text x="100" y="212" class="h">1. Choose Defender</text>
+  <text x="100" y="246" class="b">PM / QA / SE / SDET</text>
+  <text x="100" y="274" class="b">每个角色有基础属性和专长</text>
+
+  <rect x="510" y="165" width="355" height="135" class="orange"/>
+  <text x="540" y="212" class="h">2. Career Path</text>
+  <text x="540" y="246" class="b">Technical / Management</text>
+  <text x="540" y="274" class="b">决定升级路径和解锁技能</text>
+
+  <rect x="975" y="165" width="385" height="135" class="green"/>
+  <text x="1005" y="212" class="h">3. Defense Arena</text>
+  <text x="1005" y="246" class="b">挑战从多条 lane 进入</text>
+  <text x="1005" y="274" class="b">玩家部署角色、技能、道具防守</text>
+
+  <polygon points="1585,145 1765,232 1585,320 1405,232" class="decision"/>
+  <text x="1512" y="224" class="h">Round Result</text>
+  <text x="1498" y="254" class="b">防线是否稳定?</text>
+
+  <rect x="70" y="390" width="360" height="150" class="red"/>
+  <text x="100" y="438" class="h">Attack Lane A: Customers</text>
+  <text x="100" y="472" class="b">不同领域：Billing / Tech / VIP</text>
+  <text x="100" y="500" class="b">不同态度：Angry / Urgent / Confused</text>
+  <text x="100" y="528" class="s">考验 Routing、沟通、产品理解</text>
+
+  <rect x="510" y="390" width="360" height="150" class="purple"/>
+  <text x="540" y="438" class="h">Attack Lane B: Boss Challenge</text>
+  <text x="540" y="472" class="b">技术追问 / Roadmap 追问</text>
+  <text x="540" y="500" class="b">ROI、风险、架构取舍</text>
+  <text x="540" y="528" class="s">PM/SE 更擅长，但其他角色也可防</text>
+
+  <rect x="950" y="390" width="360" height="150" class="green"/>
+  <text x="980" y="438" class="h">Attack Lane C: Quality Inquiry</text>
+  <text x="980" y="472" class="b">Regression / Test gap / Release risk</text>
+  <text x="980" y="500" class="b">Auto QA、覆盖率、缺陷逃逸</text>
+  <text x="980" y="528" class="s">QA/SDET 防御力最高</text>
+
+  <rect x="1390" y="390" width="360" height="150" class="blue"/>
+  <text x="1420" y="438" class="h">Attack Lane D: Team Meeting</text>
+  <text x="1420" y="472" class="b">Design review / Standup / Incident sync</text>
+  <text x="1420" y="500" class="b">需要协作、解释、决策</text>
+  <text x="1420" y="528" class="s">影响 Influence 和 Team Trust</text>
+
+  <rect x="250" y="650" width="430" height="160" class="box"/>
+  <text x="280" y="699" class="h">Defense Resolution</text>
+  <text x="280" y="733" class="b">普通挑战：所有角色都能防守</text>
+  <text x="280" y="761" class="b">根据角色匹配度计算防御力</text>
+  <text x="280" y="789" class="s">例：PM 回答需求问题更强，SE 回答技术问题更强</text>
+
+  <rect x="800" y="650" width="430" height="160" class="red"/>
+  <text x="830" y="699" class="h">Specific Domain Lock</text>
+  <text x="830" y="733" class="b">某些挑战只能由特定角色处理</text>
+  <text x="830" y="761" class="b">例如产品会议室需求追问只能 PM 主防</text>
+  <text x="830" y="789" class="s">其他角色可以辅助，但不能直接清除</text>
+
+  <rect x="1350" y="650" width="430" height="160" class="orange"/>
+  <text x="1380" y="699" class="h">Mini-game Unlock</text>
+  <text x="1380" y="733" class="b">升级或关键挑战触发小游戏</text>
+  <text x="1380" y="761" class="b">VIP Route / Risk Sweep / Debug Trace</text>
+  <text x="1380" y="789" class="s">不同职业对应不同玩法</text>
+
+  <rect x="70" y="905" width="365" height="150" class="blue"/>
+  <text x="100" y="952" class="h">SE Mini-game</text>
+  <text x="100" y="986" class="b">Debug Trace / Architecture Choice</text>
+  <text x="100" y="1014" class="s">提升 Technical Mastery、Impact</text>
+
+  <rect x="515" y="905" width="365" height="150" class="green"/>
+  <text x="545" y="952" class="h">QA Mini-game</text>
+  <text x="545" y="986" class="b">Risk Sweep / Release Gate</text>
+  <text x="545" y="1014" class="s">提升 Quality、Risk Awareness</text>
+
+  <rect x="960" y="905" width="365" height="150" class="purple"/>
+  <text x="990" y="952" class="h">SDET Mini-game</text>
+  <text x="990" y="986" class="b">Automation Chain / Flaky Test Hunt</text>
+  <text x="990" y="1014" class="s">提升 Automation、Stability</text>
+
+  <rect x="1405" y="905" width="365" height="150" class="orange"/>
+  <text x="1435" y="952" class="h">PM Mini-game</text>
+  <text x="1435" y="986" class="b">VIP Route / Priority Trade-off</text>
+  <text x="1435" y="1014" class="s">提升 Product Judgment、Influence</text>
+
+  <rect x="710" y="1080" width="480" height="70" class="decision"/>
+  <text x="770" y="1125" class="h">Promotion Review: Pass / Stay &amp; Retry</text>
+
+  <path d="M400 232 H505" class="line"/>
+  <path d="M865 232 H970" class="line"/>
+  <path d="M1360 232 H1405" class="line"/>
+  <path d="M1585 320 C1585 355 1575 370 1570 390" class="line"/>
+  <path d="M1170 300 C1030 335 470 342 250 390" class="line"/>
+  <path d="M1170 300 C1055 340 765 350 690 390" class="line"/>
+  <path d="M1170 300 C1150 340 1138 360 1130 390" class="line"/>
+  <path d="M1170 300 C1335 340 1510 350 1570 390" class="line"/>
+  <path d="M250 540 C300 595 385 615 465 650" class="line"/>
+  <path d="M690 540 C760 595 895 610 1015 650" class="line"/>
+  <path d="M1130 540 C1195 595 1400 610 1565 650" class="line"/>
+  <path d="M1570 540 C1600 585 1585 615 1565 650" class="line"/>
+  <path d="M465 810 C405 860 325 875 252 905" class="line"/>
+  <path d="M1015 810 C1010 860 940 875 697 905" class="line"/>
+  <path d="M1565 810 C1530 860 1435 875 1587 905" class="line"/>
+  <path d="M1565 810 C1450 860 1250 875 1142 905" class="line"/>
+  <path d="M252 1055 C410 1105 590 1110 710 1115" class="line"/>
+  <path d="M697 1055 C735 1080 760 1090 790 1110" class="line"/>
+  <path d="M1142 1055 C1095 1085 1040 1100 1010 1110" class="line"/>
+  <path d="M1587 1055 C1440 1105 1260 1110 1190 1115" class="line"/>
+  <path d="M950 1080 C850 990 740 865 680 810" class="loop"/>
+  <text x="735" y="884" class="label">Fail: keep defending</text>
+  <path d="M1190 1115 C1530 1080 1790 865 1585 320" class="loop"/>
+  <text x="1502" y="1110" class="label">Pass: harder waves, higher rank</text>
+</svg>

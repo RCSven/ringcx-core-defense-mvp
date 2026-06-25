@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RingCX Core Defense Local Monitor</title>
+  <link rel="stylesheet" href="./styles.css?v=bg002-source-mix-1" />
+</head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Gameplay Command Center</p>
+        <h1>RingCX Core Defense</h1>
+        <p class="sub" id="collectorStatus">Read-only monitor connected to the local collector. Use <code>?api=http://127.0.0.1:4328</code> to point at a running collector.</p>
+      </div>
+      <button id="refreshBtn">Refresh</button>
+    </header>
+
+    <section class="global-query panel">
+      <form class="query-box" id="globalQueryForm">
+        <label for="globalQuery">Ask Gameplay Or Dev Time</label>
+        <div class="query-row">
+          <input id="globalQuery" type="text" placeholder="Ask a gameplay or dev-time question..." />
+          <button type="submit">Ask</button>
+        </div>
+      </form>
+      <div class="query-answer" id="globalQueryAnswer">
+        Ask in any language. The answer will use the same language.
+      </div>
+    </section>
+
+    <nav class="tabs" aria-label="Dashboard sections">
+      <button class="tab-btn active" type="button" data-tab="gameplay">Gameplay Analytics</button>
+      <button class="tab-btn" type="button" data-tab="work">Dev Time</button>
+    </nav>
+
+    <section class="tab-panel active" id="tab-gameplay" data-tab-panel="gameplay">
+      <section class="source-toolbar panel">
+        <div>
+          <h2>Data Scope</h2>
+          <span class="muted" id="sourceFilterMeta">All sources</span>
+        </div>
+        <div class="segmented" id="sourceFilter" aria-label="Data source filter">
+          <button class="active" type="button" data-source-filter="all">All</button>
+          <button type="button" data-source-filter="local">Local</button>
+          <button type="button" data-source-filter="public_web">Public Web</button>
+        </div>
+      </section>
+
+      <section class="command-strip" id="missionGrid"></section>
+
+      <section class="panel source-panel">
+        <div class="panel-head">
+          <h2>Traffic Source Mix</h2>
+          <span class="muted" id="sourceMixMeta">Local vs Public Web</span>
+        </div>
+        <div class="source-mix" id="sourceMix"></div>
+      </section>
+
+      <section class="panel source-panel">
+        <div class="panel-head">
+          <h2>Device Mix</h2>
+          <span class="muted" id="deviceMixMeta">Desktop vs mobile</span>
+        </div>
+        <div class="source-mix device-mix" id="deviceMix"></div>
+      </section>
+
+      <section class="command-grid">
+        <section class="panel command-panel funnel-panel">
+          <div class="panel-head">
+            <h2>Player Journey Funnel</h2>
+            <span class="muted">real run history</span>
+          </div>
+          <div class="funnel-list" id="funnelList"></div>
+          <div class="command-callout" id="funnelInsight">Waiting for collector data.</div>
+        </section>
+
+        <section class="panel command-panel heatmap-panel">
+          <div class="panel-head">
+            <h2>Wave Difficulty Map</h2>
+            <span class="muted" id="selectedWaveMeta">selected wave</span>
+          </div>
+          <div class="heatmap-wrap" id="waveHeatmap"></div>
+          <div class="diagnostic">
+            <div class="mini"><span>Fail Rate</span><strong id="waveFailRate">-</strong></div>
+            <div class="mini"><span>Runs</span><strong id="waveRuns">-</strong></div>
+            <div class="mini"><span>Fails</span><strong id="waveFails">-</strong></div>
+            <div class="mini"><span>Map</span><strong id="waveMap">-</strong></div>
+          </div>
+        </section>
+
+        <section class="panel command-panel alerts-panel">
+          <div class="panel-head">
+            <h2>Active Signals</h2>
+            <span class="muted" id="signalCount">0 signals</span>
+          </div>
+          <div class="alert-list" id="signalList"></div>
+        </section>
+
+        <section class="panel command-panel tower-panel">
+          <div class="panel-head">
+            <h2>Defender Strategy Matrix</h2>
+            <span class="muted">usage x win rate</span>
+          </div>
+          <div class="quadrant" id="defenderMatrix"></div>
+          <div class="tower-cards" id="defenderCards"></div>
+        </section>
+
+        <section class="panel command-panel slot-panel">
+          <div class="panel-head">
+            <h2>Hire Slot Usage Map</h2>
+            <span class="muted" id="slotUsageMeta">final placements</span>
+          </div>
+          <div class="map-tabs" id="slotMapTabs"></div>
+          <div class="slot-map-wrap" id="slotUsageMap"></div>
+          <div class="command-callout" id="slotUsageInsight">Waiting for placement data.</div>
+        </section>
+
+        <section class="panel command-panel recovery-panel">
+          <div class="panel-head">
+            <h2>Failure & Recovery</h2>
+            <span class="muted">run outcomes</span>
+          </div>
+          <div class="timeline" id="recoveryTimeline"></div>
+          <div class="command-callout" id="recoveryInsight">Waiting for run outcomes.</div>
+        </section>
+
+        <section class="panel command-panel mini-panel">
+          <div class="panel-head">
+            <h2>Mini-game Performance</h2>
+            <span class="muted" id="miniGameMeta">outcomes</span>
+          </div>
+          <div class="mini-summary" id="miniGameSummary"></div>
+          <div class="mini-breakdown" id="miniGameBreakdown"></div>
+        </section>
+
+        <section class="panel command-panel qa-panel">
+          <div class="panel-head">
+            <h2>Collector QA Console</h2>
+            <span class="muted" id="qaCount">schema health</span>
+          </div>
+          <div class="qa-list" id="qaList"></div>
+        </section>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Recent Runs</h2>
+          <span class="muted">drilldown table</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Ended</th>
+                <th>Build</th>
+                <th>Variant</th>
+                <th>Result</th>
+                <th>Map</th>
+                <th>Stage</th>
+                <th>Wave</th>
+                <th>Score</th>
+                <th>Trust</th>
+                <th>SLA</th>
+                <th>Duration</th>
+                <th>Device</th>
+                <th>Source</th>
+              </tr>
+            </thead>
+            <tbody id="recentRunsBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="two-col">
+        <section class="panel">
+          <div class="panel-head">
+            <h2>Top Runs</h2>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Build</th>
+                  <th>Variant</th>
+                  <th>Score</th>
+                  <th>Wave</th>
+                  <th>Trust</th>
+                  <th>SLA</th>
+                  <th>Duration</th>
+                </tr>
+              </thead>
+              <tbody id="topRunsBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2>Build Comparison</h2>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Build</th>
+                  <th>Variant</th>
+                  <th>Runs</th>
+                  <th>Clear Rate</th>
+                  <th>Avg Wave</th>
+                  <th>Avg Trust</th>
+                  <th>Avg SLA</th>
+                  <th>Source</th>
+                </tr>
+              </thead>
+            <tbody id="buildCompareBody"></tbody>
+          </table>
+        </div>
+      </section>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Fail By Wave</h2>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Map</th>
+                <th>Stage</th>
+                <th>Wave</th>
+                <th>Runs</th>
+                <th>Fails</th>
+                <th>Fail Rate</th>
+              </tr>
+            </thead>
+            <tbody id="failByWaveBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+
+    <section class="tab-panel" id="tab-work" data-tab-panel="work">
+      <section class="panel intro-panel">
+        <div class="panel-head compact-head">
+          <div>
+            <h2>Dev Time</h2>
+            <span class="muted">Actor and activity lens for Codex coding, Sven local testing, and Sven review in Codex.</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Project Time</h2>
+          <span class="muted">Estimated by evidence source, not a full desktop activity audit</span>
+        </div>
+        <section class="kpis compact" id="workKpiGrid"></section>
+        <section class="work-lens-grid" id="workLensGrid"></section>
+        <div class="source-note">
+          <strong>Source logic</strong>
+          <span>Codex Coding is inferred from code/config file activity. Sven Testing is observed from local game tab visible time. Sven Review is inferred from Codex thread/review artifact activity. No keystrokes, screen contents, or unrelated desktop activity are collected.</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Ended</th>
+                <th>Actor</th>
+                <th>Activity</th>
+                <th>Confidence</th>
+                <th>Label</th>
+                <th>Evidence</th>
+                <th>Duration</th>
+              </tr>
+            </thead>
+            <tbody id="workRecentBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+  </main>
+  <script src="./app.js?v=bg002-source-mix-1"></script>
+</body>
+</html>

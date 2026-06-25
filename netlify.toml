@@ -1,0 +1,17 @@
+[build]
+  base = "ringcx-core-defense-mvp"
+  publish = "public"
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+
+[[redirects]]
+  from = "/api/telemetry/*"
+  to = "/.netlify/functions/telemetry/api/:splat"
+  status = 200

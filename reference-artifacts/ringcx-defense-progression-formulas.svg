@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2050" height="1320" viewBox="0 0 2050 1320">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#eef7ff"/>
+      <stop offset="56%" stop-color="#fbfdff"/>
+      <stop offset="100%" stop-color="#fff3e8"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="14" markerHeight="14" refX="11" refY="7" orient="auto">
+      <path d="M2,2 L12,7 L2,12 Z" fill="#24405f"/>
+    </marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="13" flood-color="#10233f" flood-opacity="0.15"/>
+    </filter>
+    <style>
+      text { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; letter-spacing: 0; }
+      .title { font-size: 48px; font-weight: 900; fill: #10233f; }
+      .sub { font-size: 22px; font-weight: 650; fill: #617184; }
+      .h { font-size: 25px; font-weight: 900; fill: #10233f; }
+      .b { font-size: 18px; font-weight: 650; fill: #617184; }
+      .s { font-size: 15px; font-weight: 750; fill: #617184; }
+      .box { fill: rgba(255,255,255,.96); stroke: #d9e5ef; stroke-width: 2; rx: 18; filter: url(#shadow); }
+      .blue { fill: #eff7ff; stroke: #9bc8f8; stroke-width: 2; rx: 18; filter: url(#shadow); }
+      .green { fill: #f0fbf6; stroke: #a5dfb7; stroke-width: 2; rx: 18; filter: url(#shadow); }
+      .orange { fill: #fff5e9; stroke: #ffc17d; stroke-width: 2; rx: 18; filter: url(#shadow); }
+      .red { fill: #fff1f1; stroke: #f0a3a3; stroke-width: 2; rx: 18; filter: url(#shadow); }
+      .purple { fill: #f4f1ff; stroke: #b7a8ff; stroke-width: 2; rx: 18; filter: url(#shadow); }
+      .decision { fill: #fff8df; stroke: #ffc83d; stroke-width: 3; filter: url(#shadow); }
+      .line { fill: none; stroke: #24405f; stroke-width: 4; marker-end: url(#arrow); }
+      .loop { fill: none; stroke: #ff7a1a; stroke-width: 4; stroke-dasharray: 10 9; marker-end: url(#arrow); }
+      .label { font-size: 16px; font-weight: 850; fill: #24405f; }
+      .formula { font-size: 17px; font-weight: 800; fill: #10233f; }
+    </style>
+  </defs>
+
+  <rect width="2050" height="1320" fill="url(#bg)"/>
+  <circle cx="1750" cy="150" r="210" fill="#1f7ae0" opacity="0.08"/>
+  <circle cx="280" cy="1120" r="245" fill="#ff7a1a" opacity="0.08"/>
+
+  <text x="70" y="82" class="title">RingCX Core Defense - Progression &amp; Combat Formula</text>
+  <text x="72" y="124" class="sub">升级、金币、攻击力、敌人血条的统一计算逻辑：先判断 hard gate，再计算数值，最后进入 promotion loop</text>
+
+  <rect x="70" y="185" width="360" height="150" class="blue"/>
+  <text x="100" y="232" class="h">1. Wave Spawn</text>
+  <text x="100" y="266" class="b">生成 waveType + enemy tags</text>
+  <text x="100" y="294" class="b">决定 severity、lane、timer</text>
+  <text x="100" y="322" class="s">Customer / Boss / Quality / Meeting / Team Event</text>
+
+  <rect x="525" y="185" width="410" height="150" class="red"/>
+  <text x="555" y="232" class="h">2. Enemy HP</text>
+  <text x="555" y="266" class="formula">HP = baseHP × waveScale × severity × modifiers</text>
+  <text x="555" y="294" class="b">Boss / Team Event 会额外加 HP</text>
+  <text x="555" y="322" class="s">后期敌人不是只变肉，而是组合更复杂</text>
+
+  <rect x="1030" y="185" width="410" height="150" class="orange"/>
+  <text x="1060" y="232" class="h">3. Defender Power</text>
+  <text x="1060" y="266" class="formula">Power = roleBase × levelMul × fitMul + skill</text>
+  <text x="1060" y="294" class="b">fitMul 来自角色与 enemy tags 匹配</text>
+  <text x="1060" y="322" class="s">硬门槛不满足时 Power 不能清敌</text>
+
+  <polygon points="1700,160 1905,260 1700,360 1495,260" class="decision"/>
+  <text x="1620" y="252" class="h">Hard Gate</text>
+  <text x="1588" y="284" class="b">角色/能力是否必需?</text>
+
+  <rect x="70" y="505" width="410" height="155" class="green"/>
+  <text x="100" y="552" class="h">4. Resolve Wave</text>
+  <text x="100" y="586" class="formula">remainingHP -= totalTeamPower</text>
+  <text x="100" y="614" class="b">HP 清零：防守成功</text>
+  <text x="100" y="642" class="s">未清零：Trust / SLA / Morale 受损</text>
+
+  <rect x="570" y="505" width="410" height="155" class="purple"/>
+  <text x="600" y="552" class="h">5. Credit Reward</text>
+  <text x="600" y="586" class="formula">credit = base + difficulty + streak + objective</text>
+  <text x="600" y="614" class="b">Perfect clear / hard-gate clear 有奖励</text>
+  <text x="600" y="642" class="s">失败也给少量 learning credit</text>
+
+  <rect x="1070" y="505" width="410" height="155" class="orange"/>
+  <text x="1100" y="552" class="h">6. XP Distribution</text>
+  <text x="1100" y="586" class="formula">primaryXP + assistXP + miniGameXP</text>
+  <text x="1100" y="614" class="b">主防拿最多，辅助拿部分</text>
+  <text x="1100" y="642" class="s">hard-gate 角色拿 role mastery bonus</text>
+
+  <rect x="1570" y="505" width="410" height="155" class="blue"/>
+  <text x="1600" y="552" class="h">7. Level Up</text>
+  <text x="1600" y="586" class="formula">nextXP = 100 × level^1.45 × rolePathMul</text>
+  <text x="1600" y="614" class="b">升级提高 levelMul 并解锁技能</text>
+  <text x="1600" y="642" class="s">高等级更强调 ownership / influence</text>
+
+  <rect x="290" y="830" width="430" height="160" class="box"/>
+  <text x="320" y="878" class="h">8. Promotion Readiness</text>
+  <text x="320" y="912" class="formula">readiness = level + evidence + bossClear + teamEvent</text>
+  <text x="320" y="940" class="b">不是只看 XP，需要关键 Evidence</text>
+  <text x="320" y="968" class="s">对应 Wiki 中 ownership / impact / cross-team scope</text>
+
+  <polygon points="1025,805 1235,910 1025,1015 815,910" class="decision"/>
+  <text x="950" y="900" class="h">Promotion?</text>
+  <text x="930" y="932" class="b">readiness 是否达标?</text>
+
+  <rect x="1340" y="830" width="430" height="160" class="green"/>
+  <text x="1370" y="878" class="h">9. Rank Up</text>
+  <text x="1370" y="912" class="b">提高职场天梯等级</text>
+  <text x="1370" y="940" class="b">解锁更复杂 enemy deck</text>
+  <text x="1370" y="968" class="s">从个人贡献走向 ownership / strategy</text>
+
+  <rect x="70" y="1125" width="1860" height="125" class="box"/>
+  <text x="100" y="1172" class="h">Design Guardrails</text>
+  <text x="100" y="1206" class="b">1. Hard gate 决定“能不能守住”；soft score 决定“守得多漂亮”。2. XP 让角色成长；Evidence 让 promotion 合理。3. 敌人后期增加组合和门槛，不只是增加 HP。</text>
+
+  <path d="M430 260 H520" class="line"/>
+  <path d="M935 260 H1025" class="line"/>
+  <path d="M1440 260 H1490" class="line"/>
+  <path d="M1700 360 C1600 435 930 450 275 505" class="line"/>
+  <path d="M480 582 H565" class="line"/>
+  <path d="M980 582 H1065" class="line"/>
+  <path d="M1480 582 H1565" class="line"/>
+  <path d="M1775 660 C1680 760 1470 810 1210 880" class="line"/>
+  <path d="M720 910 H815" class="line"/>
+  <path d="M1235 910 H1335" class="line"/>
+  <path d="M1025 1015 C900 1070 600 1045 505 990" class="loop"/>
+  <text x="740" y="1060" class="label">not ready: targeted waves</text>
+  <path d="M1770 910 C1940 760 1980 440 1840 330" class="loop"/>
+  <text x="1815" y="780" class="label">rank up: harder deck</text>
+</svg>
