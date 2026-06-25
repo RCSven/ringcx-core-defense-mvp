@@ -225,7 +225,8 @@ async function sessionStart(event) {
     user_agent: text(payload.user_agent, ""),
     started_at: intValue(payload.started_at, nowMs()),
     ended_at: nullableInt(payload.ended_at),
-    end_reason: text(payload.end_reason, "")
+    end_reason: text(payload.end_reason, ""),
+    leave_type: text(payload.leave_type, "")
   };
   await putJson(`sessions/${session.session_id}.json`, session);
   return response(event, 200, { ok: true });
@@ -239,7 +240,8 @@ async function sessionEnd(event) {
     ...existing,
     ...common({ ...existing, ...payload }),
     ended_at: intValue(payload.ended_at, nowMs()),
-    end_reason: text(payload.end_reason, "page_exit")
+    end_reason: text(payload.end_reason, "page_exit"),
+    leave_type: text(payload.leave_type, payload.end_reason || "page_exit")
   });
   return response(event, 200, { ok: true });
 }
@@ -306,6 +308,7 @@ async function runEnd(event) {
     ended_at: intValue(payload.ended_at, nowMs()),
     duration_ms: intValue(payload.duration_ms),
     end_reason: text(payload.end_reason, "unknown"),
+    leave_type: text(payload.leave_type, payload.end_reason || "unknown"),
     won: boolValue(payload.won),
     map_id: text(payload.map_id, existing.map_id || "sRoute"),
     stage_reached: intValue(payload.stage_reached),
@@ -445,6 +448,23 @@ function deviceBreakdown(runs) {
   })).sort((a, b) => b.run_count - a.run_count);
 }
 
+function leaveBreakdown(runs) {
+  const groups = new Map();
+  for (const run of runs) {
+    const key = run.leave_type || run.end_reason || "unknown";
+    const row = groups.get(key) || { leave_type: key, run_count: 0, duration_total: 0 };
+    row.run_count += 1;
+    row.duration_total += intValue(run.duration_ms);
+    groups.set(key, row);
+  }
+  return [...groups.values()].map(row => ({
+    leave_type: row.leave_type,
+    run_count: row.run_count,
+    share: runs.length ? row.run_count / runs.length : 0,
+    avg_duration_ms: row.run_count ? Math.round(row.duration_total / row.run_count) : 0
+  })).sort((a, b) => b.run_count - a.run_count);
+}
+
 function buildCompare(runs) {
   const groups = new Map();
   for (const run of runs) {
@@ -535,7 +555,8 @@ async function commandCenter(event) {
     recent_runs: recent,
     build_compare: buildCompare(runs),
     source_breakdown: sourceBreakdown(allRuns),
-    device_breakdown: deviceBreakdown(runs)
+    device_breakdown: deviceBreakdown(runs),
+    leave_breakdown: leaveBreakdown(runs)
   });
 }
 

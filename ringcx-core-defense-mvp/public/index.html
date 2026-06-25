@@ -8931,6 +8931,14 @@
       return fallback;
     }
 
+    function telemetryLeaveType(endReason, won = false) {
+      if (won) return "completed";
+      if (endReason === "fail") return "failed";
+      if (endReason === "reset") return "manual_restart";
+      if (endReason === "page_exit" || endReason === "beforeunload") return "tab_or_browser_close";
+      return endReason || "unknown";
+    }
+
     function telemetryEndSnapshot(won, endReason = telemetryResolvedEndReason(won)) {
       const summary = calculateFinalScoreSummary(won);
       const stageReached = telemetryStageIndex();
@@ -8969,7 +8977,8 @@
         role_levels_end_json: telemetryRoleLevelsJson(),
         placements_end_json: telemetryPlacementsJson(),
         wave_damage_by_role_json: telemetryWaveDamageJson(),
-        end_reason: endReason
+        end_reason: endReason,
+        leave_type: telemetryLeaveType(endReason, won)
       };
     }
 
@@ -9021,7 +9030,9 @@
       const handlePageExit = reason => {
         if (localRunPageExitHandled) return;
         localRunPageExitHandled = true;
-        if (hasMeaningfulRunProgress()) finalizeLocalRun(reason, false, telemetryEndSnapshot(false, reason), true);
+        if (telemetry.isRunStarted() && !telemetry.isRunEnded()) {
+          finalizeLocalRun(reason, false, telemetryEndSnapshot(false, reason), true);
+        }
         telemetry.endSession(reason);
       };
       window.addEventListener("online", () => telemetry.flushQueue());
