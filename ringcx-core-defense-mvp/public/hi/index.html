@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>RingCX Core Defense HI1.069</title>
-  <link rel="preload" as="image" href="./docs/homepage-review-ui/option-b24-core-cry-crystal-right.svg" fetchpriority="high">
+  <title>RingCX Core Defense HI1.070</title>
+  <link rel="preload" as="image" href="../docs/homepage-review-ui/option-b24-core-cry-crystal-right.svg" fetchpriority="high">
   <style>
     :root {
       --ink: #132037;
@@ -158,6 +158,8 @@
       font-size: 10px;
       font-weight: 900;
       box-shadow: inset 0 1px 0 rgba(255,255,255,.72);
+      cursor: pointer;
+      user-select: none;
     }
 
     .subtitle {
@@ -1537,6 +1539,20 @@
       display: block;
     }
 
+    .avatar {
+      overflow: hidden;
+    }
+
+    .portrait-img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      font-size: 0;
+      color: transparent;
+      text-indent: -9999px;
+    }
+
     .avatar.big {
       width: 44px;
       height: 44px;
@@ -2108,6 +2124,8 @@
       font-size: 11px;
       font-weight: 850;
       line-height: 1.2;
+      cursor: pointer;
+      user-select: none;
     }
 
     .start-credit-stack {
@@ -2711,6 +2729,154 @@
       box-shadow: 0 10px 24px rgba(16,35,63,.18);
     }
 
+    .stage-clear-card.has-story-bonus .stage-clear-body {
+      color: #7b8b9b;
+      font-size: 10px;
+    }
+
+    .stage-clear-card.has-story-bonus .stage-clear-stat:not(.story-bonus) {
+      border-color: rgba(16,35,63,.075);
+      background: rgba(250,252,255,.58);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.72);
+    }
+
+    .stage-clear-card.has-story-bonus .stage-clear-stat:not(.story-bonus) .stage-clear-stat-label,
+    .stage-clear-card.has-story-bonus .stage-clear-next-label {
+      color: #7f91a4;
+      font-size: 8px;
+    }
+
+    .stage-clear-card.has-story-bonus .stage-clear-stat:not(.story-bonus) .stage-clear-stat-value {
+      color: #3f5165;
+      font-size: 15px;
+    }
+
+    .stage-clear-card.has-story-bonus .stage-clear-stat.bonus .stage-clear-stat-value {
+      color: #6e7c8f;
+    }
+
+    .stage-clear-card.has-story-bonus .stage-clear-starting-copy .stage-clear-stat-value {
+      color: #3f5165;
+      font-size: clamp(20px, 3vw, 25px);
+    }
+
+    .stage-clear-card.has-story-bonus .stage-clear-starting-mark {
+      background: rgba(244,248,252,.86);
+      color: #74889d;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.88);
+    }
+
+    .stage-clear-card.has-story-bonus .stage-clear-stat.next {
+      background: rgba(244,248,252,.62);
+      border-color: rgba(16,35,63,.075);
+    }
+
+    .stage-clear-card.has-story-bonus .stage-clear-stat.next strong {
+      color: #3f5165;
+      font-size: 13px;
+    }
+
+    .stage-clear-card.has-story-bonus .stage-clear-stat-note,
+    .stage-clear-card.has-story-bonus .stage-clear-stat.next span {
+      color: #8a9aac;
+    }
+
+    .stage-clear-card.has-story-bonus .stage-clear-stat-head svg,
+    .stage-clear-card.has-story-bonus .stage-clear-next-head svg,
+    .stage-clear-card.has-story-bonus .stage-clear-starting-mark svg {
+      opacity: .64;
+    }
+
+    .stage-clear-stat.story-bonus {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      min-height: 74px;
+      padding: 10px 11px;
+      border-width: 2px;
+      border-color: rgba(255,122,26,.72);
+      background:
+        radial-gradient(circle at 11% 18%, rgba(255,200,61,.55), transparent 30%),
+        radial-gradient(circle at 92% 16%, rgba(255,122,26,.22), transparent 28%),
+        linear-gradient(180deg, #fff4c8, #fff8e8 54%, #ffffff);
+      box-shadow:
+        0 0 0 4px rgba(255,200,61,.12),
+        0 18px 34px rgba(255,122,26,.18),
+        inset 0 1px 0 rgba(255,255,255,.92);
+    }
+
+    .story-bonus-copy {
+      min-width: 0;
+    }
+
+    .stage-clear-stat.story-bonus .stage-clear-stat-head svg {
+      opacity: 1;
+    }
+
+    .stage-clear-stat.story-bonus .stage-clear-stat-label {
+      color: #9d4a00;
+      font-size: 9px;
+    }
+
+    .stage-clear-stat.story-bonus .stage-clear-stat-value {
+      color: #8f3900;
+      font-size: 22px;
+      line-height: .98;
+      text-shadow: 0 1px 0 rgba(255,255,255,.7);
+    }
+
+    .stage-clear-stat.story-bonus .stage-clear-stat-note {
+      color: #835018;
+      font-size: 9px;
+      line-height: 1.18;
+    }
+
+    .story-bonus-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+
+    .story-bonus-state {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      padding: 5px 8px;
+      border: 1px solid rgba(255,122,26,.28);
+      border-radius: 999px;
+      background: rgba(255,255,255,.88);
+      color: #5b2a00;
+      font-size: 9px;
+      font-weight: 950;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .btn.story-bonus-cta {
+      min-height: 38px;
+      padding: 9px 13px;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #ff8a24, #d65f05);
+      color: #fff;
+      font-size: 12px;
+      box-shadow: 0 12px 24px rgba(255,122,26,.32), inset 0 1px 0 rgba(255,255,255,.28);
+    }
+
+    .btn.story-bonus-claimed {
+      min-height: 38px;
+      padding: 9px 13px;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #f4fff1, #dff8d6);
+      color: #1f5b22;
+      font-size: 12px;
+      box-shadow: inset 0 0 0 1px rgba(97,185,52,.28);
+    }
+
     .wave-notice.bonus-notice {
       width: min(520px, calc(100vw - 36px));
       padding: 20px 24px 22px;
@@ -2904,6 +3070,48 @@
       color: var(--muted);
       font-size: 12px;
       line-height: 1.35;
+    }
+
+    .dev-link-registry {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .dev-link-row {
+      display: grid;
+      gap: 3px;
+      min-height: 54px;
+      padding: 9px 10px;
+      border: 1px solid rgba(101, 129, 162, .28);
+      border-radius: 12px;
+      background: rgba(247, 251, 255, .86);
+      color: var(--navy);
+      text-decoration: none;
+    }
+
+    .dev-link-row strong {
+      font-size: 12px;
+      line-height: 1.15;
+    }
+
+    .dev-link-meta {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 850;
+      line-height: 1.2;
+    }
+
+    .dev-link-status {
+      color: #0b8a6a;
+      font-size: 10px;
+      font-weight: 950;
+      text-transform: uppercase;
+    }
+
+    .dev-link-status.local-only {
+      color: #9b5b00;
     }
 
     body.dev-visual-contrast .arena-shell,
@@ -3677,7 +3885,7 @@
     .overlay {
       position: fixed;
       inset: 0;
-      z-index: 60;
+      z-index: 90;
       display: grid;
       place-items: center;
       padding: 20px;
@@ -4501,7 +4709,7 @@
       }
     }
 
-    @media (pointer: coarse) and (max-width: 950px) and (orientation: landscape) {
+    @media (max-width: 950px) and (orientation: landscape) {
       body {
         overflow-y: auto;
       }
@@ -4969,6 +5177,537 @@
         padding: 12px;
       }
     }
+
+    @media (max-width: 950px) and (orientation: landscape) {
+      body {
+        overflow: hidden;
+      }
+
+      .app {
+        position: relative;
+        width: 100vw;
+        height: 100dvh;
+        margin: 0;
+        padding: 4px;
+        overflow: hidden;
+      }
+
+      .topbar {
+        position: absolute;
+        z-index: 58;
+        top: 4px;
+        left: 62px;
+        right: auto;
+        width: min(318px, calc(100vw - 176px));
+        display: grid;
+        grid-template-columns: 34px minmax(0, 1fr);
+        gap: 4px;
+        align-items: center;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+        pointer-events: none;
+      }
+
+      .brand {
+        width: 34px;
+        height: 34px;
+        display: grid;
+        place-items: center;
+        padding: 0;
+        border: 1px solid rgba(16,35,63,.12);
+        border-radius: 10px;
+        background: rgba(255,255,255,.84);
+        box-shadow: 0 8px 16px rgba(16,35,63,.08);
+        backdrop-filter: blur(10px);
+        pointer-events: auto;
+      }
+
+      .brand > div:not(.logo) {
+        display: none;
+      }
+
+      .logo {
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        box-shadow: none;
+      }
+
+      .game-logo svg {
+        width: 25px;
+        height: 25px;
+      }
+
+      .hud {
+        width: auto;
+        min-width: 0;
+        display: grid;
+        grid-template-columns: 42px minmax(112px, 1fr) 48px;
+        gap: 4px;
+        padding: 3px;
+        border: 1px solid rgba(16,35,63,.1);
+        border-radius: 10px;
+        background: rgba(255,255,255,.78);
+        box-shadow: 0 8px 16px rgba(16,35,63,.08);
+        backdrop-filter: blur(10px);
+        pointer-events: auto;
+      }
+
+      .stage-pill,
+      .progress-pill,
+      .credit-pill {
+        min-height: 28px;
+        border-radius: 8px;
+        padding: 3px 5px;
+        background: rgba(248,251,255,.92);
+        box-shadow: none;
+      }
+
+      .stage-pill {
+        gap: 1px;
+      }
+
+      .stage-pill .stage-kicker,
+      .credit-pill .credit-kicker,
+      .progress-pill .progress-wave-label {
+        font-size: 7px;
+        letter-spacing: 0;
+      }
+
+      .progress-pill .progress-map,
+      .stage-pill .stage-head svg,
+      .credit-pill .credit-head svg,
+      .progress-pill .progress-title svg,
+      .dev-badge {
+        display: none;
+      }
+
+      .stage-pill strong,
+      .credit-pill strong,
+      .progress-pill strong {
+        font-size: 12px;
+        line-height: 1;
+      }
+
+      .progress-pill {
+        gap: 3px;
+      }
+
+      .progress-pill .progress-main {
+        gap: 4px;
+      }
+
+      .progress-track {
+        gap: 2px;
+      }
+
+      .progress-segment {
+        height: 4px;
+      }
+
+      .main {
+        position: absolute;
+        inset: 4px 40px 4px 62px;
+        display: block;
+        min-width: 0;
+      }
+
+      .arena-shell {
+        position: absolute;
+        inset: 0;
+        padding: 0;
+        border-radius: 12px;
+        overflow: hidden;
+      }
+
+      .arena {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: auto;
+        aspect-ratio: auto;
+        min-height: 0;
+        max-height: none;
+        border-radius: 10px;
+      }
+
+      .map-art,
+      .route-layer {
+        width: 100%;
+        height: 100%;
+        aspect-ratio: auto;
+      }
+
+      .arena-head {
+        position: absolute;
+        z-index: 62;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 48px;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 5px;
+        align-items: center;
+        margin: 0;
+        padding: 4px;
+        border-top: 1px solid rgba(16,35,63,.1);
+        background: rgba(255,255,255,.82);
+        box-shadow: 0 -10px 22px rgba(16,35,63,.11);
+        backdrop-filter: blur(10px);
+        pointer-events: auto;
+      }
+
+      .arena-head-copy {
+        min-width: 0;
+        padding: 0;
+        border: 0;
+      }
+
+      .arena-head-copy-text,
+      .scenario-row {
+        display: block;
+        min-width: 0;
+      }
+
+      .arena-head .title,
+      .scenario-copy,
+      .scenario-pill svg {
+        display: none;
+      }
+
+      .scenario-pill {
+        min-height: 30px;
+        max-width: 100%;
+        padding: 0 8px;
+        border-radius: 8px;
+        font-size: 9px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .control-row {
+        display: grid;
+        grid-template-columns: 40px auto 120px;
+        gap: 4px;
+        align-items: center;
+        grid-auto-rows: 38px;
+        height: 38px;
+        width: auto;
+        max-width: none;
+      }
+
+      .control-group {
+        display: grid;
+        grid-template-columns: repeat(4, 40px);
+        gap: 0;
+        padding: 0;
+        border: 0;
+        background: transparent;
+      }
+
+      #guideBtn,
+      .control-group .btn,
+      #pauseBtn,
+      #speedBtn,
+      #musicToggle,
+      #resetBtn {
+        position: relative;
+        width: 40px;
+        min-width: 40px;
+        height: 38px;
+        min-height: 38px;
+        padding: 0;
+        border: 0;
+        border-radius: 10px;
+        background: transparent;
+        box-shadow: none;
+        color: transparent;
+        font-size: 0;
+        overflow: visible;
+      }
+
+      #guideBtn::before,
+      .control-group .btn::before,
+      #pauseBtn::before,
+      #speedBtn::before,
+      #musicToggle::before,
+      #resetBtn::before {
+        width: 30px;
+        height: 30px;
+        display: grid;
+        place-items: center;
+        margin: 4px auto;
+        border: 1px solid rgba(16,35,63,.13);
+        border-radius: 8px;
+        background: rgba(255,255,255,.9);
+        color: var(--navy);
+        font-size: 11px;
+        font-weight: 1000;
+        line-height: 1;
+        box-shadow: 0 6px 12px rgba(16,35,63,.08);
+        backdrop-filter: blur(10px);
+      }
+
+      #guideBtn::before { content: "?"; }
+      #pauseBtn::before { content: "II"; }
+      #speedBtn::before { content: "1x"; }
+      #musicToggle::before { content: "♪"; }
+      #resetBtn::before { content: "↺"; }
+
+      #waveBtn {
+        width: 120px;
+        min-width: 120px;
+        min-height: 38px;
+        height: 38px;
+        grid-column: auto;
+        grid-row: auto;
+        align-self: center;
+        justify-self: start;
+        flex: none;
+        padding: 6px 8px;
+        border-width: 2px;
+        border-radius: 9px;
+        font-size: 10px;
+        box-shadow: 3px 3px 0 var(--navy);
+      }
+
+      #waveBtn::after {
+        display: none;
+      }
+
+      #waveBtn .launch-icon {
+        width: 14px;
+        height: 14px;
+      }
+
+      .launch-btn-label {
+        max-width: 78px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .side {
+        position: static;
+        width: auto;
+        pointer-events: none;
+      }
+
+      .side > .side-panel:first-child {
+        position: absolute;
+        z-index: 66;
+        left: -52px;
+        top: 0;
+        bottom: 50px;
+        width: 48px;
+        display: grid;
+        align-content: center;
+        padding: 2px;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+        pointer-events: auto;
+      }
+
+      .panel-head {
+        display: none;
+      }
+
+      .defender-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-auto-rows: 50px;
+        gap: 4px;
+        max-height: none;
+        overflow: visible;
+        padding: 0;
+      }
+
+      .defender-card {
+        width: 44px;
+        min-height: 48px;
+        display: grid;
+        grid-template-columns: 1fr;
+        place-items: center;
+        gap: 2px;
+        padding: 3px 1px;
+        touch-action: none;
+        border-radius: 10px;
+        background: rgba(255,255,255,.84);
+        box-shadow: 0 8px 16px rgba(16,35,63,.08);
+        backdrop-filter: blur(10px);
+      }
+
+      .defender-card.selected,
+      .defender-card.mobile-selected {
+        border-color: var(--gold);
+        box-shadow: inset 0 0 0 2px rgba(255,200,61,.55), 0 8px 16px rgba(16,35,63,.08);
+      }
+
+      .defender-card .avatar.big {
+        width: 30px;
+        height: 30px;
+      }
+
+      .defender-card strong {
+        max-width: 42px;
+        font-size: 8px;
+        text-align: center;
+      }
+
+      .defender-card .tag,
+      .defender-card .role-track,
+      .defender-card .meta,
+      .defender-card .stats-line,
+      .defender-card-meta,
+      .defender-card .small {
+        display: none;
+      }
+
+      .defender-card-copy {
+        display: block;
+      }
+
+      .defender-card .mini-stat {
+        display: block;
+      }
+
+      .risk-panel {
+        position: fixed;
+        z-index: 68;
+        top: 42px;
+        right: 0;
+        width: 40px;
+        max-height: calc(100dvh - 88px);
+        border: 0;
+        border-radius: 12px 0 0 12px;
+        background: transparent;
+        box-shadow: none;
+        transform: none;
+        overflow: visible;
+      }
+
+      .risk-panel.is-open {
+        width: min(240px, calc(100vw - 76px));
+        transform: translateX(0);
+        border: 1px solid rgba(16,35,63,.12);
+        background: rgba(255,255,255,.92);
+        box-shadow: 0 18px 40px rgba(16,35,63,.20);
+      }
+
+      .risk-panel .arena-wave-panel {
+        max-height: calc(100dvh - 88px);
+        padding: 4px;
+        background: transparent;
+        box-shadow: none;
+        overflow: visible;
+      }
+
+      .risk-panel .risk-drawer-toggle {
+        width: 38px;
+        min-width: 38px;
+        min-height: 38px;
+        padding: 0;
+        border: 1px solid rgba(16,35,63,.16);
+        border-radius: 9px;
+        background: var(--gold);
+        color: var(--navy);
+        box-shadow: 0 8px 16px rgba(16,35,63,.12);
+        font-size: 0;
+      }
+
+      .risk-panel .risk-drawer-toggle::before {
+        content: "!";
+        font-size: 15px;
+        font-weight: 1000;
+        line-height: 1;
+      }
+
+      .risk-panel.is-open .arena-wave-panel {
+        padding: 6px 6px 6px 4px;
+        background: rgba(255,255,255,.92);
+        overflow: auto;
+      }
+
+      .risk-panel:not(.is-open) .risk-drawer-body,
+      .risk-panel:not(.is-open) .title,
+      .risk-panel:not(.is-open) .pill {
+        display: none;
+      }
+
+      .battle-log-panel {
+        right: 42px;
+        bottom: 56px;
+        width: min(300px, calc(100vw - 108px));
+      }
+
+      .info-button {
+        right: 4px;
+        bottom: 4px;
+        width: 34px;
+        height: 34px;
+      }
+
+      .slot.empty {
+        width: 56px;
+        height: 44px;
+        touch-action: manipulation;
+      }
+
+      .slot.empty span {
+        width: 38px;
+        min-height: 26px;
+      }
+
+      .core {
+        transform: translate(-50%, -50%) scale(.72);
+        transform-origin: center;
+      }
+
+      .wave-notice {
+        top: 44px;
+        left: 50%;
+        width: min(260px, calc(100vw - 180px));
+        padding: 8px 10px;
+        border-width: 2px;
+        border-radius: 12px;
+        box-shadow: 3px 3px 0 rgba(16,35,63,.72), 0 12px 24px rgba(16,35,63,.18);
+        transform: translateX(-50%);
+      }
+
+      .wave-notice strong {
+        font-size: 12px;
+        margin-bottom: 3px;
+      }
+
+      .wave-notice span {
+        font-size: 9px;
+      }
+
+      .wave-notice.bonus-notice {
+        width: min(282px, calc(100vw - 180px));
+        padding: 9px 11px;
+        border-width: 2px;
+        box-shadow: 3px 3px 0 rgba(16,35,63,.72), 0 12px 24px rgba(16,35,63,.18);
+      }
+
+      .wave-notice.bonus-notice::before,
+      .wave-notice.bonus-notice::after {
+        display: none;
+      }
+
+      .modal {
+        max-width: min(620px, calc(100vw - 84px));
+        max-height: calc(100dvh - 24px);
+        padding: 12px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -4986,7 +5725,7 @@
             <div class="poster-loading-meta"></div>
           </div>
         </div>
-        <img id="startPoster" data-src="./docs/homepage-review-ui/option-b24-core-cry-crystal-right.svg" alt="" loading="eager" decoding="async" fetchpriority="high">
+        <img id="startPoster" data-src="../docs/homepage-review-ui/option-b24-core-cry-crystal-right.svg" alt="" loading="eager" decoding="async" fetchpriority="high">
       </div>
       <div class="start-actions poster-actions">
         <div class="start-credit-stack">
@@ -5022,7 +5761,7 @@
           <h1 class="comic-title">RingCX Core Defense</h1>
           <p class="subtitle">A tower defense game: clear 4 stages, place cross-functional defenders, and protect RingCX core value under pressure.</p>
           <div class="build-meta">
-            <span class="version-badge" id="buildVersion">0.Y26.0624-HI1.069</span>
+            <span class="version-badge" id="buildVersion">0.Y26.0625-HI1.070</span>
             <span class="build-author">Created by Sven Liu</span>
           </div>
         </div>
@@ -5061,7 +5800,7 @@
             <div class="control-group" aria-label="Arena live controls">
               <button class="btn ghost" id="pauseBtn">Pause</button>
               <button class="btn ghost" id="speedBtn">1x</button>
-              <button class="btn ghost" id="musicToggle" type="button" aria-pressed="false" title="Turn background music on">Music Off</button>
+              <button class="btn ghost is-on is-active" id="musicToggle" type="button" aria-pressed="true" title="Turn background music off">Music On</button>
               <button class="btn dark" id="resetBtn">Reset</button>
             </div>
             <button class="btn wave-cta" id="waveBtn" title="Start the next trust-risk wave">
@@ -5110,10 +5849,10 @@
   </div>
   <div class="slot-menu" id="slotMenu"></div>
 
-  <script src="./telemetry-config.js"></script>
-  <script src="./local-run-monitor/game-run-telemetry.js"></script>
+  <script src="../telemetry-config.js"></script>
+  <script src="../local-run-monitor/game-run-telemetry.js"></script>
   <script>
-    const BUILD_VERSION = "0.Y26.0624-HI1.069";
+    const BUILD_VERSION = "0.Y26.0625-HI1.070";
     const WAVE_NOTICE_MS = 3200;
     const LEVEL_NOTICE_MS = 8200;
     const MINI_GAME_OPEN_DELAY_MS = WAVE_NOTICE_MS + 120;
@@ -5121,10 +5860,10 @@
     const ARENA_WIDTH = 920;
     const ARENA_HEIGHT = 650;
     const USE_STD_GAME_ASSETS = false;
-    const HI_ASSET_ROOT = "./assets/sprites/high-dev-standard/alpha";
+    const HI_ASSET_ROOT = "../assets/sprites/high-dev-standard/alpha";
     const LOCAL_RUN_SCHEMA_VERSION = "run.v1";
     const LOCAL_RUN_COLLECTOR_URL = "http://127.0.0.1:4328";
-    const LOCAL_RUN_SOURCE_PAGE = "ringcx-core-defense-review-0.Y26.0624-HI1.069.html";
+    const LOCAL_RUN_SOURCE_PAGE = "ringcx-core-defense-review-0.Y26.0625-HI1.070.html";
     const ENEMY_RING_PATH_D = "M4 4 A18 18 0 0 0 40 4";
     const LOCAL_RUN_CHECKPOINT_MS = 10000;
     const devParams = new URLSearchParams(location.search);
@@ -5132,6 +5871,8 @@
     const DEV_TOOLS_AVAILABLE = location.protocol === "file:"
       || ["localhost", "127.0.0.1", "::1"].includes(location.hostname)
       || location.hostname.endsWith(".localhost")
+      || location.hostname.endsWith(".netlify.app")
+      || location.hostname.endsWith(".pages.git.ringcentral.com")
       || devParams.get("dev_build") === "1";
     const DEV_QUERY_REQUESTED = devParams.get("dev") === "1";
     let gameEntered = false;
@@ -5487,11 +6228,10 @@
     const LEADERBOARD_LIMIT = 10;
     const LEADERBOARD_NAME_MAX = 16;
     const TOTAL_STANDARD_WAVES = stages.reduce((sum, stage) => sum + stage.waves.length, 0);
-    const MUSIC_STORAGE_KEY = "ringcxCoreDefense.musicEnabled.v1";
     const MUSIC_TRACK = {
       title: "Signal Pursuit",
       sourceUrl: "https://opengameart.org/content/signal-pursuit",
-      fileUrl: "./assets/audio/signal-pursuit.mp3",
+      fileUrl: "../assets/audio/signal-pursuit.mp3",
       license: "CC0"
     };
     const MUSIC_LOOP = {
@@ -5502,19 +6242,11 @@
     };
 
     function loadMusicPreference() {
-      try {
-        return localStorage.getItem(MUSIC_STORAGE_KEY) === "true";
-      } catch (error) {
-        return false;
-      }
+      return true;
     }
 
-    function saveMusicPreference(enabled) {
-      try {
-        localStorage.setItem(MUSIC_STORAGE_KEY, String(enabled));
-      } catch (error) {
-        console.warn("Music preference could not be saved.", error);
-      }
+    function saveMusicPreference() {
+      // Music preference is intentionally session-only; every new visit starts on.
     }
 
     const state = {
@@ -5549,6 +6281,7 @@
       defeatedRiskScore: 0,
       totalLeaks: 0,
       stageLeakBaseline: 0,
+      storyBonusClaimed: false,
       miniGameWinCount: 0,
       miniGameResults: [],
       defenderUpgradeCount: 0,
@@ -5567,6 +6300,7 @@
 
     const startOverlay = document.getElementById("startOverlay");
     const startPoster = document.getElementById("startPoster");
+    const posterPlaceholder = document.getElementById("posterPlaceholder");
     const startGameBtn = document.getElementById("startGameBtn");
     const arena = document.getElementById("arena");
     const arenaShell = document.getElementById("arenaShell");
@@ -5617,6 +6351,8 @@
     let startPosterHardTimeout = 0;
     let musicLoopPrimed = false;
     let musicLoopFrame = 0;
+    let mobileDragRole = "";
+    let suppressNextDefenderClick = false;
 
     document.getElementById("waveBtn").addEventListener("click", startWave);
     document.getElementById("pauseBtn").addEventListener("click", togglePause);
@@ -5630,6 +6366,20 @@
     window.addEventListener("resize", syncRiskDrawerState);
     document.addEventListener("click", event => {
       if (!slotMenu.contains(event.target) && !event.target.closest(".slot")) hideSlotMenu();
+    });
+    document.addEventListener("pointerup", event => {
+      if (!isLandscapeMobileViewport()) return;
+      const role = mobileDragRole;
+      mobileDragRole = "";
+      document.body.classList.remove("dragging-defender");
+      document.querySelectorAll(".slot.drag-over").forEach(slot => slot.classList.remove("drag-over"));
+      if (!role) return;
+      const target = document.elementFromPoint(event.clientX, event.clientY);
+      const slotEl = target && target.closest ? target.closest(".slot.empty") : null;
+      if (!slotEl || !slotEl.dataset.slot) return;
+      event.preventDefault();
+      suppressNextDefenderClick = true;
+      placeRole(slotEl.dataset.slot, role);
     });
     document.addEventListener("keydown", event => {
       const key = event.key.toLowerCase();
@@ -5654,7 +6404,7 @@
         enableDeveloperMode({ openPanel: true, reason: "query" });
         return;
       }
-      openGuide(0);
+      if (!isLandscapeMobileViewport()) openGuide(0);
     });
     window.addEventListener("resize", scheduleResponsiveRender);
     if ("ResizeObserver" in window) {
@@ -5703,7 +6453,7 @@
       document.getElementById("creditPill").innerHTML = creditPanelHtml(`${Math.round(state.credit)}`);
       const waveBtn = document.getElementById("waveBtn");
       const waveBtnLabel = document.getElementById("waveBtnLabel");
-      if (waveBtnLabel) waveBtnLabel.textContent = waveButtonLabel();
+      if (waveBtnLabel) waveBtnLabel.textContent = isLandscapeMobileViewport() ? mobileWaveButtonLabel() : waveButtonLabel();
       waveBtn.disabled = state.running || isRunComplete() || state.trust <= 0 || state.sla <= 0;
       const pauseBtn = document.getElementById("pauseBtn");
       if (pauseBtn) {
@@ -5811,6 +6561,13 @@
       return "Next Wave!";
     }
 
+    function mobileWaveButtonLabel() {
+      if (isRunComplete()) return "Complete";
+      if (state.running) return "Defending";
+      if (currentBonusRound()) return "Bonus";
+      return "Start Wave";
+    }
+
     function renderMapControls() {
       const scenarioEl = document.getElementById("mapScenario");
       const scenarioCopyEl = document.getElementById("mapScenarioCopy");
@@ -5835,7 +6592,7 @@
     function isLandscapeMobileViewport() {
       return typeof window !== "undefined"
         && typeof window.matchMedia === "function"
-        && window.matchMedia("(pointer: coarse) and (max-width: 950px) and (orientation: landscape)").matches;
+        && window.matchMedia("(max-width: 950px) and (orientation: landscape)").matches;
     }
 
     function syncRiskDrawerState() {
@@ -5919,7 +6676,7 @@
       `).join("");
       const exit = routeExitPoint();
       route.innerHTML = `
-        <svg width="920" height="650" viewBox="0 0 920 650" preserveAspectRatio="none">
+        <svg width="920" height="650" viewBox="0 0 920 650" preserveAspectRatio="${mapSvgPreserveAspectRatio()}">
           <defs>
             <filter id="routeCyanGlow" x="-40%" y="-40%" width="180%" height="180%">
               <feGaussianBlur stdDeviation="6" result="blur"/>
@@ -5995,7 +6752,8 @@
         slotEl.addEventListener("click", event => {
           event.stopPropagation();
           if (placedRole) showSlotMenu(slot.id, event);
-          else addLog("Drag a Trust Defender card into an empty arena slot to hire.");
+          else if (state.selectedRole) placeRole(slot.id, state.selectedRole);
+          else addLog(isLandscapeMobileViewport() ? "Tap a Trust Defender, then tap an empty station to hire." : "Drag a Trust Defender card into an empty arena slot to hire.");
         });
         arena.appendChild(slotEl);
       });
@@ -6083,25 +6841,43 @@
       const mobileLandscape = isLandscapeMobileViewport();
       const slotWidth = occupied ? (mobileLandscape ? 78 : 94) : (mobileLandscape ? 54 : 104);
       const slotHeight = occupied ? (mobileLandscape ? 72 : 92) : (mobileLandscape ? 38 : 88);
-      const badgeSafeTop = occupied ? (mobileLandscape ? 16 : 22) : (mobileLandscape ? 4 : 6);
-      const edgePad = mobileLandscape ? 5 : 8;
-      const x = slot.x * scale.x;
-      const y = slot.y * scale.y - (occupied ? (mobileLandscape ? 58 : 82) : (mobileLandscape ? 22 : 44));
+      const badgeSafeTop = occupied ? (mobileLandscape ? 44 : 22) : (mobileLandscape ? 42 : 6);
+      const edgePad = mobileLandscape ? 4 : 8;
+      const safeBottom = mobileLandscape ? 58 : edgePad;
+      const bounds = arenaContentBounds(scale, arenaWidth, arenaHeight);
+      const x = bounds.left + slot.x * scale.x;
+      const y = bounds.top + slot.y * scale.y - (occupied ? (mobileLandscape ? 58 : 82) : (mobileLandscape ? 22 : 44));
       return {
-        x: clamp(x, edgePad, Math.max(edgePad, arenaWidth - slotWidth - edgePad)),
-        y: clamp(y, badgeSafeTop, Math.max(badgeSafeTop, arenaHeight - slotHeight - edgePad))
+        x: clamp(x, bounds.left + edgePad, Math.max(bounds.left + edgePad, bounds.right - slotWidth - edgePad)),
+        y: clamp(y, bounds.top + badgeSafeTop, Math.max(bounds.top + badgeSafeTop, bounds.bottom - slotHeight - safeBottom))
       };
     }
 
     function coreScreenPoint(exit, coreUiOffset, scale, arenaWidth, arenaHeight) {
-      const rawX = (exit[0] + coreUiOffset[0]) * scale.x;
-      const rawY = (exit[1] + coreUiOffset[1]) * scale.y;
-      const safeX = 58;
-      const safeTop = 54;
-      const safeBottom = 48;
+      const bounds = arenaContentBounds(scale, arenaWidth, arenaHeight);
+      const rawX = bounds.left + (exit[0] + coreUiOffset[0]) * scale.x;
+      const rawY = bounds.top + (exit[1] + coreUiOffset[1]) * scale.y;
+      const mobileLandscape = isLandscapeMobileViewport();
+      const safeLeft = mobileLandscape ? bounds.left + 8 : 58;
+      const safeRight = mobileLandscape ? Math.min(bounds.right - 8, arenaWidth - 124) : arenaWidth - 58;
+      const safeTop = mobileLandscape ? bounds.top + 76 : 54;
+      const safeBottom = mobileLandscape ? Math.min(bounds.bottom - 88, arenaHeight - 98) : arenaHeight - 48;
       return {
-        x: clamp(rawX, safeX, Math.max(safeX, arenaWidth - safeX)),
-        y: clamp(rawY, safeTop, Math.max(safeTop, arenaHeight - safeBottom))
+        x: clamp(rawX, safeLeft, Math.max(safeLeft, safeRight)),
+        y: clamp(rawY, safeTop, Math.max(safeTop, safeBottom))
+      };
+    }
+
+    function arenaContentBounds(scale, arenaWidth, arenaHeight) {
+      const left = scale.offsetX || 0;
+      const top = scale.offsetY || 0;
+      const width = scale.contentWidth || arenaWidth;
+      const height = scale.contentHeight || arenaHeight;
+      return {
+        left,
+        top,
+        right: left + width,
+        bottom: top + height
       };
     }
 
@@ -6256,6 +7032,20 @@
       const totalWaves = stage.waves.length;
       const currentWave = Math.min(state.waveIndex + 1, totalWaves);
       const currentFilled = bonus ? Math.min(totalWaves, state.waveIndex) : currentWave;
+      if (isLandscapeMobileViewport()) {
+        const mobileTitle = bonus ? "Bonus" : `Wave ${currentWave}/${totalWaves}`;
+        const mobileLabel = bonus ? `After ${Math.max(1, state.waveIndex)}` : "Wave";
+        const mobileSegments = Array.from({ length: Math.min(6, totalWaves) }, (_, index) => {
+          const threshold = Math.ceil(((index + 1) / Math.min(6, totalWaves)) * totalWaves);
+          const isFilled = currentFilled >= threshold;
+          const isCurrent = !bonus && currentWave <= threshold && currentWave > Math.ceil((index / Math.min(6, totalWaves)) * totalWaves);
+          return `<span class="progress-segment${isFilled ? " fill" : ""}${isCurrent ? " current" : ""}"></span>`;
+        }).join("");
+        return `
+          <span class="progress-main"><span class="progress-title"><strong>${mobileTitle}</strong></span><span class="progress-wave-label">${mobileLabel}</span></span>
+          <span class="progress-track">${mobileSegments}</span>
+        `;
+      }
       const waveTitle = bonus ? "Bonus Round" : `Wave ${currentWave} / ${totalWaves}`;
       const waveLabel = bonus ? `After Wave ${Math.max(1, state.waveIndex)}` : "Wave Progress";
       const mapLine = bonus
@@ -6274,21 +7064,22 @@
     }
 
     function mapArtSvg(kind) {
+      const preserveAspectRatio = mapSvgPreserveAspectRatio();
       const art = {
         sRoute: `
-          <svg width="920" height="650" viewBox="0 0 920 650" preserveAspectRatio="none">
+          <svg width="920" height="650" viewBox="0 0 920 650" preserveAspectRatio="${preserveAspectRatio}">
             <rect x="36" y="34" width="180" height="82" rx="16" fill="rgba(31,122,224,.09)"/>
             <rect x="660" y="468" width="210" height="90" rx="16" fill="rgba(97,185,52,.12)"/>
             <path d="M86 532h82M126 492v82M698 68h92M744 38v92" stroke="rgba(16,35,63,.12)" stroke-width="10" stroke-linecap="round"/>
           </svg>`,
         spiral: `
-          <svg width="920" height="650" viewBox="0 0 920 650" preserveAspectRatio="none">
+          <svg width="920" height="650" viewBox="0 0 920 650" preserveAspectRatio="${preserveAspectRatio}">
             <circle cx="466" cy="330" r="210" fill="none" stroke="rgba(255,200,61,.18)" stroke-width="34"/>
             <circle cx="466" cy="330" r="116" fill="none" stroke="rgba(123,97,255,.14)" stroke-width="28"/>
             <rect x="360" y="246" width="210" height="154" rx="26" fill="rgba(255,255,255,.48)"/>
           </svg>`,
         splitMerge: `
-          <svg width="920" height="650" viewBox="0 0 920 650" preserveAspectRatio="none">
+          <svg width="920" height="650" viewBox="0 0 920 650" preserveAspectRatio="${preserveAspectRatio}">
             <rect x="20" y="66" width="150" height="118" rx="18" fill="rgba(255,122,26,.14)"/>
             <rect x="20" y="390" width="150" height="118" rx="18" fill="rgba(16,184,200,.14)"/>
             <path d="M116 126h84M116 456h84M342 250h132" stroke="rgba(16,35,63,.15)" stroke-width="12" stroke-linecap="round"/>
@@ -6297,13 +7088,17 @@
             <circle cx="524" cy="250" r="42" fill="rgba(255,200,61,.18)"/>
           </svg>`,
         fastLane: `
-          <svg width="920" height="650" viewBox="0 0 920 650" preserveAspectRatio="none">
+          <svg width="920" height="650" viewBox="0 0 920 650" preserveAspectRatio="${preserveAspectRatio}">
             <path d="M78 96l92-52M168 96l92-52M258 96l92-52M348 96l92-52M438 96l92-52M528 96l92-52M618 96l92-52" stroke="rgba(31,122,224,.18)" stroke-width="12" stroke-linecap="round"/>
             <rect x="678" y="68" width="160" height="80" rx="18" fill="rgba(255,122,26,.12)"/>
             <rect x="76" y="480" width="200" height="86" rx="18" fill="rgba(16,184,200,.11)"/>
           </svg>`
       };
       return art[kind] || art.sRoute;
+    }
+
+    function mapSvgPreserveAspectRatio() {
+      return isLandscapeMobileViewport() ? "xMidYMid meet" : "none";
     }
 
     function createEnemyEl(enemy) {
@@ -6477,6 +7272,24 @@
       defenderGrid.innerHTML = Object.keys(roles).map(role => renderDefenderCardHtml(role, true)).join("");
 
       defenderGrid.querySelectorAll("[data-role]").forEach(btn => {
+        btn.classList.toggle("mobile-selected", btn.dataset.role === state.selectedRole);
+        btn.addEventListener("click", event => {
+          event.preventDefault();
+          if (suppressNextDefenderClick && isLandscapeMobileViewport()) {
+            suppressNextDefenderClick = false;
+            return;
+          }
+          const role = btn.dataset.role;
+          state.selectedRole = state.selectedRole === role ? "" : role;
+          addLog(state.selectedRole ? `${role} selected. Tap an empty station to hire.` : `${role} selection cleared.`);
+          render();
+        });
+        btn.addEventListener("pointerdown", event => {
+          if (!isLandscapeMobileViewport()) return;
+          mobileDragRole = btn.dataset.role;
+          document.body.classList.add("dragging-defender");
+          btn.setPointerCapture?.(event.pointerId);
+        });
         btn.addEventListener("dragstart", event => {
           event.dataTransfer.setData("text/plain", btn.dataset.role);
           setDefenderDragImage(event, btn.dataset.role);
@@ -6553,7 +7366,7 @@
 
     function placeRole(slotId, role) {
       if (!role) {
-        addLog("Drag a Trust Defender card into an empty arena slot to hire.");
+        addLog(isLandscapeMobileViewport() ? "Tap a Trust Defender, then tap an empty station to hire." : "Drag a Trust Defender card into an empty arena slot to hire.");
         hideSlotMenu();
         render();
         return;
@@ -6583,6 +7396,7 @@
       state.slotCooldowns[slotId] = 0;
       state.slotFlares[slotId] = 0;
       state.slotLevels[slotId] = 1;
+      state.selectedRole = "";
       state.rolesHiredCount += 1;
       ensureLocalRunStarted("first_hire");
       const wasFirstDeployment = !previousRole && Object.keys(state.placements).length === 1;
@@ -6824,10 +7638,97 @@
         performanceBonus: performance.bonus,
         stageLeakCount: performance.leaks,
         startingCredit: carryOverCredit + reward + performance.bonus,
+        storyBonusAvailable: completedStageIndex === 0 && !state.storyBonusClaimed,
         nextStageShortLabel: `Stage ${nextStageIndex + 1}`,
         nextLabel: `Stage ${nextStageIndex + 1} · ${nextMap.business}`,
         nextHint: nextStageHint(nextStageIndex)
       };
+    }
+
+    function productStoryUrl() {
+      return devUrl("../docs/product-architecture-interactive.html", "./docs/product-architecture-interactive.html");
+    }
+
+    function devUrl(fromHiFolder, fromRoot) {
+      const inHiFolder = window.location.pathname.includes("/hi/");
+      return new URL(inHiFolder ? fromHiFolder : fromRoot, window.location.href).href;
+    }
+
+    function developerLinkDebugRows() {
+      return [
+        ["Core Defense Panorama", productStoryUrl(), "Git / Netlify / local", "Deploy-safe"],
+        ["Game Entry", devUrl("../index.html", "./index.html"), "playable entry", "Deploy-safe"],
+        ["Local Monitor", devUrl("../local-run-monitor/index.html", "./local-run-monitor/index.html"), "monitor page", "Deploy-safe"],
+        ["Visual Reference", devUrl("../assets/high-visual-reference.png", "./assets/high-visual-reference.png"), "Panorama asset", "Deploy-safe"],
+        ["Defender Review Sheet", devUrl("../review-mockups/arena-defender-options/arena-defender-options-contact-sheet.png", "./review-mockups/arena-defender-options/arena-defender-options-contact-sheet.png"), "review mockup", "Deploy-safe"],
+        ["Telemetry Plan", devUrl("../docs/public-access-std-hi-telemetry-plan.md", "./docs/public-access-std-hi-telemetry-plan.md"), "docs", "Deploy-safe"],
+        ["High Animation Standard", devUrl("../docs/high-animation-dev-standard.md", "./docs/high-animation-dev-standard.md"), "docs", "Deploy-safe"],
+        ["Collector Setup", devUrl("../docs/public-telemetry-collector-setup.md", "./docs/public-telemetry-collector-setup.md"), "docs", "Deploy-safe"],
+        ["HI Preflight", devUrl("../docs/hi-preflight-latest.md", "./docs/hi-preflight-latest.md"), "docs", "Deploy-safe"],
+        ["Telemetry JS", devUrl("../local-run-monitor/game-run-telemetry.js", "./local-run-monitor/game-run-telemetry.js"), "debug source", "Deploy-safe"],
+        ["Local Collector API", LOCAL_RUN_COLLECTOR_URL, "local runtime", "Local only"],
+        ["Music Attribution", "https://opengameart.org/content/signal-pursuit", "source credit", "External"]
+      ];
+    }
+
+    function stageClearStoryBonusHtml(summary) {
+      if (!summary.storyBonusAvailable) return "";
+      return `
+            <div class="stage-clear-stat story-bonus" data-story-bonus-card>
+              <div class="story-bonus-copy">
+                <div class="stage-clear-stat-head">${iconSvg("gift")}<span class="stage-clear-stat-label">Bonus Story</span></div>
+                <span class="stage-clear-stat-value" data-story-bonus-title>+50 Credit · Behind the Battle</span>
+                <span class="stage-clear-stat-note" data-story-bonus-note>Explore why roles, slots, and monitor signals shaped this stage.</span>
+              </div>
+              <div class="story-bonus-actions">
+                <span class="story-bonus-state" data-story-bonus-state>Reward ready</span>
+                <button class="btn story-bonus-cta" type="button" data-stage-story-bonus>Start Exploring +50</button>
+              </div>
+            </div>`;
+    }
+
+    function claimStageStoryBonus() {
+      if (state.storyBonusClaimed || !stageClearLayer) return;
+      state.storyBonusClaimed = true;
+      adjustCredit(50);
+      addLog("Behind the Battle explored. +50 Credit story reward claimed.");
+      const card = stageClearLayer.querySelector("[data-story-bonus-card]");
+      const title = stageClearLayer.querySelector("[data-story-bonus-title]");
+      const note = stageClearLayer.querySelector("[data-story-bonus-note]");
+      const status = stageClearLayer.querySelector("[data-story-bonus-state]");
+      const button = stageClearLayer.querySelector("[data-stage-story-bonus]");
+      const body = stageClearLayer.querySelector(".stage-clear-body");
+      const starting = stageClearLayer.querySelector("[data-stage-starting-credit]");
+      if (card) {
+        card.style.borderColor = "rgba(97,185,52,.32)";
+        card.style.background = "linear-gradient(180deg, rgba(244,255,241,.94), rgba(255,255,255,.94))";
+      }
+      if (title) title.textContent = "+50 Credit · Story Reward Claimed";
+      if (note) note.textContent = "Story explored. Spend the extra credits before Stage 2.";
+      if (status) status.textContent = "Claimed";
+      if (button) {
+        button.textContent = "Reward claimed";
+        button.className = "btn story-bonus-claimed";
+        button.disabled = true;
+      }
+      if (body) body.textContent = "Behind-the-battle story explored. Stage 2 opens with 50 extra Credit.";
+      if (starting) {
+        const base = Number(starting.dataset.stageStartingCredit || starting.textContent || 0);
+        starting.textContent = String(base + 50);
+      }
+    }
+
+    function openStageStoryBonus() {
+      if (state.storyBonusClaimed) return;
+      const button = stageClearLayer ? stageClearLayer.querySelector("[data-stage-story-bonus]") : null;
+      const status = stageClearLayer ? stageClearLayer.querySelector("[data-story-bonus-state]") : null;
+      if (status) status.textContent = "Exploring";
+      if (button) {
+        button.textContent = "Starting...";
+        button.disabled = true;
+      }
+      window.open(productStoryUrl(), "_blank", "noopener,noreferrer");
+      claimStageStoryBonus();
     }
 
     function showLevelNotice(summary) {
@@ -6836,7 +7737,7 @@
       layer.classList.remove("show");
       layer.innerHTML = `
         <div class="stage-clear-dim"></div>
-        <section class="stage-clear-card" aria-live="polite">
+        <section class="stage-clear-card ${summary.storyBonusAvailable ? "has-story-bonus" : ""}" aria-live="polite">
           <div class="stage-clear-kicker">STAGE CLEAR <span class="stage-clear-stars" aria-label="${summary.performanceStars} out of 5 stars">${Array.from({ length: 5 }, (_, index) => `<b class="${index < summary.performanceStars ? "on" : ""}"></b>`).join("")}</span></div>
           <h3>${summary.title}</h3>
           <p class="stage-clear-body">${summary.body}</p>
@@ -6864,7 +7765,7 @@
             <div class="stage-clear-stat starting">
               <div class="stage-clear-starting-copy">
                 <span class="stage-clear-stat-label">Starting Credit</span>
-                <span class="stage-clear-stat-value">${summary.startingCredit}</span>
+                <span class="stage-clear-stat-value" data-stage-starting-credit="${summary.startingCredit}">${summary.startingCredit}</span>
                 <span class="stage-clear-stat-note">${summary.carryOverCredit} + ${summary.unlockReward} + ${summary.performanceBonus}</span>
               </div>
               <div class="stage-clear-starting-mark">${iconSvg("credit")}</div>
@@ -6874,6 +7775,7 @@
               <strong>${summary.nextLabel}</strong>
               <span>${summary.nextHint}</span>
             </div>
+            ${stageClearStoryBonusHtml(summary)}
           </div>
           <div class="stage-clear-footer">
             <button class="btn wave-cta" type="button" data-stage-clear-close>Continue</button>
@@ -6884,6 +7786,8 @@
       requestAnimationFrame(() => layer.classList.add("show"));
       const closeBtn = layer.querySelector("[data-stage-clear-close]");
       if (closeBtn) closeBtn.addEventListener("click", () => hideStageClearNotice());
+      const storyBtn = layer.querySelector("[data-stage-story-bonus]");
+      if (storyBtn && !storyBtn.disabled) storyBtn.addEventListener("click", openStageStoryBonus);
       stageClearTimeout = 0;
     }
 
@@ -7202,15 +8106,37 @@
 
     function arenaScale() {
       const rect = arena.getBoundingClientRect();
+      const width = rect.width || arena.clientWidth || ARENA_WIDTH;
+      const height = rect.height || arena.clientHeight || ARENA_HEIGHT;
+      if (isLandscapeMobileViewport()) {
+        const uniform = Math.min(width / ARENA_WIDTH, height / ARENA_HEIGHT) || 1;
+        const contentWidth = ARENA_WIDTH * uniform;
+        const contentHeight = ARENA_HEIGHT * uniform;
+        return {
+          x: uniform,
+          y: uniform,
+          offsetX: (width - contentWidth) / 2,
+          offsetY: (height - contentHeight) / 2,
+          contentWidth,
+          contentHeight
+        };
+      }
       return {
-        x: (rect.width || arena.clientWidth) / ARENA_WIDTH || 1,
-        y: (rect.height || arena.clientHeight) / ARENA_HEIGHT || 1
+        x: width / ARENA_WIDTH || 1,
+        y: height / ARENA_HEIGHT || 1,
+        offsetX: 0,
+        offsetY: 0,
+        contentWidth: width,
+        contentHeight: height
       };
     }
 
     function arenaScreenPoint(x, y) {
       const scale = arenaScale();
-      return { x: x * scale.x, y: y * scale.y };
+      return {
+        x: (scale.offsetX || 0) + x * scale.x,
+        y: (scale.offsetY || 0) + y * scale.y
+      };
     }
 
     function routeExitPoint() {
@@ -7258,8 +8184,8 @@
           const count = Math.max(1, Math.floor(len / 190));
           for (let step = 1; step <= count; step += 1) {
             const t = step / (count + 1);
-            const x = (start[0] + (end[0] - start[0]) * t) * scale.x;
-            const y = (start[1] + (end[1] - start[1]) * t) * scale.y;
+            const x = (scale.offsetX || 0) + (start[0] + (end[0] - start[0]) * t) * scale.x;
+            const y = (scale.offsetY || 0) + (start[1] + (end[1] - start[1]) * t) * scale.y;
             arrows.push(`<span class="lane-arrow" style="left:${x}px;top:${y}px;--angle:${angle}deg" aria-hidden="true"></span>`);
           }
         }
@@ -7660,9 +8586,13 @@
     }
 
     function requestDeveloperUnlock() {
-      if (!gameEntered || !DEV_TOOLS_AVAILABLE) return;
+      if (!DEV_TOOLS_AVAILABLE) return;
       if (![...DEV_UNLOCK_KEYS].every(key => pressedDevKeys.has(key))) return;
       pressedDevKeys.clear();
+      if (!gameEntered) {
+        startOverlay.style.display = "none";
+        gameEntered = true;
+      }
       if (state.devModeEnabled) {
         openDeveloperPanel();
         return;
@@ -7671,7 +8601,7 @@
     }
 
     function enableDeveloperMode({ openPanel = false, reason = "manual" } = {}) {
-      if (!DEV_TOOLS_AVAILABLE || !gameEntered) return;
+      if (!DEV_TOOLS_AVAILABLE) return;
       state.devModeEnabled = true;
       exposeDeveloperState({ reason });
       render();
@@ -7770,6 +8700,16 @@
           <button class="btn ghost" data-stage-preview="0">Stage 1 to 2</button>
           <button class="btn ghost" data-stage-preview="1">Stage 2 to 3</button>
           <button class="btn ghost" data-stage-preview="2">Stage 3 to 4</button>
+        </div>
+        <div class="dev-section-kicker">External Link Registry</div>
+        <div class="dev-link-registry">
+          ${developerLinkDebugRows().map(([label, href, meta, status]) => `
+            <a class="dev-link-row" href="${href}" target="_blank" rel="noopener">
+              <strong>${label}</strong>
+              <span class="dev-link-meta">${meta}</span>
+              <span class="dev-link-status ${status === "Local only" ? "local-only" : ""}">${status}</span>
+            </a>
+          `).join("")}
         </div>
         <div class="dev-actions">
           <button class="btn ghost" id="devClose">Close</button>
@@ -9557,10 +10497,11 @@
         waveBonusCredit: 0,
         defeatedRiskScore: 0,
         totalLeaks: 0,
-      stageLeakBaseline: 0,
-      miniGameWinCount: 0,
-      miniGameResults: [],
-      defenderUpgradeCount: 0,
+        stageLeakBaseline: 0,
+        storyBonusClaimed: false,
+        miniGameWinCount: 0,
+        miniGameResults: [],
+        defenderUpgradeCount: 0,
         manualRestartCount: 0,
         rolesHiredCount: 0,
         lastMiniResult: "",

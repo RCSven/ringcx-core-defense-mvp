@@ -1,0 +1,4858 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Core Defense Panorama</title>
+  <style>
+    :root {
+      --ink-950: #eef7ff;
+      --ink-900: #d8ecff;
+      --ink-800: #abc8e4;
+      --ink-600: #89a7c5;
+      --ink-500: #6f8aa5;
+      --paper: #07111d;
+      --surface: rgba(9, 20, 35, 0.78);
+      --surface-strong: rgba(12, 27, 46, 0.92);
+      --line: rgba(108, 197, 255, 0.24);
+      --blue: #3f8cff;
+      --cyan: #18d7ff;
+      --green: #56dc8f;
+      --amber: #ffbd45;
+      --red: #ff624f;
+      --violet: #9b8cff;
+      --shadow: 0 26px 80px rgba(0, 0, 0, 0.42);
+      --soft-shadow: 0 16px 44px rgba(0, 0, 0, 0.30);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 104px;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink-950);
+      background:
+        linear-gradient(180deg, #050b14 0, #081421 42%, #0b1521 100%);
+      font-family: "SF Pro Display", "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      letter-spacing: 0;
+    }
+
+    button,
+    a {
+      font: inherit;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      position: relative;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    .page::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background:
+        linear-gradient(rgba(24, 215, 255, 0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(63, 140, 255, 0.07) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.08));
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 14px clamp(18px, 4vw, 64px);
+      background: rgba(5, 11, 20, 0.42);
+      border-bottom: 1px solid rgba(108, 197, 255, 0.16);
+      box-shadow: 0 10px 34px rgba(0, 0, 0, 0.12);
+      backdrop-filter: blur(22px) saturate(1.22);
+      transition:
+        top 220ms ease,
+        width 220ms ease,
+        margin 220ms ease,
+        padding 220ms ease,
+        border 220ms ease,
+        border-radius 220ms ease,
+        background 220ms ease,
+        box-shadow 220ms ease,
+        backdrop-filter 220ms ease;
+    }
+
+    .topbar.scrolled {
+      top: 10px;
+      width: min(1180px, calc(100% - clamp(24px, 6vw, 96px)));
+      margin: 0 auto;
+      padding: 8px 12px;
+      border: 1px solid rgba(108, 197, 255, 0.24);
+      border-radius: 12px;
+      background: rgba(4, 10, 19, 0.48);
+      box-shadow:
+        0 18px 46px rgba(0, 0, 0, 0.34),
+        0 0 28px rgba(24, 215, 255, 0.12);
+      backdrop-filter: blur(24px) saturate(1.35);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand-mark,
+    .icon-box {
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      color: #fff;
+      background:
+        linear-gradient(135deg, rgba(24, 215, 255, 0.94), rgba(63, 140, 255, 0.96));
+      box-shadow: 0 10px 26px rgba(24, 215, 255, 0.22);
+    }
+
+    .brand-mark {
+      transition: width 220ms ease, height 220ms ease, border-radius 220ms ease, box-shadow 220ms ease;
+    }
+
+    .topbar.scrolled .brand-mark {
+      width: 30px;
+      height: 30px;
+      border-radius: 7px;
+      box-shadow: 0 0 18px rgba(24, 215, 255, 0.2);
+    }
+
+    .brand-title {
+      display: grid;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .brand-title strong {
+      font-size: 15px;
+      line-height: 1.1;
+      white-space: nowrap;
+      transition: font-size 220ms ease;
+    }
+
+    .topbar.scrolled .brand-title strong {
+      font-size: 14px;
+    }
+
+    .brand-title span {
+      color: var(--ink-500);
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+      max-height: 16px;
+      overflow: hidden;
+      opacity: 1;
+      transform: translateY(0);
+      transition: max-height 220ms ease, opacity 180ms ease, transform 220ms ease;
+    }
+
+    .topbar.scrolled .brand-title span {
+      max-height: 0;
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+
+    .nav-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 10px;
+      transition: gap 220ms ease;
+    }
+
+    .topbar.scrolled .nav-actions {
+      gap: 6px;
+    }
+
+    .nav-link,
+    .seg-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      color: var(--ink-600);
+      background: transparent;
+      padding: 8px 11px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      transition:
+        min-height 220ms ease,
+        min-width 220ms ease,
+        padding 220ms ease,
+        font-size 220ms ease,
+        background 160ms ease,
+        border-color 160ms ease,
+        color 160ms ease,
+        transform 160ms ease;
+    }
+
+    .topbar.scrolled .nav-link {
+      min-height: 30px;
+      padding: 6px 9px;
+      border-color: rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.045);
+      font-size: 12px;
+    }
+
+    .nav-link:hover,
+    .nav-link:focus-visible,
+    .seg-button:hover,
+    .seg-button:focus-visible {
+      color: var(--ink-950);
+      border-color: var(--line);
+      background: rgba(255, 255, 255, 0.08);
+      outline: none;
+    }
+
+    .lang-toggle {
+      display: inline-flex;
+      gap: 3px;
+      padding: 3px;
+      border-radius: 9px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.08);
+      transition: padding 220ms ease, background 220ms ease, border-color 220ms ease;
+    }
+
+    .topbar.scrolled .lang-toggle {
+      padding: 2px;
+      border-color: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .seg-button {
+      min-width: 44px;
+      min-height: 32px;
+      padding: 6px 10px;
+    }
+
+    .topbar.scrolled .seg-button {
+      min-width: 38px;
+      min-height: 28px;
+      padding: 5px 8px;
+      font-size: 12px;
+    }
+
+    .seg-button[aria-pressed="true"] {
+      color: #fff;
+      background: var(--blue);
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    .hero {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 0.92fr) minmax(460px, 1.08fr);
+      gap: clamp(22px, 4vw, 54px);
+      align-items: center;
+      min-height: calc(100vh - 68px);
+      padding: clamp(34px, 6vw, 86px) clamp(18px, 4vw, 64px) clamp(30px, 5vw, 72px);
+      background:
+        linear-gradient(90deg, rgba(5, 11, 20, 0.94) 0%, rgba(5, 11, 20, 0.80) 34%, rgba(5, 11, 20, 0.35) 100%),
+        linear-gradient(180deg, rgba(24, 215, 255, 0.14), rgba(255, 189, 69, 0.08));
+      border-bottom: 1px solid rgba(24, 215, 255, 0.24);
+      isolation: isolate;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: -18px;
+      z-index: -1;
+      pointer-events: none;
+      background: url("../assets/high-visual-reference.png") center / cover no-repeat;
+      filter: blur(16px) saturate(1.1);
+      opacity: 0.54;
+      transform: scale(1.04);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background:
+        linear-gradient(90deg, rgba(5, 11, 20, 0.94) 0%, rgba(5, 11, 20, 0.76) 42%, rgba(5, 11, 20, 0.42) 100%),
+        radial-gradient(circle at 74% 44%, rgba(24, 215, 255, 0.20), transparent 34%),
+        repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.032) 0 1px, transparent 1px 5px);
+      box-shadow: inset 0 0 0 1px rgba(24, 215, 255, 0.20);
+      opacity: 1;
+    }
+
+    .hero-copy {
+      min-width: 0;
+    }
+
+    .overline {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+      color: var(--cyan);
+      font-size: 13px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .overline::before {
+      content: "";
+      width: 34px;
+      height: 2px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--cyan), var(--amber));
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 820px;
+      font-size: clamp(48px, 6.6vw, 104px);
+      line-height: 0.88;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      text-shadow:
+        0 0 28px rgba(24, 215, 255, 0.24),
+        0 18px 48px rgba(0, 0, 0, 0.52);
+    }
+
+    .hero-subtitle {
+      margin: 20px 0 0;
+      max-width: 560px;
+      color: rgba(238, 247, 255, 0.82);
+      font-size: clamp(17px, 1.65vw, 21px);
+      line-height: 1.36;
+    }
+
+    .hero-cta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 28px;
+    }
+
+    .action-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      min-height: 46px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px 14px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--ink-950);
+      font-size: 14px;
+      font-weight: 900;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.26);
+      backdrop-filter: blur(12px);
+      cursor: pointer;
+    }
+
+    .action-button.primary {
+      color: #fff;
+      border-color: var(--blue);
+      background: linear-gradient(135deg, var(--cyan), var(--blue));
+      box-shadow: 0 18px 42px rgba(24, 215, 255, 0.26);
+    }
+
+    .showcase {
+      position: relative;
+      margin: 0;
+      border-radius: 8px;
+      padding: 12px;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.05));
+      border: 1px solid rgba(24, 215, 255, 0.28);
+      box-shadow: var(--shadow);
+      transform: perspective(1200px) rotateY(-4deg) rotateX(1deg);
+    }
+
+    .showcase::before {
+      content: "";
+      position: absolute;
+      inset: 12px;
+      z-index: 1;
+      pointer-events: none;
+      border-radius: 7px;
+      background:
+        linear-gradient(115deg, rgba(255, 255, 255, 0.26), transparent 28%, transparent 78%, rgba(24, 215, 255, 0.24));
+      mix-blend-mode: screen;
+    }
+
+    .showcase img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 3 / 2;
+      object-fit: cover;
+      object-position: center;
+      border-radius: 7px;
+      border: 1px solid rgba(24, 215, 255, 0.22);
+      background: #dbe7f5;
+    }
+
+    .floating-note {
+      position: absolute;
+      z-index: 2;
+      right: 24px;
+      bottom: 24px;
+      max-width: min(300px, calc(100% - 48px));
+      padding: 14px 16px;
+      border-radius: 8px;
+      color: #fff;
+      background: rgba(5, 11, 20, 0.84);
+      border: 1px solid rgba(24, 215, 255, 0.22);
+      box-shadow: 0 14px 34px rgba(13, 23, 38, 0.24);
+      backdrop-filter: blur(14px);
+    }
+
+    .floating-note strong {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 14px;
+    }
+
+    .floating-note span {
+      color: rgba(255, 255, 255, 0.82);
+      font-size: 12px;
+      line-height: 1.28;
+    }
+
+    main {
+      padding: 30px clamp(18px, 4vw, 64px) 56px;
+    }
+
+    main > section {
+      scroll-margin-top: 104px;
+    }
+
+    .signal-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin: 8px 0 30px;
+    }
+
+    .signal {
+      position: relative;
+      overflow: hidden;
+      min-height: 112px;
+      padding: 17px;
+      border-radius: 8px;
+      background:
+        linear-gradient(180deg, rgba(16, 36, 60, 0.94), rgba(9, 20, 35, 0.88));
+      border: 1px solid var(--line);
+      box-shadow: var(--soft-shadow);
+    }
+
+    .signal::before {
+      position: absolute;
+      right: 12px;
+      bottom: 8px;
+      color: color-mix(in srgb, var(--accent, var(--blue)) 44%, transparent);
+      font-size: 54px;
+      font-weight: 950;
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .signal[data-type="std"]::before { content: "PUB"; font-size: 34px; }
+    .signal[data-type="hi"]::before { content: "FX"; }
+    .signal[data-type="data"]::before { content: "01"; }
+    .signal[data-type="risk"]::before { content: "!"; }
+
+    .signal::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 4px;
+      background: var(--accent, var(--blue));
+    }
+
+    .signal-kicker {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+      color: var(--ink-500);
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .signal strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 20px;
+      line-height: 1.1;
+      max-width: 78%;
+    }
+
+    .signal p {
+      display: none;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 22px;
+      margin: 34px 0 15px;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: clamp(26px, 3vw, 40px);
+      line-height: 1.06;
+      letter-spacing: 0;
+    }
+
+    .section-head p {
+      margin: 9px 0 0;
+      max-width: 520px;
+      color: var(--ink-600);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .product-line-board {
+      display: grid;
+      grid-template-columns: minmax(0, 1.12fr) minmax(340px, 0.88fr);
+      gap: 16px;
+      align-items: stretch;
+      border-radius: 8px;
+      background:
+        radial-gradient(circle at 28% 12%, rgba(24, 215, 255, 0.16), transparent 34%),
+        radial-gradient(circle at 74% 76%, rgba(255, 189, 69, 0.13), transparent 30%),
+        rgba(9, 20, 35, 0.78);
+      border: 1px solid var(--line);
+      box-shadow: var(--soft-shadow);
+      overflow: hidden;
+    }
+
+    .product-map {
+      position: relative;
+      min-height: 520px;
+      padding: 22px;
+      background:
+        linear-gradient(rgba(24, 215, 255, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(63, 140, 255, 0.06) 1px, transparent 1px);
+      background-size: 34px 34px;
+    }
+
+    .product-map::before {
+      content: "";
+      position: absolute;
+      inset: 11%;
+      border: 1px solid rgba(24, 215, 255, 0.18);
+      border-radius: 50%;
+      box-shadow:
+        inset 0 0 34px rgba(24, 215, 255, 0.08),
+        0 0 42px rgba(24, 215, 255, 0.08);
+      pointer-events: none;
+    }
+
+    .product-map-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-rows: repeat(3, minmax(128px, 1fr));
+      gap: 12px;
+      min-height: 476px;
+    }
+
+    .product-core,
+    .product-node {
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      align-content: end;
+      min-width: 0;
+      min-height: 128px;
+      padding: 16px;
+      border: 1px solid rgba(108, 197, 255, 0.18);
+      border-radius: 8px;
+      color: var(--ink-950);
+      background:
+        radial-gradient(circle at 83% 14%, color-mix(in srgb, var(--accent, var(--blue)) 18%, transparent), transparent 45%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.045));
+      text-align: left;
+      cursor: pointer;
+      transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+    }
+
+    .product-core {
+      grid-column: 2;
+      grid-row: 2;
+      min-height: 168px;
+      border-color: rgba(24, 215, 255, 0.42);
+      background:
+        radial-gradient(circle at 72% 16%, rgba(255, 189, 69, 0.22), transparent 42%),
+        linear-gradient(135deg, rgba(24, 215, 255, 0.22), rgba(63, 140, 255, 0.12)),
+        rgba(9, 20, 35, 0.82);
+      box-shadow: 0 0 42px rgba(24, 215, 255, 0.12);
+    }
+
+    .product-core:hover,
+    .product-core:focus-visible,
+    .product-core.active,
+    .product-node:hover,
+    .product-node:focus-visible,
+    .product-node.active {
+      transform: translateY(-2px);
+      border-color: var(--accent, var(--cyan));
+      box-shadow:
+        0 18px 40px rgba(0, 0, 0, 0.30),
+        0 0 28px color-mix(in srgb, var(--accent, var(--cyan)) 24%, transparent);
+      outline: none;
+    }
+
+    .product-core::after,
+    .product-node::after {
+      content: "";
+      position: absolute;
+      left: 14px;
+      right: 14px;
+      bottom: 0;
+      height: 3px;
+      border-radius: 999px 999px 0 0;
+      background: var(--accent, var(--cyan));
+      opacity: 0.92;
+    }
+
+    .product-node[data-product="game"] { --accent: var(--green); }
+    .product-node[data-product="telemetry"] { --accent: var(--violet); }
+    .product-node[data-product="dashboard"] { --accent: var(--cyan); }
+    .product-node[data-product="visuals"] { --accent: var(--amber); }
+    .product-node[data-product="delivery"] { --accent: var(--blue); }
+    .product-node[data-product="docs"] { --accent: var(--red); }
+
+    .product-sprite {
+      position: absolute;
+      right: 5px;
+      top: 0;
+      width: min(46%, 118px);
+      max-height: 120px;
+      object-fit: contain;
+      object-position: top right;
+      opacity: 0.95;
+      filter:
+        drop-shadow(0 16px 18px rgba(0, 0, 0, 0.34))
+        drop-shadow(0 0 14px color-mix(in srgb, var(--accent, var(--cyan)) 22%, transparent));
+      pointer-events: none;
+    }
+
+    .product-core .product-sprite {
+      width: min(58%, 150px);
+      max-height: 155px;
+    }
+
+    .product-node-title,
+    .product-node-text {
+      position: relative;
+      z-index: 1;
+      display: block;
+      max-width: 72%;
+    }
+
+    .product-node-title {
+      font-size: 15px;
+      font-weight: 950;
+      line-height: 1.12;
+    }
+
+    .product-core .product-node-title {
+      font-size: 15px;
+    }
+
+    .product-node-text {
+      margin-top: 7px;
+      color: var(--ink-600);
+      font-size: 12px;
+      font-weight: 820;
+      line-height: 1.28;
+    }
+
+    .product-detail-panel {
+      display: grid;
+      align-content: start;
+      gap: 14px;
+      padding: 20px;
+      border-left: 1px solid rgba(108, 197, 255, 0.18);
+      background:
+        linear-gradient(180deg, rgba(16, 36, 60, 0.86), rgba(9, 20, 35, 0.92));
+    }
+
+    .product-detail-visual {
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+      min-height: 178px;
+      border-radius: 8px;
+      background:
+        radial-gradient(circle at 50% 36%, rgba(24, 215, 255, 0.20), transparent 42%),
+        rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(108, 197, 255, 0.18);
+    }
+
+    .product-detail-visual img {
+      width: min(72%, 230px);
+      max-height: 166px;
+      object-fit: contain;
+      filter: drop-shadow(0 22px 24px rgba(0, 0, 0, 0.38));
+    }
+
+    .product-detail-kicker {
+      color: var(--cyan);
+      font-size: 11px;
+      font-weight: 950;
+      text-transform: uppercase;
+    }
+
+    .product-detail-panel h3 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.12;
+    }
+
+    .product-detail-panel p {
+      margin: 0;
+      color: var(--ink-600);
+      font-size: 13px;
+      font-weight: 760;
+      line-height: 1.4;
+    }
+
+    .product-metrics {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .product-metrics li {
+      display: grid;
+      gap: 3px;
+      min-height: 54px;
+      padding: 10px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(108, 197, 255, 0.18);
+    }
+
+    .product-metrics b {
+      color: #fff;
+      font-size: 13px;
+      line-height: 1.1;
+    }
+
+    .product-metrics span {
+      color: var(--ink-600);
+      font-size: 12px;
+      font-weight: 850;
+      line-height: 1.2;
+    }
+
+    .product-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .product-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      border-radius: 8px;
+      padding: 7px 10px;
+      color: #fff;
+      background: rgba(24, 215, 255, 0.12);
+      border: 1px solid rgba(24, 215, 255, 0.24);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .product-note {
+      padding: 11px 12px;
+      border-radius: 8px;
+      color: var(--ink-900);
+      background: rgba(255, 189, 69, 0.10);
+      border: 1px solid rgba(255, 189, 69, 0.22);
+      font-size: 13px;
+      font-weight: 820;
+      line-height: 1.34;
+    }
+
+    .architecture-board {
+      display: grid;
+      grid-template-columns: minmax(0, 1.12fr) minmax(360px, 0.88fr);
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .map-surface,
+    .detail-panel,
+    .metric-panel,
+    .asset-card,
+    .version-panel {
+      border-radius: 8px;
+      background: rgba(9, 20, 35, 0.78);
+      border: 1px solid var(--line);
+      box-shadow: var(--soft-shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .map-surface {
+      padding: 16px;
+    }
+
+    .focus-controls,
+    .asset-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .chip-button {
+      min-height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px 11px;
+      color: var(--ink-600);
+      background: rgba(255, 255, 255, 0.08);
+      font-size: 13px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: background 160ms ease, color 160ms ease, border-color 160ms ease, transform 160ms ease;
+    }
+
+    .chip-button:hover,
+    .chip-button:focus-visible {
+      transform: translateY(-1px);
+      border-color: rgba(35, 104, 216, 0.45);
+      outline: none;
+    }
+
+    .chip-button[aria-pressed="true"] {
+      color: #fff;
+      border-color: rgba(24, 215, 255, 0.45);
+      background: linear-gradient(135deg, rgba(24, 215, 255, 0.44), rgba(63, 140, 255, 0.52));
+    }
+
+    .architecture-flow {
+      display: grid;
+      gap: 10px;
+    }
+
+    .layer {
+      display: grid;
+      grid-template-columns: 112px repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    .layer-label {
+      display: grid;
+      place-items: center;
+      min-height: 92px;
+      padding: 12px;
+      color: #fff;
+      background: linear-gradient(135deg, rgba(24, 215, 255, 0.22), rgba(63, 140, 255, 0.12));
+      border: 1px solid rgba(24, 215, 255, 0.22);
+      border-radius: 8px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 900;
+      line-height: 1.25;
+    }
+
+    .node {
+      position: relative;
+      display: grid;
+      grid-template-columns: 38px 1fr;
+      gap: 11px;
+      align-items: start;
+      min-height: 92px;
+      border: 1px solid rgba(111, 130, 154, 0.22);
+      border-radius: 8px;
+      padding: 13px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.045));
+      color: var(--ink-950);
+      text-align: left;
+      cursor: pointer;
+      transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease, opacity 160ms ease;
+    }
+
+    .node:hover,
+    .node:focus-visible,
+    .node.active {
+      transform: translateY(-2px);
+      border-color: var(--accent, var(--blue));
+      box-shadow: 0 16px 34px rgba(0, 0, 0, 0.28), 0 0 28px color-mix(in srgb, var(--accent, var(--blue)) 26%, transparent);
+      outline: none;
+    }
+
+    .node::before {
+      content: "";
+      position: absolute;
+      inset: auto 12px 10px 61px;
+      height: 3px;
+      border-radius: 999px;
+      background: var(--accent, var(--blue));
+      opacity: 0.9;
+    }
+
+    .node small {
+      display: block;
+      margin-top: 5px;
+      color: var(--ink-500);
+      font-size: 12px;
+      line-height: 1.36;
+    }
+
+    .node-title {
+      font-size: 14px;
+      font-weight: 950;
+      line-height: 1.18;
+    }
+
+    .icon-box {
+      width: 34px;
+      height: 34px;
+      color: var(--accent, var(--blue));
+      background: color-mix(in srgb, var(--accent, var(--blue)) 20%, rgba(255,255,255,.07));
+      box-shadow: none;
+    }
+
+    .node[data-topic="users"],
+    .signal[data-type="std"] { --accent: var(--blue); }
+    .node[data-topic="experience"],
+    .signal[data-type="hi"] { --accent: var(--amber); }
+    .node[data-topic="gameplay"],
+    .signal[data-type="game"] { --accent: var(--green); }
+    .node[data-topic="assets"] { --accent: var(--cyan); }
+    .node[data-topic="data"],
+    .signal[data-type="data"] { --accent: var(--violet); }
+    .node[data-topic="release"],
+    .signal[data-type="risk"] { --accent: var(--red); }
+
+    .detail-panel {
+      padding: 22px;
+      display: grid;
+      align-content: start;
+      gap: 16px;
+      min-height: 100%;
+      background:
+        linear-gradient(180deg, rgba(16, 36, 60, 0.92), rgba(9, 20, 35, 0.86));
+    }
+
+    .detail-panel::before {
+      content: "";
+      display: block;
+      min-height: 190px;
+      border-radius: 8px;
+      background:
+        linear-gradient(180deg, rgba(5, 11, 20, 0.08), rgba(5, 11, 20, 0.78)),
+        var(--detail-visual, url("../assets/high-visual-reference.png")) center / cover;
+      border: 1px solid rgba(108, 197, 255, 0.20);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+    }
+
+    .detail-kicker {
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 950;
+      text-transform: uppercase;
+    }
+
+    .detail-panel h3 {
+      margin: 0;
+      font-size: clamp(26px, 3vw, 36px);
+      line-height: 1.06;
+    }
+
+    .detail-panel p {
+      display: none;
+    }
+
+    .detail-list {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .detail-list li {
+      display: grid;
+      gap: 7px;
+      padding: 12px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(108, 197, 255, 0.18);
+      line-height: 1.45;
+    }
+
+    .detail-list b {
+      color: var(--cyan);
+      font-size: 12px;
+      font-weight: 950;
+      text-transform: uppercase;
+    }
+
+    .detail-list span {
+      color: var(--ink-950);
+      font-size: 15px;
+      font-weight: 850;
+      line-height: 1.28;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .monitor-grid {
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      align-items: stretch;
+    }
+
+    .tech-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: 16px;
+    }
+
+    .tech-card,
+    .art-card {
+      min-width: 0;
+      border-radius: 8px;
+      background: rgba(9, 20, 35, 0.78);
+      border: 1px solid var(--line);
+      box-shadow: var(--soft-shadow);
+      overflow: hidden;
+    }
+
+    .tech-card {
+      padding: 20px;
+    }
+
+    .tech-card h3,
+    .art-card h3 {
+      margin: 0 0 14px;
+      font-size: 20px;
+      line-height: 1.22;
+    }
+
+    .tech-stack {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .tech-row {
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      gap: 8px;
+      min-height: 126px;
+      align-content: end;
+      padding: 44px 12px 12px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(108, 197, 255, 0.18);
+    }
+
+    .tech-row::before {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      color: #fff;
+      background: linear-gradient(135deg, rgba(24, 215, 255, 0.40), rgba(63, 140, 255, 0.24));
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      font-size: 13px;
+      font-weight: 950;
+    }
+
+    .tech-row:nth-child(1)::before { content: "UI"; }
+    .tech-row:nth-child(2)::before { content: "SVG"; }
+    .tech-row:nth-child(3)::before { content: "ST"; }
+    .tech-row:nth-child(4)::before { content: "EV"; }
+    .tech-row:nth-child(5)::before { content: "DB"; }
+
+    .tech-row b {
+      color: var(--ink-900);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .tech-row span {
+      color: var(--ink-600);
+      font-size: 12px;
+      line-height: 1.28;
+    }
+
+    .tech-diagram {
+      display: grid;
+      gap: 10px;
+      padding: 20px;
+      min-height: 100%;
+      background:
+        linear-gradient(135deg, rgba(13, 23, 38, 0.96), rgba(29, 48, 77, 0.96));
+      color: #fff;
+    }
+
+    .diagram-lane {
+      display: grid;
+      grid-template-columns: 118px 1fr;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .diagram-label {
+      color: rgba(255, 255, 255, 0.62);
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .diagram-chain {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .diagram-node {
+      min-height: 62px;
+      display: grid;
+      place-items: center;
+      padding: 10px;
+      border-radius: 8px;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.10);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      text-align: center;
+      font-size: 13px;
+      font-weight: 900;
+      line-height: 1.25;
+    }
+
+    .diagram-node.hot {
+      background: linear-gradient(135deg, rgba(35, 104, 216, 0.62), rgba(19, 169, 199, 0.42));
+      border-color: rgba(255, 255, 255, 0.34);
+    }
+
+    .art-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 16px;
+    }
+
+    .art-card {
+      background: rgba(9, 20, 35, 0.78);
+    }
+
+    .art-card-header {
+      padding: 16px 17px 0;
+    }
+
+    .art-card-header p {
+      margin: 5px 0 0;
+      color: var(--ink-600);
+      font-size: 12px;
+      line-height: 1.28;
+    }
+
+    .frame-strip {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 8px;
+      padding: 16px;
+    }
+
+    .frame-strip.vfx {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+
+    .vfx-preview {
+      padding: 16px;
+    }
+
+    .vfx-preview img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid rgba(108, 197, 255, 0.18);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .vfx-logic {
+      display: grid;
+      gap: 14px;
+      padding: 16px;
+    }
+
+    .vfx-flow {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .vfx-step {
+      position: relative;
+      min-height: 82px;
+      border-radius: 8px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(108, 197, 255, 0.18);
+    }
+
+    .vfx-step:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      right: -8px;
+      z-index: 2;
+      width: 16px;
+      height: 2px;
+      background: var(--cyan);
+      box-shadow: 0 0 12px rgba(24, 215, 255, 0.34);
+    }
+
+    .vfx-step b {
+      display: block;
+      color: #fff;
+      font-size: 13px;
+      line-height: 1.2;
+    }
+
+    .vfx-step span {
+      display: block;
+      margin-top: 7px;
+      color: var(--ink-600);
+      font-size: 12px;
+      line-height: 1.28;
+    }
+
+    .keyword-cloud {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .keyword-chip {
+      display: grid;
+      min-height: 44px;
+      place-items: center;
+      border-radius: 8px;
+      color: #fff;
+      background: linear-gradient(135deg, rgba(255, 122, 26, 0.34), rgba(24, 215, 255, 0.14));
+      border: 1px solid rgba(255, 186, 106, 0.26);
+      font-size: 14px;
+      font-weight: 950;
+      text-align: center;
+      line-height: 1.18;
+    }
+
+    .projectile-strip {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .attack-matrix {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .role-logic {
+      position: relative;
+      overflow: hidden;
+      min-height: 132px;
+      border-radius: 8px;
+      padding: 13px;
+      background:
+        radial-gradient(circle at 82% 0, color-mix(in srgb, var(--role-color) 24%, transparent), transparent 45%),
+        rgba(255, 255, 255, 0.07);
+      border: 1px solid color-mix(in srgb, var(--role-color) 32%, rgba(108, 197, 255, 0.18));
+    }
+
+    .role-logic b {
+      display: block;
+      color: #fff;
+      font-size: 15px;
+      line-height: 1.18;
+    }
+
+    .role-logic span {
+      display: block;
+      margin-top: 7px;
+      color: var(--ink-600);
+      font-size: 12px;
+      font-weight: 850;
+      line-height: 1.28;
+    }
+
+    .logic-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 12px;
+    }
+
+    .logic-tags i {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      border-radius: 7px;
+      padding: 4px 7px;
+      color: #fff;
+      background: color-mix(in srgb, var(--role-color) 28%, rgba(255, 255, 255, 0.08));
+      border: 1px solid color-mix(in srgb, var(--role-color) 30%, transparent);
+      font-style: normal;
+      font-size: 11px;
+      font-weight: 950;
+    }
+
+    .prototype-note {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      color: #ffd9d4;
+      background: rgba(255, 98, 79, 0.12);
+      border: 1px solid rgba(255, 98, 79, 0.28);
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1.28;
+    }
+
+    .frame-cell {
+      min-width: 0;
+      border-radius: 8px;
+      background:
+        linear-gradient(180deg, rgba(24, 215, 255, 0.08), rgba(255, 255, 255, 0.045));
+      border: 1px solid rgba(108, 197, 255, 0.18);
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .frame-cell img {
+      display: block;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: contain;
+      padding: 8px;
+      filter: drop-shadow(0 10px 12px rgba(13, 23, 38, 0.18));
+    }
+
+    .frame-cell span {
+      display: block;
+      min-height: 30px;
+      padding: 0 6px 8px;
+      color: var(--ink-600);
+      font-size: 11px;
+      font-weight: 900;
+      line-height: 1.2;
+    }
+
+    .motion-spec {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      padding: 0 16px 16px;
+    }
+
+    .motion-pill {
+      border-radius: 8px;
+      padding: 12px;
+      background: rgba(13, 23, 38, 0.96);
+      color: #fff;
+    }
+
+    .motion-pill b {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 16px;
+    }
+
+    .motion-pill span {
+      color: rgba(255, 255, 255, 0.74);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .metric-panel {
+      padding: 20px;
+    }
+
+    .metric-panel h3,
+    .version-panel h3 {
+      margin: 0 0 15px;
+      font-size: 20px;
+      line-height: 1.2;
+    }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: 132px minmax(0, 1fr) 54px;
+      gap: 12px;
+      align-items: center;
+      min-height: 34px;
+      color: var(--ink-600);
+      font-size: 13px;
+      font-weight: 850;
+    }
+
+    .bar-track {
+      height: 10px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.10);
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--blue), var(--cyan));
+    }
+
+    .donut-wrap {
+      display: grid;
+      grid-template-columns: 164px 1fr;
+      gap: 18px;
+      align-items: center;
+    }
+
+    .donut {
+      position: relative;
+      width: 156px;
+      height: 156px;
+      border-radius: 50%;
+      background: conic-gradient(var(--amber) 0 25%, var(--green) 25% 50%, var(--blue) 50% 75%, var(--violet) 75% 100%);
+      box-shadow: inset 0 0 0 1px rgba(13, 23, 38, 0.08);
+    }
+
+    .donut::after {
+      content: "";
+      position: absolute;
+      inset: 34px;
+      border-radius: 50%;
+      background: rgba(9, 20, 35, 0.96);
+      box-shadow: inset 0 0 0 1px var(--line);
+    }
+
+    .legend {
+      display: grid;
+      gap: 9px;
+      color: var(--ink-600);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex: 0 0 auto;
+    }
+
+    .monitor-excerpt-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .monitor-excerpt-grid .wide {
+      grid-column: 1 / -1;
+    }
+
+    .monitor-sample-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      width: fit-content;
+      padding: 6px 10px;
+      border-radius: 999px;
+      color: #f7dfaa;
+      background: rgba(242, 184, 75, 0.10);
+      border: 1px solid rgba(242, 184, 75, 0.28);
+      font-size: 12px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .monitor-excerpt {
+      --monitor-bg: #10161b;
+      --monitor-panel: rgba(8, 14, 19, 0.38);
+      --monitor-line: rgba(145, 164, 175, 0.18);
+      --monitor-muted: rgba(199, 216, 227, 0.68);
+      --monitor-dim: rgba(199, 216, 227, 0.45);
+      min-width: 0;
+      background: rgba(9, 20, 35, 0.88);
+    }
+
+    .monitor-excerpt .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 13px;
+    }
+
+    .monitor-excerpt .panel-head h3 {
+      margin: 0;
+      color: #fff;
+      font-size: 18px;
+      line-height: 1.2;
+    }
+
+    .monitor-excerpt .muted {
+      color: var(--monitor-muted);
+      font-size: 11px;
+      font-weight: 850;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .monitor-excerpt .heatmap-wrap {
+      display: grid;
+      grid-template-columns: 76px repeat(12, minmax(28px, 1fr));
+      gap: 5px;
+      align-items: stretch;
+    }
+
+    .monitor-excerpt .hm-label,
+    .monitor-excerpt .hm-wave,
+    .monitor-excerpt .hm-cell {
+      min-height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 950;
+    }
+
+    .monitor-excerpt .hm-label {
+      justify-content: start;
+      color: var(--monitor-muted);
+      text-transform: uppercase;
+    }
+
+    .monitor-excerpt .hm-wave {
+      color: var(--monitor-dim);
+      background: rgba(8, 14, 19, 0.56);
+      border: 1px solid rgba(145, 164, 175, 0.12);
+    }
+
+    .monitor-excerpt .hm-cell {
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: color-mix(in srgb, var(--c) var(--p), #111b22);
+      color: #fff;
+      cursor: default;
+    }
+
+    .monitor-excerpt .hm-cell.active {
+      border-color: rgba(255, 255, 255, 0.5);
+      filter: brightness(1.18);
+    }
+
+    .monitor-excerpt .diagnostic {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .monitor-excerpt .mini {
+      min-height: 72px;
+      padding: 10px;
+      border: 1px solid rgba(145, 164, 175, 0.16);
+      border-radius: 6px;
+      background: var(--monitor-panel);
+    }
+
+    .monitor-excerpt .mini span {
+      color: var(--monitor-muted);
+      font-size: 10px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .monitor-excerpt .mini strong {
+      display: block;
+      margin-top: 8px;
+      color: #fff;
+      font-size: 21px;
+      font-weight: 950;
+    }
+
+    .monitor-excerpt .quadrant {
+      position: relative;
+      min-height: 230px;
+      border: 1px solid var(--monitor-line);
+      border-radius: 6px;
+      background:
+        linear-gradient(90deg, transparent calc(50% - 1px), rgba(145, 164, 175, 0.16) calc(50% - 1px), rgba(145, 164, 175, 0.16) calc(50% + 1px), transparent calc(50% + 1px)),
+        linear-gradient(180deg, transparent calc(50% - 1px), rgba(145, 164, 175, 0.16) calc(50% - 1px), rgba(145, 164, 175, 0.16) calc(50% + 1px), transparent calc(50% + 1px)),
+        var(--monitor-panel);
+    }
+
+    .monitor-excerpt .axis {
+      position: absolute;
+      color: var(--monitor-dim);
+      font-size: 10px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .monitor-excerpt .axis.top { top: 8px; left: 10px; }
+    .monitor-excerpt .axis.right { right: 10px; bottom: 8px; }
+
+    .monitor-excerpt .bubble {
+      position: absolute;
+      left: var(--x);
+      top: var(--y);
+      width: var(--s);
+      height: var(--s);
+      transform: translate(-50%, -50%);
+      display: grid;
+      place-items: center;
+      border-radius: 99px;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.28), transparent 28%), var(--color);
+      color: #061014;
+      font-size: 11px;
+      font-weight: 950;
+    }
+
+    .monitor-excerpt .tower-cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .monitor-excerpt .tower-card {
+      padding: 10px;
+      border: 1px solid rgba(145, 164, 175, 0.16);
+      border-radius: 6px;
+      background: rgba(8, 14, 19, 0.4);
+    }
+
+    .monitor-excerpt .tower-name {
+      color: #fff;
+      font-size: 12px;
+      font-weight: 950;
+    }
+
+    .monitor-excerpt .tower-stat {
+      margin-top: 5px;
+      color: var(--monitor-muted);
+      font-size: 11px;
+      font-weight: 750;
+      line-height: 1.35;
+    }
+
+    .monitor-excerpt .map-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .monitor-excerpt .map-tabs button {
+      min-height: 30px;
+      padding: 6px 10px;
+      border: 1px solid rgba(145, 164, 175, 0.22);
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--ink-600);
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    .monitor-excerpt .map-tabs button.active {
+      border-color: rgba(255, 255, 255, 0.6);
+      background: rgba(255, 255, 255, 0.16);
+      color: #fff;
+    }
+
+    .monitor-excerpt .slot-map-wrap {
+      min-height: 360px;
+      border: 1px solid var(--monitor-line);
+      border-radius: 8px;
+      background: var(--monitor-bg);
+      overflow: hidden;
+    }
+
+    .monitor-excerpt .slot-usage-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 230px;
+      min-height: 360px;
+    }
+
+    .monitor-excerpt .slot-map {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 510px;
+    }
+
+    .monitor-excerpt .map-bg { fill: var(--monitor-bg); }
+
+    .monitor-excerpt .lane-shadow,
+    .monitor-excerpt .lane-core {
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .monitor-excerpt .lane-shadow {
+      stroke: rgba(255, 255, 255, 0.14);
+      stroke-width: 36;
+    }
+
+    .monitor-excerpt .lane-core {
+      stroke: #e8eef2;
+      stroke-width: 12;
+    }
+
+    .monitor-excerpt .slot-halo {
+      fill: #fff;
+      opacity: calc(0.1 + var(--i) * 0.46);
+      stroke: rgba(255, 255, 255, 0.34);
+      stroke-width: 2;
+    }
+
+    .monitor-excerpt .slot-dot {
+      fill: rgba(8, 14, 19, 0.92);
+      stroke: #fff;
+      stroke-width: 2;
+    }
+
+    .monitor-excerpt .slot-node.used .slot-dot {
+      fill: color-mix(in srgb, var(--cyan) calc(30% + var(--i) * 55%), #111820);
+    }
+
+    .monitor-excerpt .slot-node.top-slot .slot-dot {
+      fill: var(--amber);
+      stroke: #fff5cf;
+      stroke-width: 3;
+    }
+
+    .monitor-excerpt .slot-top-ring {
+      fill: none;
+      stroke: var(--amber);
+      stroke-width: 5;
+      stroke-dasharray: 8 6;
+      opacity: 0.95;
+    }
+
+    .monitor-excerpt .slot-top-label,
+    .monitor-excerpt .slot-count {
+      text-anchor: middle;
+      pointer-events: none;
+      paint-order: stroke;
+      stroke: var(--monitor-bg);
+      stroke-width: 4px;
+    }
+
+    .monitor-excerpt .slot-top-label {
+      fill: var(--amber);
+      font-size: 13px;
+      font-weight: 950;
+    }
+
+    .monitor-excerpt .slot-count {
+      fill: #fff;
+      font-size: 14px;
+      font-weight: 950;
+    }
+
+    .monitor-excerpt .slot-rank {
+      display: grid;
+      align-content: start;
+      gap: 8px;
+      padding: 12px;
+      border-left: 1px solid rgba(145, 164, 175, 0.16);
+      background: rgba(8, 14, 19, 0.34);
+    }
+
+    .monitor-excerpt .slot-rank-head {
+      color: var(--monitor-muted);
+      font-size: 10px;
+      font-weight: 950;
+      text-transform: uppercase;
+    }
+
+    .monitor-excerpt .slot-rank-row {
+      display: grid;
+      grid-template-columns: 22px 1fr auto;
+      gap: 8px;
+      align-items: center;
+      padding: 8px;
+      border: 1px solid rgba(145, 164, 175, 0.15);
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.035);
+    }
+
+    .monitor-excerpt .slot-rank-row.top {
+      border-color: rgba(242, 184, 75, 0.58);
+      background: rgba(242, 184, 75, 0.1);
+    }
+
+    .monitor-excerpt .slot-rank-row span {
+      display: grid;
+      place-items: center;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 950;
+    }
+
+    .monitor-excerpt .slot-rank-row.top span {
+      background: var(--amber);
+      color: #14100a;
+    }
+
+    .monitor-excerpt .slot-rank-row strong {
+      display: block;
+      color: #fff;
+      font-size: 12px;
+    }
+
+    .monitor-excerpt .slot-rank-row em {
+      display: block;
+      margin-top: 3px;
+      color: var(--monitor-muted);
+      font-size: 10px;
+      font-style: normal;
+      line-height: 1.25;
+    }
+
+    .monitor-excerpt .slot-rank-row b {
+      color: var(--amber);
+      font-size: 18px;
+    }
+
+    .monitor-excerpt .slot-legend {
+      display: flex;
+      gap: 7px;
+      align-items: center;
+      margin-top: 4px;
+      color: var(--monitor-muted);
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .monitor-excerpt .slot-legend span {
+      width: 12px;
+      height: 12px;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: var(--amber);
+      box-shadow: 0 0 18px rgba(242, 184, 75, 0.36);
+    }
+
+    .monitor-excerpt .command-callout {
+      margin-top: 13px;
+      padding: 11px;
+      border: 1px solid rgba(242, 184, 75, 0.34);
+      border-radius: 6px;
+      background: rgba(242, 184, 75, 0.08);
+      color: #f7dfaa;
+      font-size: 12px;
+      line-height: 1.35;
+      font-weight: 750;
+    }
+
+    .asset-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+      gap: 16px;
+    }
+
+    .asset-card {
+      overflow: hidden;
+      min-width: 0;
+      background: rgba(9, 20, 35, 0.78);
+    }
+
+    .asset-visual {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .asset-card img {
+      display: block;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.06);
+      object-fit: cover;
+    }
+
+    .asset-overlay {
+      position: absolute;
+      left: 14px;
+      right: 14px;
+      bottom: 14px;
+      z-index: 2;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      color: #fff;
+      background: rgba(5, 11, 20, 0.78);
+      border: 1px solid rgba(24, 215, 255, 0.24);
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
+      backdrop-filter: blur(12px);
+    }
+
+    .asset-overlay b {
+      font-size: 13px;
+      line-height: 1.2;
+    }
+
+    .asset-overlay span {
+      color: rgba(238, 247, 255, 0.76);
+      font-size: 12px;
+      font-weight: 850;
+      line-height: 1.2;
+    }
+
+    .asset-card.large img {
+      aspect-ratio: 16 / 9;
+    }
+
+    .asset-card.side img {
+      aspect-ratio: 4 / 3;
+    }
+
+    .asset-copy {
+      display: grid;
+      gap: 7px;
+      padding: 15px 16px 17px;
+    }
+
+    .asset-copy strong {
+      font-size: 17px;
+      line-height: 1.25;
+    }
+
+    .asset-copy span {
+      color: var(--ink-600);
+      font-size: 12px;
+      line-height: 1.28;
+    }
+
+    .version-panel {
+      padding: 20px;
+    }
+
+    .version-panel h3 {
+      display: none;
+    }
+
+    .release-map {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(260px, .6fr);
+      gap: 14px;
+      margin: 0 0 18px;
+    }
+
+    .release-lane,
+    .backlog-lane {
+      border-radius: 8px;
+      border: 1px solid rgba(126, 184, 255, 0.18);
+      background: rgba(255, 255, 255, 0.045);
+      padding: 14px;
+    }
+
+    .release-lane-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .release-lane-title strong {
+      color: var(--ink-900);
+      font-size: 15px;
+      font-weight: 950;
+    }
+
+    .release-lane-title span {
+      color: var(--ink-500);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .release-flow {
+      display: grid;
+      gap: 10px;
+    }
+
+    .release-node {
+      position: relative;
+      min-height: 92px;
+      border-radius: 8px;
+      border: 1px solid rgba(126, 184, 255, 0.22);
+      background: rgba(8, 19, 34, 0.82);
+      padding: 12px;
+    }
+
+    .capability-board {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .capability-column {
+      display: grid;
+      align-content: start;
+      gap: 10px;
+      min-height: 292px;
+      padding: 14px;
+      border-radius: 8px;
+      border: 1px solid rgba(126, 184, 255, 0.18);
+      background: rgba(8, 19, 34, 0.66);
+    }
+
+    .capability-column.feature {
+      border-color: rgba(91, 224, 159, 0.32);
+      background: linear-gradient(180deg, rgba(91, 224, 159, 0.10), rgba(8, 19, 34, 0.78));
+    }
+
+    .capability-column.backlog {
+      border-color: rgba(255, 189, 69, 0.34);
+      background: linear-gradient(180deg, rgba(255, 189, 69, 0.12), rgba(8, 19, 34, 0.78));
+    }
+
+    .capability-column header {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: start;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+    }
+
+    .capability-column header span {
+      color: var(--ink-500);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .capability-column header strong {
+      color: var(--ink-950);
+      font-size: 28px;
+      line-height: .9;
+      font-weight: 950;
+    }
+
+    .capability-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .capability-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      min-height: 42px;
+      padding: 9px 10px;
+      border-radius: 8px;
+      color: var(--ink-700);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(126, 184, 255, 0.12);
+      font-size: 12px;
+      font-weight: 850;
+      cursor: help;
+    }
+
+    .capability-item b {
+      color: var(--ink-950);
+      font-size: 14px;
+      font-weight: 950;
+    }
+
+    .capability-item:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.095);
+      border-color: rgba(255, 255, 255, 0.22);
+    }
+
+    .release-node.local,
+    .release-node.backlog-p0 {
+      border-color: rgba(255, 189, 69, 0.42);
+      background: linear-gradient(180deg, rgba(255, 189, 69, 0.14), rgba(8, 19, 34, 0.86));
+    }
+
+    .release-node.git,
+    .release-node.backlog-p1 {
+      border-color: rgba(91, 224, 159, 0.34);
+      background: linear-gradient(180deg, rgba(91, 224, 159, 0.12), rgba(8, 19, 34, 0.86));
+    }
+
+    .release-node.netlify,
+    .release-node.backlog-p2 {
+      border-color: rgba(155, 123, 255, 0.38);
+      background: linear-gradient(180deg, rgba(155, 123, 255, 0.13), rgba(8, 19, 34, 0.86));
+    }
+
+    .release-node small {
+      display: block;
+      color: var(--ink-500);
+      font-size: 10px;
+      font-weight: 950;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+    }
+
+    .release-node strong {
+      display: block;
+      margin-top: 8px;
+      color: var(--ink-900);
+      font-size: 20px;
+      line-height: 1;
+      font-weight: 950;
+    }
+
+    .release-node span {
+      display: block;
+      margin-top: 8px;
+      color: var(--ink-600);
+      font-size: 12px;
+      font-weight: 820;
+      line-height: 1.25;
+    }
+
+    .release-arrow {
+      display: grid;
+      place-items: center;
+      color: var(--cyan);
+      font-size: 22px;
+      font-weight: 950;
+    }
+
+    .backlog-total {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 10px;
+      align-items: end;
+      margin-bottom: 12px;
+    }
+
+    .backlog-total strong {
+      color: var(--ink-900);
+      font-size: 42px;
+      line-height: .9;
+      font-weight: 950;
+    }
+
+    .backlog-total span {
+      color: var(--ink-600);
+      font-size: 12px;
+      font-weight: 850;
+      line-height: 1.2;
+    }
+
+    .backlog-bar {
+      display: grid;
+      grid-template-columns: 11fr 6fr 4fr;
+      height: 18px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.10);
+    }
+
+    .backlog-bar span:first-child {
+      background: var(--amber);
+    }
+
+    .backlog-bar span:nth-child(2) {
+      background: var(--green);
+    }
+
+    .backlog-bar span:last-child {
+      background: var(--violet);
+    }
+
+    .backlog-legend {
+      display: grid;
+      gap: 7px;
+      margin-top: 12px;
+    }
+
+    .backlog-legend div {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--ink-600);
+      font-size: 12px;
+      font-weight: 820;
+    }
+
+    .backlog-legend b {
+      color: var(--ink-900);
+    }
+
+    .capability-donut {
+      display: grid;
+      grid-template-columns: 126px minmax(0, 1fr);
+      gap: 14px;
+      align-items: center;
+    }
+
+    .donut-chart {
+      width: 126px;
+      height: 126px;
+      overflow: visible;
+      transform: rotate(-90deg);
+    }
+
+    .donut-chart circle {
+      fill: none;
+      stroke-width: 5.6;
+      transition: stroke-width 160ms ease, filter 160ms ease;
+    }
+
+    .donut-bg {
+      stroke: rgba(255, 255, 255, 0.10);
+    }
+
+    .donut-segment {
+      cursor: help;
+    }
+
+    .donut-segment.feature {
+      stroke: var(--green);
+    }
+
+    .donut-segment.backlog {
+      stroke: var(--amber);
+    }
+
+    .donut-segment:hover {
+      stroke-width: 7.2;
+      filter: drop-shadow(0 0 10px rgba(24, 215, 255, 0.30));
+    }
+
+    .donut-center {
+      transform: rotate(90deg);
+      transform-origin: center;
+      fill: var(--ink-950);
+      font-weight: 950;
+      text-anchor: middle;
+    }
+
+    .donut-center.count {
+      font-size: 8px;
+    }
+
+    .donut-center.label {
+      fill: var(--ink-500);
+      font-size: 3.2px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .capability-legend {
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .capability-row {
+      position: relative;
+      display: grid;
+      grid-template-columns: 11px 1fr auto;
+      gap: 8px;
+      align-items: center;
+      min-height: 34px;
+      padding: 7px 8px;
+      border-radius: 8px;
+      color: var(--ink-700);
+      background: rgba(255, 255, 255, 0.055);
+      border: 1px solid rgba(126, 184, 255, 0.12);
+      font-size: 12px;
+      font-weight: 850;
+      cursor: help;
+    }
+
+    .capability-row::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--dot, var(--cyan));
+    }
+
+    .capability-row b {
+      color: var(--ink-950);
+      font-size: 13px;
+      font-weight: 950;
+    }
+
+    .capability-row:hover {
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.22);
+      background: rgba(255, 255, 255, 0.09);
+    }
+
+    .review-funnel {
+      display: grid;
+      gap: 10px;
+      margin: 16px 0 0;
+      padding: 16px;
+      border-radius: 8px;
+      border: 1px solid rgba(126, 184, 255, 0.18);
+      background: rgba(255, 255, 255, 0.045);
+    }
+
+    .funnel-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 2px;
+    }
+
+    .funnel-head strong {
+      color: var(--ink-950);
+      font-size: 15px;
+      font-weight: 950;
+    }
+
+    .funnel-head span {
+      color: var(--ink-500);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .mixpanel-funnel {
+      display: grid;
+      grid-template-columns: minmax(120px, 1fr) 58px minmax(120px, 1fr) 58px minmax(150px, 1.1fr) 58px minmax(120px, 0.9fr) 58px minmax(120px, 0.9fr);
+      gap: 0;
+      align-items: end;
+      min-height: 250px;
+      padding: 10px 2px 4px;
+    }
+
+    .funnel-col {
+      position: relative;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 10px;
+      min-height: 238px;
+      padding: 0 8px;
+      cursor: help;
+    }
+
+    .funnel-step-head {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 8px;
+      align-items: center;
+      min-height: 38px;
+    }
+
+    .funnel-index {
+      display: grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      color: #fff;
+      background: rgba(24, 215, 255, 0.18);
+      border: 1px solid rgba(24, 215, 255, 0.30);
+      font-size: 12px;
+      font-weight: 950;
+    }
+
+    .funnel-step-head label {
+      color: var(--ink-700);
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1.2;
+    }
+
+    .funnel-bar-stage {
+      display: flex;
+      align-items: end;
+      min-height: 150px;
+      padding: 8px;
+      border-radius: 8px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.025)),
+        repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0 1px, transparent 1px 36px);
+      border: 1px solid rgba(126, 184, 255, 0.12);
+    }
+
+    .funnel-bar {
+      position: relative;
+      display: grid;
+      place-items: end center;
+      width: 100%;
+      height: var(--h);
+      min-height: 18px;
+      border-radius: 7px 7px 4px 4px;
+      background: linear-gradient(180deg, var(--c1), var(--c2));
+      box-shadow: 0 0 18px color-mix(in srgb, var(--c2) 32%, transparent);
+      transition: filter 160ms ease, transform 160ms ease;
+    }
+
+    .funnel-col:hover .funnel-bar {
+      filter: brightness(1.13);
+      transform: translateY(-2px);
+    }
+
+    .funnel-bar b {
+      padding: 0 6px 8px;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 950;
+      line-height: 1;
+      text-shadow: 0 1px 0 rgba(0, 0, 0, 0.32);
+    }
+
+    .funnel-split {
+      display: grid;
+      grid-template-columns: 13fr 8fr;
+      gap: 6px;
+      width: 100%;
+      align-items: end;
+    }
+
+    .funnel-split.conversation {
+      grid-template-columns: 725fr 4759fr;
+    }
+
+    .funnel-split .funnel-bar:first-child {
+      --c1: var(--green);
+      --c2: #24c889;
+    }
+
+    .funnel-split .funnel-bar:last-child {
+      --c1: var(--amber);
+      --c2: #d99024;
+    }
+
+    .funnel-split.conversation .funnel-bar:first-child {
+      --c1: var(--cyan);
+      --c2: var(--blue);
+    }
+
+    .funnel-split.conversation .funnel-bar:last-child {
+      --c1: var(--violet);
+      --c2: #6b8dff;
+    }
+
+    .funnel-caption {
+      display: grid;
+      gap: 3px;
+      min-height: 42px;
+      color: var(--ink-500);
+      font-size: 11px;
+      font-weight: 850;
+      line-height: 1.2;
+      text-align: center;
+    }
+
+    .funnel-caption b {
+      color: var(--ink-950);
+      font-size: 14px;
+      font-weight: 950;
+    }
+
+    .funnel-drop {
+      display: grid;
+      align-content: center;
+      justify-items: center;
+      gap: 6px;
+      min-height: 238px;
+      color: var(--ink-500);
+      font-size: 10px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .funnel-drop::before {
+      content: "";
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(126, 184, 255, 0), rgba(126, 184, 255, 0.62), rgba(126, 184, 255, 0));
+    }
+
+    .funnel-drop strong {
+      color: #fff;
+      font-size: 12px;
+      line-height: 1.1;
+    }
+
+    .funnel-drop span {
+      text-align: center;
+      line-height: 1.15;
+    }
+
+    .funnel-note {
+      margin: 0;
+      color: var(--ink-500);
+      font-size: 11px;
+      font-weight: 820;
+      line-height: 1.3;
+    }
+
+    [data-i18n-title] {
+      position: relative;
+    }
+
+    [data-i18n-title]:hover::after {
+      content: attr(title);
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 10px);
+      z-index: 20;
+      width: min(340px, 78vw);
+      padding: 10px 11px;
+      border-radius: 8px;
+      color: #fff;
+      background: rgba(6, 14, 25, 0.96);
+      border: 1px solid rgba(126, 184, 255, 0.30);
+      box-shadow: 0 18px 38px rgba(0, 0, 0, 0.34);
+      font-size: 12px;
+      font-weight: 760;
+      line-height: 1.35;
+      text-align: left;
+      transform: translateX(-50%);
+      pointer-events: none;
+      white-space: normal;
+    }
+
+    .release-gap {
+      margin-top: 12px;
+      border-radius: 8px;
+      padding: 10px 11px;
+      color: #ffe5af;
+      background: rgba(255, 189, 69, 0.10);
+      border: 1px solid rgba(255, 189, 69, 0.22);
+      font-size: 12px;
+      font-weight: 860;
+      line-height: 1.3;
+    }
+
+    .version-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .version-table th,
+    .version-table td {
+      border-bottom: 1px solid var(--line);
+      padding: 11px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .version-table th {
+      color: var(--ink-500);
+      font-size: 11px;
+      font-weight: 950;
+      text-transform: uppercase;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      border-radius: 7px;
+      padding: 5px 8px;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 950;
+      text-transform: uppercase;
+    }
+
+    .badge.stable { background: var(--green); }
+    .badge.watch { background: var(--amber); }
+    .badge.candidate { background: var(--violet); }
+    .badge.risk { background: var(--red); }
+
+    .callout {
+      margin-top: 16px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      color: #ffd9d4;
+      background: rgba(255, 98, 79, 0.12);
+      border: 1px solid rgba(255, 98, 79, 0.28);
+      font-weight: 850;
+      font-size: 13px;
+      line-height: 1.34;
+    }
+
+    .footer-note {
+      margin: 24px 0 0;
+      color: var(--ink-500);
+      font-size: 11px;
+      line-height: 1.3;
+    }
+
+    .credit-line {
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin: 14px 0 0;
+      padding: 9px 11px;
+      border-radius: 8px;
+      color: var(--ink-900);
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(108, 197, 255, 0.18);
+      font-size: 12px;
+      font-weight: 850;
+      line-height: 1.25;
+    }
+
+    .credit-line b {
+      color: #fff;
+      font-weight: 950;
+    }
+
+    .credit-line span {
+      color: var(--ink-600);
+    }
+
+    .back-top {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 30;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      border: 1px solid rgba(255, 255, 255, 0.68);
+      border-radius: 8px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--cyan), var(--blue));
+      box-shadow: 0 18px 38px rgba(0, 0, 0, 0.34), 0 0 26px rgba(24, 215, 255, 0.22);
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(12px);
+      pointer-events: none;
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+
+    .back-top.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .back-top:focus-visible {
+      outline: 3px solid rgba(35, 104, 216, 0.34);
+      outline-offset: 3px;
+    }
+
+    @media (max-width: 1160px) {
+      .hero,
+      .architecture-board,
+      .product-line-board,
+      .asset-grid,
+      .monitor-excerpt-grid,
+      .metric-grid,
+      .tech-grid,
+      .release-map,
+      .art-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .signal-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .tech-stack {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .capability-board {
+        grid-template-columns: 1fr;
+      }
+
+      .capability-donut {
+        grid-template-columns: 1fr;
+        justify-items: center;
+      }
+
+      .capability-legend {
+        width: 100%;
+      }
+
+      .review-funnel {
+        overflow-x: auto;
+      }
+
+      .mixpanel-funnel {
+        min-width: 900px;
+      }
+
+      .product-detail-panel {
+        border-left: 0;
+        border-top: 1px solid rgba(108, 197, 255, 0.18);
+      }
+    }
+
+    @media (max-width: 760px) {
+      html {
+        scroll-padding-top: 132px;
+      }
+
+      main > section {
+        scroll-margin-top: 132px;
+      }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px 12px;
+      }
+
+      .topbar.scrolled {
+        top: 6px;
+        width: calc(100% - 20px);
+        padding: 10px;
+      }
+
+      .topbar.scrolled .brand-title span {
+        display: none;
+      }
+
+      .brand,
+      .brand-title {
+        width: 100%;
+      }
+
+      .brand-title strong,
+      .brand-title span {
+        white-space: normal;
+      }
+
+      .brand-title strong {
+        font-size: 14px;
+      }
+
+      .brand-title span {
+        font-size: 11px;
+        line-height: 1.25;
+      }
+
+      .nav-actions {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        gap: 6px;
+        padding-bottom: 0;
+      }
+
+      .topbar.scrolled .nav-actions {
+        flex-wrap: wrap;
+        padding-bottom: 0;
+      }
+
+      .nav-link,
+      .seg-button {
+        flex: 0 0 auto;
+        min-height: 30px;
+        padding: 6px 8px;
+        font-size: 11px;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+        min-height: auto;
+        gap: 14px;
+        width: 100%;
+        max-width: 100vw;
+        overflow: hidden;
+        padding: 18px 16px 22px;
+      }
+
+      .hero > *,
+      .product-line-board > *,
+      .architecture-board > *,
+      .tech-grid > *,
+      .art-grid > *,
+      .monitor-excerpt-grid > *,
+      .asset-grid > *,
+      .release-map > * {
+        min-width: 0;
+      }
+
+      .hero-copy,
+      .showcase {
+        width: 100%;
+        max-width: calc(100vw - 32px);
+        justify-self: stretch;
+      }
+
+      .hero::before {
+        filter: blur(10px) saturate(1.05);
+        opacity: 0.38;
+      }
+
+      h1 {
+        max-width: 10ch;
+        font-size: clamp(40px, 14vw, 58px);
+        line-height: .92;
+      }
+
+      .hero-subtitle {
+        margin-top: 10px;
+        max-width: 100%;
+        font-size: 16px;
+        line-height: 1.35;
+        overflow-wrap: break-word;
+      }
+
+      .hero-cta {
+        gap: 8px;
+        margin-top: 14px;
+      }
+
+      .action-button {
+        flex: 1 1 calc(50% - 4px);
+        min-width: 150px;
+        min-height: 42px;
+        padding: 9px 12px;
+        font-size: 13px;
+      }
+
+      .showcase {
+        padding: 8px;
+        transform: none;
+      }
+
+      .showcase img {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        aspect-ratio: 16 / 10;
+      }
+
+      main {
+        padding: 16px 14px 44px;
+      }
+
+      .section-head {
+        display: grid;
+        gap: 7px;
+        align-items: start;
+        margin: 22px 0 10px;
+      }
+
+      .section-head h2 {
+        font-size: 28px;
+        line-height: 1.08;
+      }
+
+      .section-head p {
+        max-width: none;
+        font-size: 13px;
+      }
+
+      .signal-strip,
+      .release-flow,
+      .layer,
+      .donut-wrap {
+        grid-template-columns: 1fr;
+      }
+
+      .signal-strip {
+        gap: 9px;
+      }
+
+      .signal {
+        min-height: 76px;
+        padding: 12px;
+      }
+
+      .signal strong {
+        max-width: 100%;
+        font-size: 18px;
+      }
+
+      .release-arrow {
+        transform: rotate(90deg);
+      }
+
+      .monitor-excerpt {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .monitor-excerpt .heatmap-wrap {
+        min-width: 680px;
+      }
+
+      .monitor-excerpt .diagnostic,
+      .monitor-excerpt .tower-cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .monitor-excerpt .slot-usage-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .monitor-excerpt .slot-map-wrap {
+        min-height: auto;
+      }
+
+      .monitor-excerpt .slot-map {
+        min-width: 520px;
+      }
+
+      .monitor-excerpt .slot-rank {
+        border-left: 0;
+        border-top: 1px solid rgba(145, 164, 175, 0.16);
+      }
+
+      .product-map {
+        min-height: auto;
+        padding: 14px;
+      }
+
+      .product-map::before {
+        inset: 5%;
+      }
+
+      .product-map-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: none;
+        min-height: auto;
+      }
+
+      .product-core {
+        grid-column: auto;
+        grid-row: auto;
+      }
+
+      .product-core,
+      .product-node {
+        min-height: 116px;
+        padding: 14px;
+      }
+
+      .product-sprite {
+        width: min(38%, 108px);
+        opacity: .82;
+      }
+
+      .product-core .product-sprite {
+        width: min(46%, 132px);
+      }
+
+      .product-node-title,
+      .product-node-text {
+        max-width: 78%;
+      }
+
+      .product-detail-panel,
+      .detail-panel,
+      .metric-panel,
+      .version-panel,
+      .tech-card,
+      .tech-diagram {
+        padding: 16px;
+      }
+
+      .product-metrics {
+        grid-template-columns: 1fr;
+      }
+
+      .tech-stack {
+        grid-template-columns: 1fr;
+      }
+
+      .layer-label {
+        min-height: 42px;
+      }
+
+      .detail-list li {
+        grid-template-columns: 1fr;
+      }
+
+      .bar-row {
+        grid-template-columns: 104px minmax(0, 1fr) 44px;
+      }
+
+      .tech-row,
+      .diagram-lane,
+      .diagram-chain,
+      .motion-spec {
+        grid-template-columns: 1fr;
+      }
+
+      .frame-strip,
+      .frame-strip.vfx,
+      .vfx-flow,
+      .attack-matrix,
+      .keyword-cloud,
+      .projectile-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .frame-strip,
+      .frame-strip.vfx,
+      .motion-spec {
+        padding: 12px;
+      }
+
+      .vfx-step:not(:last-child)::after {
+        display: none;
+      }
+
+      .asset-overlay {
+        position: static;
+        margin: 10px;
+      }
+
+      .release-map,
+      .capability-board {
+        gap: 10px;
+      }
+
+      .capability-column {
+        min-height: 0;
+        padding: 12px;
+      }
+
+      .capability-donut {
+        grid-template-columns: 108px minmax(0, 1fr);
+        justify-items: stretch;
+      }
+
+      .donut-chart {
+        width: 108px;
+        height: 108px;
+      }
+
+      .review-funnel {
+        margin-top: 12px;
+        padding: 12px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .funnel-head {
+        align-items: start;
+        flex-direction: column;
+      }
+
+      .mixpanel-funnel {
+        min-width: 760px;
+        min-height: 224px;
+      }
+
+      .funnel-col,
+      .funnel-drop {
+        min-height: 210px;
+      }
+
+      .funnel-bar-stage {
+        min-height: 132px;
+      }
+
+      .floating-note {
+        position: static;
+        max-width: none;
+        margin-top: 10px;
+        color: var(--ink-950);
+        background: rgba(5, 11, 20, 0.86);
+        border: 1px solid var(--line);
+      }
+
+      .floating-note span {
+        color: var(--ink-600);
+      }
+    }
+
+    @media (max-width: 480px) {
+      html {
+        scroll-padding-top: 124px;
+      }
+
+      main > section {
+        scroll-margin-top: 124px;
+      }
+
+      .brand-mark {
+        width: 32px;
+        height: 32px;
+        border-radius: 7px;
+      }
+
+      .hero {
+        padding-inline: 12px;
+      }
+
+      h1 {
+        font-size: clamp(36px, 13vw, 48px);
+      }
+
+      .section-head h2 {
+        font-size: 25px;
+      }
+
+      .monitor-excerpt .panel-head,
+      .release-lane-title {
+        align-items: start;
+        flex-direction: column;
+      }
+
+      .monitor-excerpt .muted,
+      .release-lane-title span {
+        white-space: normal;
+      }
+
+      .monitor-excerpt .diagnostic,
+      .monitor-excerpt .tower-cards,
+      .frame-strip,
+      .frame-strip.vfx,
+      .vfx-flow,
+      .attack-matrix,
+      .keyword-cloud,
+      .projectile-strip {
+        grid-template-columns: 1fr;
+      }
+
+      .capability-donut {
+        grid-template-columns: 1fr;
+        justify-items: center;
+      }
+
+      .capability-legend {
+        width: 100%;
+      }
+
+      .bar-row {
+        grid-template-columns: 1fr;
+        gap: 5px;
+      }
+
+      .bar-row > span:last-child {
+        justify-self: end;
+      }
+
+      .back-top {
+        right: 14px;
+        bottom: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <nav class="topbar" aria-label="Page navigation">
+      <a class="brand" href="#">
+        <span class="brand-mark" aria-hidden="true">
+          <svg width="23" height="23" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2.6 20 6v6.1c0 4.4-3.1 8.1-8 9.8-4.9-1.7-8-5.4-8-9.8V6l8-3.4Z" stroke="currentColor" stroke-width="2" />
+            <path d="M8 12.2 10.6 15 16.4 8.8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </span>
+        <span class="brand-title">
+          <strong>Core Defense Panorama</strong>
+          <span data-i18n="navSubtitle">Game, data, monitor, UI, and release system</span>
+        </span>
+      </a>
+      <div class="nav-actions">
+        <a class="nav-link" href="#product-line" data-i18n="navProductLine">Panorama</a>
+        <a class="nav-link" href="#architecture" data-i18n="navArchitecture">Architecture</a>
+        <a class="nav-link" href="#technology" data-i18n="navTechnology">Tech</a>
+        <a class="nav-link" href="#art" data-i18n="navArt">UI & Art</a>
+        <a class="nav-link" href="#metrics" data-i18n="navMetrics">Data</a>
+        <a class="nav-link" href="#assets" data-i18n="navAssets">Assets</a>
+        <a class="nav-link" href="#versions" data-i18n="navVersions">Versions</a>
+        <div class="lang-toggle" aria-label="Language switcher">
+          <button class="seg-button" data-lang="zh" aria-pressed="false">中</button>
+          <button class="seg-button" data-lang="en" aria-pressed="true">EN</button>
+        </div>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <section class="hero-copy">
+        <div class="overline" data-i18n="overline">Unlocked from Core Defense</div>
+        <h1 data-i18n="heroTitle">Core Defense Panorama</h1>
+        <p class="hero-subtitle" data-i18n="heroSubtitle">
+          A full-system view of the experience behind the game: gameplay, telemetry, monitor, UI, visual assets, and release control.
+        </p>
+        <div class="hero-cta">
+          <a class="action-button primary" href="#product-line" data-i18n="ctaArchitecture">Explore panorama</a>
+          <a class="action-button" href="#metrics" data-i18n="ctaAssets">View data loop</a>
+        </div>
+      </section>
+      <figure class="showcase">
+        <img src="../assets/high-visual-reference.png" alt="RingCX Core Defense high visual gameplay reference" />
+        <figcaption class="floating-note">
+          <strong data-i18n="heroImageTitle">Game surface</strong>
+          <span data-i18n="heroImageText">The playable layer sits on top of data, monitoring, UI, assets, and release governance.</span>
+        </figcaption>
+      </figure>
+    </header>
+
+    <main>
+      <section id="product-line" aria-labelledby="product-line-title">
+        <div class="section-head">
+          <div>
+            <h2 id="product-line-title" data-i18n="productLineTitle">产品线总览</h2>
+            <p data-i18n="productLineIntro">More than a defense game: gameplay, telemetry, monitor, dashboard, UI, visual assets, delivery, and version control form one product system.</p>
+          </div>
+        </div>
+
+        <div class="product-line-board">
+          <div class="product-map" aria-label="RingCX Core Defense product line map">
+            <div class="product-map-grid">
+              <button class="product-node" data-product="game" type="button">
+                <img class="product-sprite" src="../assets/sprites/high-dev-standard/alpha/enemies/trust-audit-boss/walk-0.png" alt="" aria-hidden="true" />
+                <span class="product-node-title"></span>
+                <span class="product-node-text"></span>
+              </button>
+              <button class="product-node" data-product="telemetry" type="button">
+                <img class="product-sprite" src="../assets/sprites/high-dev-standard/alpha/vfx/sdet-scan/frame-3.png" alt="" aria-hidden="true" />
+                <span class="product-node-title"></span>
+                <span class="product-node-text"></span>
+              </button>
+              <button class="product-node" data-product="dashboard" type="button">
+                <img class="product-sprite" src="../assets/sprites/high-dev-standard/alpha/vfx/impact-ring/frame-4.png" alt="" aria-hidden="true" />
+                <span class="product-node-title"></span>
+                <span class="product-node-text"></span>
+              </button>
+              <button class="product-node" data-product="visuals" type="button">
+                <img class="product-sprite" src="../assets/sprites/high-dev-standard/alpha/enemies/customer-risk/walk-1.png" alt="" aria-hidden="true" />
+                <span class="product-node-title"></span>
+                <span class="product-node-text"></span>
+              </button>
+              <button class="product-core active" data-product="core" type="button">
+                <img class="product-sprite" src="../assets/sprites/high-dev-standard/alpha/defenders/pm/fire.png" alt="" aria-hidden="true" />
+                <span class="product-node-title"></span>
+                <span class="product-node-text"></span>
+              </button>
+              <button class="product-node" data-product="delivery" type="button">
+                <img class="product-sprite" src="../assets/sprites/high-dev-standard/alpha/vfx/qa-shield-pulse/frame-4.png" alt="" aria-hidden="true" />
+                <span class="product-node-title"></span>
+                <span class="product-node-text"></span>
+              </button>
+              <button class="product-node" data-product="docs" type="button">
+                <img class="product-sprite" src="../assets/sprites/high-dev-standard/alpha/defenders/qa/idle.png" alt="" aria-hidden="true" />
+                <span class="product-node-title"></span>
+                <span class="product-node-text"></span>
+              </button>
+            </div>
+          </div>
+          <aside class="product-detail-panel" aria-live="polite">
+            <div class="product-detail-visual">
+              <img id="productDetailImage" src="../assets/sprites/high-dev-standard/alpha/defenders/pm/fire.png" alt="Selected product line module" />
+            </div>
+            <div class="product-detail-kicker" id="productDetailKicker">Product Line</div>
+            <h3 id="productDetailTitle"></h3>
+            <p id="productDetailText"></p>
+            <ul class="product-metrics" id="productMetricList"></ul>
+            <div class="product-links" id="productLinkList"></div>
+            <div class="product-note" id="productDetailNote"></div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="architecture" aria-labelledby="architecture-title">
+        <div class="section-head">
+          <div>
+            <h2 id="architecture-title" data-i18n="architectureTitle">产品架构地图</h2>
+            <p data-i18n="architectureIntro">按“用户入口 → 体验 → 玩法 → 数据 → 发布治理”的路径阅读，比按代码文件更适合做产品评审。</p>
+          </div>
+        </div>
+
+        <div class="architecture-board">
+          <div class="map-surface">
+            <div class="focus-controls" aria-label="Architecture focus controls">
+              <button class="chip-button" data-focus="all" aria-pressed="true" data-i18n="filterAll">全部</button>
+              <button class="chip-button" data-focus="gameplay" aria-pressed="false" data-i18n="filterGameplay">玩法</button>
+              <button class="chip-button" data-focus="data" aria-pressed="false" data-i18n="filterData">数据</button>
+              <button class="chip-button" data-focus="release" aria-pressed="false" data-i18n="filterRelease">发布</button>
+            </div>
+
+            <div class="architecture-flow" role="list" aria-label="Product panorama nodes">
+              <div class="layer">
+                <div class="layer-label" data-i18n="layerAccess">用户与入口</div>
+                <button class="node active" data-topic="users" role="listitem">
+                  <span class="icon-box" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm7 8a7 7 0 0 0-14 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+                  <span><span class="node-title" data-i18n="nodeUsersTitle">Player / Reviewer</span><small data-i18n="nodeUsersText">试玩、评审、验证挑战交付</small></span>
+                </button>
+                <button class="node" data-topic="release" role="listitem">
+                  <span class="icon-box" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M4 12h12M12 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                  <span><span class="node-title" data-i18n="nodeAccessTitle">Access Layer</span><small data-i18n="nodeAccessText">公开入口、评审入口、分享链路</small></span>
+                </button>
+                <button class="node" data-topic="release" role="listitem">
+                  <span class="icon-box" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M12 3v18M4 8h16M4 16h16M6 3c3.5 3 3.5 15 0 18M18 3c-3.5 3-3.5 15 0 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+                  <span><span class="node-title" data-i18n="nodePublicTitle">Public Share</span><small data-i18n="nodePublicText">channel、share_id、UTM attribution</small></span>
+                </button>
+                <button class="node" data-topic="release" role="listitem">
+                  <span class="icon-box" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M5 5h14v14H5zM8 9h8M8 13h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+                  <span><span class="node-title" data-i18n="nodeVersionTitle">Release Context</span><small data-i18n="nodeVersionText">build、channel、data_scope</small></span>
+                </button>
+              </div>
+
+              <div class="layer">
+                <div class="layer-label" data-i18n="layerExperience">玩家体验</div>
+                <button class="node" data-topic="experience" role="listitem">
+                  <span class="icon-box" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M5 19V5l14 7-14 7Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></span>
+                  <span><span class="node-title" data-i18n="nodeStartTitle">Start / Guide</span><small data-i18n="nodeStartText">进入、选图、首局理解</small></span>
+                </button>
+                <button class="node" data-topic="experience" role="listitem">
+                  <span class="icon-box" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M12 3 20 7v6c0 4.2-3 7-8 8-5-1-8-3.8-8-8V7l8-4Z" stroke="currentColor" stroke-width="2"/></svg></span>
+                  <span><span class="node-title" data-i18n="nodeArenaTitle">Battle Arena</span><small data-i18n="nodeArenaText">路线、站位、Trust Core</small></span>
+                </button>
+                <button class="node" data-topic="experience" role="listitem">
+                  <span class="icon-box" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M5 19V5M5 19h14M9 16v-5M13 16V8M17 16v-2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+                  <span><span class="node-title" data-i18n="nodeHudTitle">HUD</span><small data-i18n="nodeHudText">Credit、Trust、SLA、Wave</small></span>
+                </button>
+                <button class="node" data-topic="experience" role="listitem">
+                  <span class="icon-box" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M7 4h10v5a5 5 0 0 1-10 0V4ZM8 20h8M12 14v6M4 6h3M17 6h3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+                  <span><span class="node-title" data-i18n="nodeResultTitle">Result / Top 10</span><small data-i18n="nodeResultText">分数、复盘、下一局目标</small></span>
+                </button>
+              </div>
+
+              <div class="layer">
+                <div class="layer-label" data-i18n="layerGameplay">核心玩法</div>
+                <button class="node" data-topic="gameplay" role="listitem">
+                  <span class="icon-box" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M6 18v-4a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3v4M9 7a3 3 0 1 0 6 0 3 3 0 0 0-6 0Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+                  <span><span class="node-title" data-i18n="nodeDefenderTitle">Defender System</span><small data-i18n="nodeDefenderText">PM、QA、SE、SDET counterplay</small></span>
+                </button>
+                <button class="node" data-topic="gameplay" role="listitem">
+                  <span class="icon-box" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M12 4 21 20H3L12 4ZM12 10v4M12 17h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                  <span><span class="node-title" data-i18n="nodeRiskTitle">Risk System</span><small data-i18n="nodeRiskText">Hotfix、Release、VIP、Audit</small></span>
+                </button>
+                <button class="node" data-topic="gameplay" role="listitem">
+                  <span class="icon-box" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M4 14c2.5-4 5.5-4 8 0s5.5 4 8 0M4 8c2.5-4 5.5-4 8 0s5.5 4 8 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+                  <span><span class="node-title" data-i18n="nodeWaveTitle">Wave Pressure</span><small data-i18n="nodeWaveText">10 waves、bonus incidents</small></span>
+                </button>
+                <button class="node" data-topic="gameplay" role="listitem">
+                  <span class="icon-box" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M12 4v16M8 8.5c0-1.7 1.8-2.8 4-2.8s4 1.1 4 2.8-1.5 2.3-4 2.8-4 1.1-4 2.8 1.8 2.8 4 2.8 4-1.1 4-2.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+                  <span><span class="node-title" data-i18n="nodeEconomyTitle">Economy</span><small data-i18n="nodeEconomyText">Credit、XP、upgrade、replace</small></span>
+                </button>
+              </div>
+
+              <div class="layer">
+                <div class="layer-label" data-i18n="layerData">资产与数据</div>
+                <button class="node" data-topic="assets" role="listitem">
+                  <span class="icon-box" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M5 5h14v14H5zM8 15l2.8-3 2.2 2.2 2.1-2.6L18 15M9 9h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                  <span><span class="node-title" data-i18n="nodeAssetsTitle">Visual Assets</span><small data-i18n="nodeAssetsText">效果图、地图、UI comparison</small></span>
+                </button>
+                <button class="node" data-topic="data" role="listitem">
+                  <span class="icon-box" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M5 12h3l2-5 4 10 2-5h3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                  <span><span class="node-title" data-i18n="nodeTelemetryTitle">Telemetry SDK</span><small data-i18n="nodeTelemetryText">session、run、checkpoint</small></span>
+                </button>
+                <button class="node" data-topic="data" role="listitem">
+                  <span class="icon-box" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M5 7c0-1.7 3.1-3 7-3s7 1.3 7 3-3.1 3-7 3-7-1.3-7-3Zm0 0v10c0 1.7 3.1 3 7 3s7-1.3 7-3V7" stroke="currentColor" stroke-width="2"/></svg></span>
+                  <span><span class="node-title" data-i18n="nodeCollectorTitle">Local Collector</span><small data-i18n="nodeCollectorText">SQLite run-history、本地 API</small></span>
+                </button>
+                <button class="node" data-topic="data" role="listitem">
+                  <span class="icon-box" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M5 19V5M5 19h14M9 15l3-4 3 2 4-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                  <span><span class="node-title" data-i18n="nodeDashboardTitle">Command Center</span><small data-i18n="nodeDashboardText">fail wave、usage、build compare</small></span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <aside class="detail-panel" aria-live="polite">
+            <div class="detail-kicker" id="detailKicker">Architecture Focus</div>
+            <h3 id="detailTitle">Player / Reviewer</h3>
+            <p id="detailBody"></p>
+            <ul class="detail-list" id="detailList"></ul>
+          </aside>
+        </div>
+      </section>
+
+      <section id="technology" aria-labelledby="technology-title">
+        <div class="section-head">
+          <div>
+            <h2 id="technology-title" data-i18n="technologyTitle">技术架构</h2>
+            <p data-i18n="technologyIntro">当前实现是轻量浏览器产品：无构建依赖、单页运行、DOM/SVG 渲染、状态内存化、Telemetry 本地闭环。</p>
+          </div>
+        </div>
+        <div class="tech-grid">
+          <article class="tech-card">
+            <h3 data-i18n="techStackTitle">Runtime stack</h3>
+            <div class="tech-stack">
+              <div class="tech-row"><b data-i18n="techLayer1">Client</b><span data-i18n="techLayer1Text">HTML / CSS / vanilla JavaScript，当前发布体验可静态打开。</span></div>
+              <div class="tech-row"><b data-i18n="techLayer2">Rendering</b><span data-i18n="techLayer2Text">DOM + SVG path 承载地图、站位、风险移动；视觉效果使用透明 PNG/WebP 资产。</span></div>
+              <div class="tech-row"><b data-i18n="techLayer3">State</b><span data-i18n="techLayer3Text">单一 in-memory state 管理 wave、credit、Trust、SLA、defenders、enemies、mini-games。</span></div>
+              <div class="tech-row"><b data-i18n="techLayer4">Telemetry</b><span data-i18n="techLayer4Text">Telemetry resolver 识别 local/staging/production、channel、share_id、data_scope。</span></div>
+              <div class="tech-row"><b data-i18n="techLayer5">Local Data</b><span data-i18n="techLayer5Text">Python collector + SQLite run-history + local dashboard 支撑本地 PM 调优。</span></div>
+            </div>
+          </article>
+          <article class="tech-diagram" aria-label="Technical architecture diagram">
+            <div class="diagram-lane">
+              <div class="diagram-label" data-i18n="techDiagramClient">Client</div>
+              <div class="diagram-chain">
+                <div class="diagram-node hot">Public<br/>Static Entry</div>
+                <div class="diagram-node">Game State<br/>Loop</div>
+                <div class="diagram-node">DOM + SVG<br/>Renderer</div>
+              </div>
+            </div>
+            <div class="diagram-lane">
+              <div class="diagram-label" data-i18n="techDiagramSystems">Systems</div>
+              <div class="diagram-chain">
+                <div class="diagram-node">Map / Route</div>
+                <div class="diagram-node hot">Defender<br/>Combat</div>
+                <div class="diagram-node">Wave / Risk<br/>Spawner</div>
+              </div>
+            </div>
+            <div class="diagram-lane">
+              <div class="diagram-label" data-i18n="techDiagramData">Data</div>
+              <div class="diagram-chain">
+                <div class="diagram-node">Telemetry<br/>SDK</div>
+                <div class="diagram-node hot">Mode<br/>Resolver</div>
+                <div class="diagram-node">Run<br/>Snapshot</div>
+              </div>
+            </div>
+            <div class="diagram-lane">
+              <div class="diagram-label" data-i18n="techDiagramOps">Ops</div>
+              <div class="diagram-chain">
+                <div class="diagram-node">Local<br/>Collector</div>
+                <div class="diagram-node">SQLite<br/>History</div>
+                <div class="diagram-node hot">Command<br/>Center</div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="art" aria-labelledby="art-title">
+        <div class="section-head">
+          <div>
+            <h2 id="art-title" data-i18n="artTitle">美术与动画管线</h2>
+            <p data-i18n="artIntro">视觉效果不只是静态图：人物攻击、怪物步行、VFX 都有明确分帧 contract，可以解释美术资产如何进入战斗表现。</p>
+          </div>
+        </div>
+        <div class="art-grid">
+          <article class="art-card">
+            <div class="art-card-header">
+              <h3 data-i18n="defenderFramesTitle">PM attack state frames</h3>
+              <p data-i18n="defenderFramesIntro">Defender attack 使用 idle → anticipate → lunge → fire → recover 的五段状态，便于和 projectile / hit VFX 对齐。</p>
+            </div>
+            <div class="frame-strip">
+              <div class="frame-cell"><img src="../assets/sprites/high-dev-standard/alpha/defenders/pm/idle.png" alt="PM idle frame" /><span>idle</span></div>
+              <div class="frame-cell"><img src="../assets/sprites/high-dev-standard/alpha/defenders/pm/anticipate.png" alt="PM anticipate frame" /><span>anticipate</span></div>
+              <div class="frame-cell"><img src="../assets/sprites/high-dev-standard/alpha/defenders/pm/lunge.png" alt="PM lunge frame" /><span>lunge</span></div>
+              <div class="frame-cell"><img src="../assets/sprites/high-dev-standard/alpha/defenders/pm/fire.png" alt="PM fire frame" /><span>fire</span></div>
+              <div class="frame-cell"><img src="../assets/sprites/high-dev-standard/alpha/defenders/pm/recover.png" alt="PM recover frame" /><span>recover</span></div>
+            </div>
+          </article>
+
+          <article class="art-card">
+            <div class="art-card-header">
+              <h3 data-i18n="enemyFramesTitle">Enemy walk cycle frames</h3>
+              <p data-i18n="enemyFramesIntro">怪物 walk cycle 使用 5 帧，运行时按 Y 排序并每帧更新位置，保证路线深度和遮挡关系。</p>
+            </div>
+            <div class="frame-strip">
+              <div class="frame-cell"><img src="../assets/sprites/high-dev-standard/alpha/enemies/hotfix-bug/walk-0.png" alt="Hotfix Bug walk frame 0" /><span>walk-0</span></div>
+              <div class="frame-cell"><img src="../assets/sprites/high-dev-standard/alpha/enemies/hotfix-bug/walk-1.png" alt="Hotfix Bug walk frame 1" /><span>walk-1</span></div>
+              <div class="frame-cell"><img src="../assets/sprites/high-dev-standard/alpha/enemies/hotfix-bug/walk-2.png" alt="Hotfix Bug walk frame 2" /><span>walk-2</span></div>
+              <div class="frame-cell"><img src="../assets/sprites/high-dev-standard/alpha/enemies/hotfix-bug/walk-3.png" alt="Hotfix Bug walk frame 3" /><span>walk-3</span></div>
+              <div class="frame-cell"><img src="../assets/sprites/high-dev-standard/alpha/enemies/hotfix-bug/walk-4.png" alt="Hotfix Bug walk frame 4" /><span>walk-4</span></div>
+            </div>
+          </article>
+
+          <article class="art-card">
+            <div class="art-card-header">
+              <h3 data-i18n="vfxFramesTitle">Defender attack logic</h3>
+              <p data-i18n="vfxFramesIntro">每个 Defender 都有自己的攻击语义；画面文字来自目标类型、角色适配和命中结算。</p>
+            </div>
+            <div class="vfx-logic">
+              <div class="vfx-flow" aria-label="Defender combat logic">
+                <div class="vfx-step"><b data-i18n="vfxStep1Title">Find target</b><span data-i18n="vfxStep1Text">range + gate + skill fit</span></div>
+                <div class="vfx-step"><b data-i18n="vfxStep2Title">Pick role verb</b><span data-i18n="vfxStep2Text">role × risk type</span></div>
+                <div class="vfx-step"><b data-i18n="vfxStep3Title">Apply damage</b><span data-i18n="vfxStep3Text">capability × level × gate</span></div>
+                <div class="vfx-step"><b data-i18n="vfxStep4Title">Resolve hit</b><span data-i18n="vfxStep4Text">flash + reward + log</span></div>
+              </div>
+              <div class="attack-matrix" aria-label="Defender attack labels">
+                <div class="role-logic" style="--role-color: var(--amber)">
+                  <b>PM</b>
+                  <span data-i18n="rolePmLogic">客户、范围、路线优先级</span>
+                  <div class="logic-tags"><i>scope</i><i>align</i><i>plan</i><i>story</i></div>
+                </div>
+                <div class="role-logic" style="--role-color: var(--green)">
+                  <b>QA</b>
+                  <span data-i18n="roleQaLogic">质量门、风险识别、证明</span>
+                  <div class="logic-tags"><i>gate</i><i>risk</i><i>check</i><i>proof</i></div>
+                </div>
+                <div class="role-logic" style="--role-color: var(--blue)">
+                  <b>SE</b>
+                  <span data-i18n="roleSeLogic">修复、架构、技术设计</span>
+                  <div class="logic-tags"><i>fix</i><i>patch</i><i>arch</i><i>design</i></div>
+                </div>
+                <div class="role-logic" style="--role-color: var(--violet)">
+                  <b>SDET</b>
+                  <span data-i18n="roleSdetLogic">自动化、探测、信号</span>
+                  <div class="logic-tags"><i>auto</i><i>detect</i><i>signal</i><i>test</i></div>
+                </div>
+              </div>
+              <div class="prototype-note" data-i18n="prototypeNote">下面 0-5 攻击效果帧只是 prototype 参考，尚未进入正式产品。</div>
+              <div class="projectile-strip" aria-label="Prototype attack effect frames">
+                <div class="frame-cell"><img src="../assets/sprites/high-dev-standard/alpha/vfx/pm-projectile/frame-0.png" alt="PM projectile frame 0" /><span>0</span></div>
+                <div class="frame-cell"><img src="../assets/sprites/high-dev-standard/alpha/vfx/pm-projectile/frame-1.png" alt="PM projectile frame 1" /><span>1</span></div>
+                <div class="frame-cell"><img src="../assets/sprites/high-dev-standard/alpha/vfx/pm-projectile/frame-2.png" alt="PM projectile frame 2" /><span>2</span></div>
+                <div class="frame-cell"><img src="../assets/sprites/high-dev-standard/alpha/vfx/pm-projectile/frame-3.png" alt="PM projectile frame 3" /><span>3</span></div>
+                <div class="frame-cell"><img src="../assets/sprites/high-dev-standard/alpha/vfx/pm-projectile/frame-4.png" alt="PM projectile frame 4" /><span>4</span></div>
+                <div class="frame-cell"><img src="../assets/sprites/high-dev-standard/alpha/vfx/pm-projectile/frame-5.png" alt="PM projectile frame 5" /><span>5</span></div>
+              </div>
+            </div>
+          </article>
+
+          <article class="art-card">
+            <div class="art-card-header">
+              <h3 data-i18n="motionSpecTitle">Animation contract</h3>
+              <p data-i18n="motionSpecIntro">这些数字来自 high-dev-standard animation manifest，用来约束美术、前端和性能三方的交付边界。</p>
+            </div>
+            <div class="motion-spec">
+              <div class="motion-pill"><b>60 / 45 / 30</b><span data-i18n="motionSpec1">high / medium / low target FPS</span></div>
+              <div class="motion-pill"><b>625ms</b><span data-i18n="motionSpec2">enemy walk cycle duration</span></div>
+              <div class="motion-pill"><b>5 / 5 / 6</b><span data-i18n="motionSpec3">defender / enemy / VFX frame counts</span></div>
+              <div class="motion-pill"><b>bottom-center</b><span data-i18n="motionSpec4">character and enemy pivot rule</span></div>
+              <div class="motion-pill"><b>8px</b><span data-i18n="motionSpec5">atlas padding contract</span></div>
+              <div class="motion-pill"><b>32 / 24 / 16</b><span data-i18n="motionSpec6">max visible enemies by quality tier</span></div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="metrics" aria-labelledby="metrics-title">
+        <div class="section-head">
+          <div>
+            <h2 id="metrics-title" data-i18n="metricsTitle">产品指标视图</h2>
+            <p data-i18n="metricsIntro">用 demo sample data 展示本地 Monitor 的运维能力：难度热区、角色策略、地图站位利用率。地图结构来自真实游戏配置。</p>
+          </div>
+          <div class="monitor-sample-badge">Demo sample data</div>
+        </div>
+        <div class="monitor-excerpt-grid">
+          <article class="metric-panel monitor-excerpt wide">
+            <div class="panel-head">
+              <h3>Wave Difficulty Map</h3>
+              <span class="muted">S Route - W9</span>
+            </div>
+            <div class="heatmap-wrap" aria-label="Wave difficulty heatmap">
+              <div class="hm-label"></div>
+              <div class="hm-wave">W1</div><div class="hm-wave">W2</div><div class="hm-wave">W3</div><div class="hm-wave">W4</div><div class="hm-wave">W5</div><div class="hm-wave">W6</div><div class="hm-wave">W7</div><div class="hm-wave">W8</div><div class="hm-wave">W9</div><div class="hm-wave">W10</div><div class="hm-wave">W11</div><div class="hm-wave">W12</div>
+              <div class="hm-label">S Route</div>
+              <button class="hm-cell" style="--c:#33c7d8;--p:62%">6</button><button class="hm-cell" style="--c:#33c7d8;--p:62%">9</button><button class="hm-cell" style="--c:#33c7d8;--p:62%">12</button><button class="hm-cell" style="--c:#33c7d8;--p:62%">16</button><button class="hm-cell" style="--c:#33c7d8;--p:62%">19</button><button class="hm-cell" style="--c:#f2b84b;--p:72%">27</button><button class="hm-cell" style="--c:#f2b84b;--p:72%">34</button><button class="hm-cell" style="--c:#f2b84b;--p:72%">39</button><button class="hm-cell active" style="--c:#ef5a5a;--p:82%">42</button><button class="hm-cell" style="--c:#f2b84b;--p:72%">37</button><button class="hm-cell" style="--c:#33c7d8;--p:62%">24</button><button class="hm-cell" style="--c:#33c7d8;--p:62%">18</button>
+              <div class="hm-label">Spiral</div>
+              <button class="hm-cell" style="--c:#33c7d8;--p:62%">4</button><button class="hm-cell" style="--c:#33c7d8;--p:62%">7</button><button class="hm-cell" style="--c:#33c7d8;--p:62%">11</button><button class="hm-cell" style="--c:#33c7d8;--p:62%">15</button><button class="hm-cell" style="--c:#33c7d8;--p:62%">18</button><button class="hm-cell" style="--c:#33c7d8;--p:62%">22</button><button class="hm-cell" style="--c:#f2b84b;--p:72%">29</button><button class="hm-cell" style="--c:#f2b84b;--p:72%">33</button><button class="hm-cell" style="--c:#f2b84b;--p:72%">38</button><button class="hm-cell" style="--c:#ef5a5a;--p:82%">45</button><button class="hm-cell" style="--c:#f2b84b;--p:72%">36</button><button class="hm-cell" style="--c:#33c7d8;--p:62%">25</button>
+              <div class="hm-label">Dual Entry</div>
+              <button class="hm-cell" style="--c:#33c7d8;--p:62%">5</button><button class="hm-cell" style="--c:#33c7d8;--p:62%">8</button><button class="hm-cell" style="--c:#33c7d8;--p:62%">14</button><button class="hm-cell" style="--c:#33c7d8;--p:62%">18</button><button class="hm-cell" style="--c:#f2b84b;--p:72%">26</button><button class="hm-cell" style="--c:#f2b84b;--p:72%">31</button><button class="hm-cell" style="--c:#f2b84b;--p:72%">35</button><button class="hm-cell" style="--c:#f2b84b;--p:72%">33</button><button class="hm-cell" style="--c:#33c7d8;--p:62%">24</button><button class="hm-cell" style="--c:#33c7d8;--p:62%">20</button><button class="hm-cell" style="--c:#33c7d8;--p:62%">16</button><button class="hm-cell" style="--c:#33c7d8;--p:62%">13</button>
+            </div>
+            <div class="diagnostic">
+              <div class="mini"><span>Fail Rate</span><strong>42%</strong></div>
+              <div class="mini"><span>Runs</span><strong>86</strong></div>
+              <div class="mini"><span>Fails</span><strong>36</strong></div>
+              <div class="mini"><span>Map</span><strong>S Route</strong></div>
+            </div>
+          </article>
+
+          <article class="metric-panel monitor-excerpt">
+            <div class="panel-head">
+              <h3>Defender Strategy Matrix</h3>
+              <span class="muted">usage x win rate</span>
+            </div>
+            <div class="quadrant" aria-label="Defender strategy matrix">
+              <div class="axis top">High win rate</div>
+              <div class="axis right">High usage</div>
+              <div class="bubble" style="--x:76%;--y:26%;--s:54px;--color:#f2b84b;">PM</div>
+              <div class="bubble" style="--x:82%;--y:22%;--s:58px;--color:#53d47d;">QA</div>
+              <div class="bubble" style="--x:66%;--y:28%;--s:50px;--color:#33c7d8;">SE</div>
+              <div class="bubble" style="--x:55%;--y:32%;--s:45px;--color:#ef5a5a;">SDET</div>
+            </div>
+            <div class="tower-cards">
+              <div class="tower-card"><div class="tower-name">PM</div><div class="tower-stat">Usage 78%<br>Win 72%<br>Damage 8,420</div></div>
+              <div class="tower-card"><div class="tower-name">QA</div><div class="tower-stat">Usage 84%<br>Win 76%<br>Damage 9,180</div></div>
+              <div class="tower-card"><div class="tower-name">SE</div><div class="tower-stat">Usage 68%<br>Win 70%<br>Damage 7,640</div></div>
+              <div class="tower-card"><div class="tower-name">SDET</div><div class="tower-stat">Usage 55%<br>Win 67%<br>Damage 6,220</div></div>
+            </div>
+          </article>
+
+          <article class="metric-panel monitor-excerpt">
+            <div class="panel-head">
+              <h3>Hire Slot Usage Map</h3>
+              <span class="muted" id="panoramaSlotMeta">92 run(s) on S Route</span>
+            </div>
+            <div class="map-tabs" id="panoramaSlotTabs" aria-label="Slot usage map tabs"></div>
+            <div class="slot-map-wrap" id="panoramaSlotMap"></div>
+            <div class="command-callout" id="panoramaSlotInsight"></div>
+          </article>
+        </div>
+      </section>
+
+      <section id="assets" aria-labelledby="assets-title">
+        <div class="section-head">
+          <div>
+            <h2 id="assets-title" data-i18n="assetsTitle">效果图与视觉素材</h2>
+            <p data-i18n="assetsIntro">这里展示的是视觉方向、UI 评审稿和原型素材，不等同于全部已进产品的运行态资源。</p>
+          </div>
+        </div>
+        <div class="asset-tabs" aria-label="Asset gallery controls">
+          <button class="chip-button" data-asset="visual" aria-pressed="true" data-i18n="assetVisualButton">战斗效果图</button>
+          <button class="chip-button" data-asset="maps" aria-pressed="false" data-i18n="assetMapsButton">地图四阶段</button>
+          <button class="chip-button" data-asset="defender" aria-pressed="false" data-i18n="assetDefenderButton">Defender UI</button>
+          <button class="chip-button" data-asset="sprites" aria-pressed="false" data-i18n="assetSpritesButton">Sprite / VFX</button>
+          <button class="chip-button" data-asset="enemy" aria-pressed="false" data-i18n="assetEnemyButton">Enemy HP UI Exploration</button>
+        </div>
+        <div class="asset-grid">
+          <article class="asset-card large">
+            <div class="asset-visual">
+              <img id="assetImage" src="../assets/high-visual-reference.png" alt="Selected RingCX Core Defense product asset" />
+              <div class="asset-overlay">
+                <b id="assetOverlayTitle">真实战斗画面</b>
+                <span id="assetOverlayText">中文图解层</span>
+              </div>
+            </div>
+            <div class="asset-copy">
+              <strong id="assetTitle"></strong>
+              <span id="assetText"></span>
+            </div>
+          </article>
+          <article class="asset-card side">
+            <div class="asset-visual">
+              <img src="../review-mockups/arena-defender-options/arena-defender-options-contact-sheet.png" alt="Arena defender option comparison sheet" />
+              <div class="asset-overlay">
+                <b data-i18n="sideOverlayTitle">角色卡评审</b>
+                <span data-i18n="sideOverlayText">可读性 / 站位 / 升级控件</span>
+              </div>
+            </div>
+            <div class="asset-copy">
+              <strong data-i18n="sideAssetTitle">Defender UI 评审素材</strong>
+              <span data-i18n="sideAssetText">用于判断角色可读性、站位拥挤、升级按钮和战斗反馈之间的取舍。</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="versions" aria-labelledby="versions-title">
+        <div class="section-head">
+          <div>
+            <h2 id="versions-title" data-i18n="versionsTitle">版本与发布现况</h2>
+            <p data-i18n="versionsIntro">这里记录发布口径、视觉评审和数据闭环，不向玩家暴露内部版本代号。</p>
+          </div>
+        </div>
+        <article class="version-panel">
+          <section class="signal-strip" aria-label="Current product signals">
+            <article class="signal" data-type="std">
+              <div class="signal-kicker"><span data-i18n="signal1Kicker">Public build</span><span>Live</span></div>
+              <strong data-i18n="signal1Title">当前发布体验</strong>
+              <p data-i18n="signal1Body">对外只保留一个可理解入口。</p>
+            </article>
+            <article class="signal" data-type="hi">
+              <div class="signal-kicker"><span data-i18n="signal2Kicker">Visual direction</span><span>FX</span></div>
+              <strong data-i18n="signal2Title">视觉效果方向</strong>
+              <p data-i18n="signal2Body">效果图与素材用于评审表现力。</p>
+            </article>
+            <article class="signal" data-type="data">
+              <div class="signal-kicker"><span data-i18n="signal3Kicker">Data loop</span><span>run.v1</span></div>
+              <strong data-i18n="signal3Title">Telemetry 本地闭环已具备</strong>
+              <p data-i18n="signal3Body">Run history、SQLite collector、Command Center 已能支持 PM 判断。</p>
+            </article>
+            <article class="signal" data-type="risk">
+              <div class="signal-kicker"><span data-i18n="signal4Kicker">Local versions</span><span>HTML</span></div>
+              <strong data-i18n="signal4Title">82 个本地版本</strong>
+              <p data-i18n="signal4Body">统计 ringcx-core-defense-review-* HTML 文件。</p>
+            </article>
+          </section>
+          <div class="release-map" aria-label="Feature and backlog snapshot">
+            <section class="release-lane">
+              <div class="release-lane-title">
+                <strong data-i18n="releaseMapTitle">Capability status</strong>
+                <span data-i18n="releaseMapAsOf">feature / backlog</span>
+              </div>
+              <div class="capability-board">
+                <div class="capability-column feature">
+                  <header><span data-i18n="featureColumnTitle">Feature</span><strong>13</strong></header>
+                  <div class="capability-list">
+                    <div class="capability-item" data-i18n-title="featureAccessTip"><span data-i18n="featureAccess">Public access & attribution</span><b>4</b></div>
+                    <div class="capability-item" data-i18n-title="featureTelemetryTip"><span data-i18n="featureTelemetry">Telemetry foundation</span><b>4</b></div>
+                    <div class="capability-item" data-i18n-title="featureMonitorTip"><span data-i18n="featureMonitor">Monitor filter surface</span><b>1</b></div>
+                    <div class="capability-item" data-i18n-title="featureRuntimeTip"><span data-i18n="featureRuntime">Runtime combat visuals</span><b>4</b></div>
+                  </div>
+                </div>
+                <div class="capability-column backlog">
+                  <header><span data-i18n="backlogColumnTitle">Backlog</span><strong>8</strong></header>
+                  <div class="capability-list">
+                    <div class="capability-item" data-i18n-title="backlogMonitorTip"><span data-i18n="backlogMonitor">Monitor compare</span><b>3</b></div>
+                    <div class="capability-item" data-i18n-title="backlogExperimentTip"><span data-i18n="backlogExperiment">Experiment layer</span><b>3</b></div>
+                    <div class="capability-item" data-i18n-title="backlogQualityTip"><span data-i18n="backlogQuality">Performance / quality</span><b>2</b></div>
+                  </div>
+                </div>
+              </div>
+              <div class="release-gap" data-i18n="releaseGap">21 个能力条目里，13 个当前可作为 Feature 展示，8 个仍属于 Backlog。</div>
+            </section>
+            <aside class="backlog-lane">
+              <div class="release-lane-title">
+                <strong data-i18n="backlogTitle">Feature vs Backlog</strong>
+                <span data-i18n="backlogScope">21 tracked</span>
+              </div>
+              <div class="capability-donut">
+                <svg class="donut-chart" viewBox="0 0 42 42" role="img" aria-label="Feature and backlog split">
+                  <circle class="donut-bg" cx="21" cy="21" r="15.9155"></circle>
+                  <circle class="donut-segment feature" cx="21" cy="21" r="15.9155" stroke-dasharray="62 38" stroke-dashoffset="25" data-i18n-title="featureTooltip">
+                    <title>13 features: STD/HI entries, telemetry context/mode, collector fallback, URL attribution, dashboard filters, remote collector, actor layers, enemy path movement, defender attack motion, projectile + impact, sprite frames.</title>
+                  </circle>
+                  <circle class="donut-segment backlog" cx="21" cy="21" r="15.9155" stroke-dasharray="38 62" stroke-dashoffset="-37" data-i18n-title="backlogTooltip">
+                    <title>8 backlog items: STD vs HI dashboard, HI performance telemetry, build compare, quality tier, A/B routing, versioned leaderboard, experiment framework, directional animation.</title>
+                  </circle>
+                  <text class="donut-center count" x="21" y="20">21</text>
+                  <text class="donut-center label" x="21" y="25" data-i18n="donutCenterLabel">CAPABILITIES</text>
+                </svg>
+                <div class="capability-legend">
+                  <div class="capability-row" style="--dot: var(--green)" data-i18n-title="featureTooltip">
+                    <span data-i18n="featureLegend">Feature</span><b>13</b>
+                  </div>
+                  <div class="capability-row" style="--dot: var(--amber)" data-i18n-title="backlogTooltip">
+                    <span data-i18n="backlogLegend">Backlog</span><b>8</b>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+          <section class="review-funnel" aria-label="RC Game review funnel">
+            <div class="funnel-head">
+              <strong data-i18n="funnelTitle">RC Game review funnel</strong>
+              <span data-i18n="funnelScope">Mixpanel-style snapshot</span>
+            </div>
+            <div class="mixpanel-funnel" aria-label="Mixpanel-style funnel chart">
+              <article class="funnel-col" data-i18n-title="funnelTurnsTip">
+                <div class="funnel-step-head">
+                  <span class="funnel-index">1</span>
+                  <label data-i18n="funnelTurns">Project conversation messages</label>
+                </div>
+                <div class="funnel-bar-stage">
+                  <div class="funnel-split conversation">
+                    <div class="funnel-bar" style="--h:30%;"><b>725</b></div>
+                    <div class="funnel-bar" style="--h:100%;"><b>4,759</b></div>
+                  </div>
+                </div>
+                <div class="funnel-caption"><b>5,484 total</b><span data-i18n="funnelStart">Sven inputs + Codex updates</span></div>
+              </article>
+              <div class="funnel-drop"><strong>0.4%</strong><span data-i18n="funnelDrop1">distilled</span></div>
+              <article class="funnel-col" data-i18n-title="funnelCapabilitiesTip">
+                <div class="funnel-step-head">
+                  <span class="funnel-index">2</span>
+                  <label data-i18n="funnelCapabilities">Tracked capabilities</label>
+                </div>
+                <div class="funnel-bar-stage">
+                  <div class="funnel-bar" style="--h:72%; --c1: var(--green); --c2: var(--cyan);"><b>21</b></div>
+                </div>
+                <div class="funnel-caption"><b>21 / 5,484</b><span data-i18n="funnelCapabilityRate">candidate output</span></div>
+              </article>
+              <div class="funnel-drop"><strong>61.9%</strong><span data-i18n="funnelDrop2">feature</span></div>
+              <article class="funnel-col" data-i18n-title="funnelFeaturesTip">
+                <div class="funnel-step-head">
+                  <span class="funnel-index">3</span>
+                  <label data-i18n="funnelStatusSplit">Feature / Backlog split</label>
+                </div>
+                <div class="funnel-bar-stage">
+                  <div class="funnel-split">
+                    <div class="funnel-bar" style="--h:62%;"><b>13</b></div>
+                    <div class="funnel-bar" style="--h:38%;"><b>8</b></div>
+                  </div>
+                </div>
+                <div class="funnel-caption"><b>13 Feature / 8 Backlog</b><span data-i18n="funnelSplit">open split</span></div>
+              </article>
+              <div class="funnel-drop"><strong>82</strong><span data-i18n="funnelVersionNote">local versions</span></div>
+              <article class="funnel-col" data-i18n-title="funnelVersionsTip">
+                <div class="funnel-step-head">
+                  <span class="funnel-index">4</span>
+                  <label data-i18n="funnelVersions">Local versions</label>
+                </div>
+                <div class="funnel-bar-stage">
+                  <div class="funnel-bar" style="--h:68%; --c1: var(--violet); --c2: var(--blue);"><b>82</b></div>
+                </div>
+                <div class="funnel-caption"><b>review HTML files</b><span data-i18n="funnelVersionCaption">local version inventory</span></div>
+              </article>
+              <div class="funnel-drop"><strong>6</strong><span data-i18n="funnelBugRate">bugs surfaced</span></div>
+              <article class="funnel-col" data-i18n-title="funnelBugsTip">
+                <div class="funnel-step-head">
+                  <span class="funnel-index">5</span>
+                  <label data-i18n="funnelBugs">Review bugs / regressions</label>
+                </div>
+                <div class="funnel-bar-stage">
+                  <div class="funnel-bar" style="--h:54%; --c1: var(--red); --c2: var(--amber);"><b>6</b></div>
+                </div>
+                <div class="funnel-caption"><b>46.2% vs Feature</b><span data-i18n="funnelBugCaption">quality cost</span></div>
+              </article>
+            </div>
+            <p class="funnel-note" data-i18n="funnelNote">Visual scale is compressed so the 21 distilled capabilities remain readable next to 5,484 project conversation messages.</p>
+          </section>
+          <h3 data-i18n="versionPanelTitle">Current release surfaces</h3>
+          <table class="version-table">
+            <thead>
+              <tr>
+                <th data-i18n="tableSurface">Surface</th>
+                <th data-i18n="tableVersion">Current Version</th>
+                <th data-i18n="tableStatus">Status</th>
+                <th data-i18n="tableJudgment">PM Judgment</th>
+              </tr>
+            </thead>
+            <tbody id="versionRows"></tbody>
+          </table>
+          <div class="callout" data-i18n="releaseCallout">
+            直接指出：对外只讲一个发布体验；内部可保留工程代号，但页面、分享和评审材料必须统一口径。
+          </div>
+        </article>
+        <p class="footer-note" data-i18n="footerNote">
+          Sources: README、SPEC、ARCHITECTURE、BACKLOG、Telemetry plan，以及项目内视觉素材与参考图。本页面为静态互动 HTML，不依赖外部网络或后端。
+        </p>
+        <div class="credit-line" aria-label="Page credits">
+          <b>Programming by Codex</b>
+          <span>Idea, direction & user testing by sven.liu@ringcentral.com</span>
+        </div>
+      </section>
+    </main>
+    <button class="back-top" id="backTop" aria-label="Back to top" title="Back to top">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 19V5M6 11l6-6 6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <script>
+    const i18n = {
+      zh: {
+        navSubtitle: "Game, data, monitor, UI, and release system",
+        navProductLine: "全景",
+        navArchitecture: "架构",
+        navTechnology: "技术",
+        navArt: "美术",
+        navMetrics: "指标",
+        navAssets: "视觉",
+        navVersions: "版本",
+        overline: "Core Defense 解锁内容",
+        heroTitle: "Core Defense Panorama",
+        heroSubtitle: "从游戏体验向后展开，查看玩法、Telemetry、Monitor、UI、视觉资产和版本治理如何组成一个完整产品系统。",
+        ctaArchitecture: "查看系统全景",
+        ctaAssets: "查看数据闭环",
+        heroImageTitle: "游戏表层",
+        heroImageText: "可玩的防守体验背后，是数据、监控、UI、资产和发布治理共同支撑的产品体系。",
+        productLineTitle: "Core Defense Panorama",
+        productLineIntro: "不只是 defense game：主游戏、Telemetry、Monitor、Dashboard、UI、视觉素材、部署和版本控制共同构成可演示、可验证、可迭代的系统全景。",
+        signal1Kicker: "Mainline",
+        signal1Title: "HI1.069 本地主线",
+        signal1Body: "当前可 review 的功能主线，Git 基线也已到 HI1.069。",
+        signal2Kicker: "Capability split",
+        signal2Title: "21 个能力条目",
+        signal2Body: "13 个已可见 Feature + 8 个未完成 Backlog。",
+        signal3Kicker: "Priority split",
+        signal3Title: "Feature 13 · Backlog 8",
+        signal3Body: "按功能完成状态计算，不按文件数量计算。",
+        signal4Kicker: "Local versions",
+        signal4Title: "82 个本地版本",
+        signal4Body: "统计 ringcx-core-defense-review-* HTML 文件。",
+        architectureTitle: "Core Defense 全景地图",
+        architectureIntro: "从入口、体验和玩法，到数据、监控、UI、资产与发布治理。",
+        filterAll: "全部",
+        filterGameplay: "玩法",
+        filterData: "数据",
+        filterRelease: "发布",
+        layerAccess: "用户与入口",
+        layerExperience: "玩家体验",
+        layerGameplay: "核心玩法",
+        layerData: "资产与数据",
+        nodeUsersTitle: "Player / Reviewer",
+        nodeUsersText: "试玩、评审、验证挑战交付",
+        nodeAccessTitle: "Access Layer",
+        nodeAccessText: "公开入口、评审入口、分享链路",
+        nodePublicTitle: "Public Share",
+        nodePublicText: "channel、share_id、UTM attribution",
+        nodeVersionTitle: "Release Context",
+        nodeVersionText: "build、channel、data_scope",
+        nodeStartTitle: "Start / Guide",
+        nodeStartText: "进入、选图、首局理解",
+        nodeArenaTitle: "Battle Arena",
+        nodeArenaText: "路线、站位、Trust Core",
+        nodeHudTitle: "HUD",
+        nodeHudText: "Credit、Trust、SLA、Wave",
+        nodeResultTitle: "Result / Top 10",
+        nodeResultText: "分数、复盘、下一局目标",
+        nodeDefenderTitle: "Defender System",
+        nodeDefenderText: "PM、QA、SE、SDET counterplay",
+        nodeRiskTitle: "Risk System",
+        nodeRiskText: "Hotfix、Release、VIP、Audit",
+        nodeWaveTitle: "Wave Pressure",
+        nodeWaveText: "10 waves、bonus incidents",
+        nodeEconomyTitle: "Economy",
+        nodeEconomyText: "Credit、XP、upgrade、replace",
+        nodeAssetsTitle: "Visual Assets",
+        nodeAssetsText: "效果图、地图、UI comparison",
+        nodeTelemetryTitle: "Telemetry SDK",
+        nodeTelemetryText: "session、run、checkpoint",
+        nodeCollectorTitle: "Local Collector",
+        nodeCollectorText: "SQLite run-history、本地 API",
+        nodeDashboardTitle: "Command Center",
+        nodeDashboardText: "fail wave、usage、build compare",
+        technologyTitle: "技术架构",
+        technologyIntro: "静态入口、DOM/SVG、内存状态、本地数据闭环。",
+        techStackTitle: "Runtime stack",
+        techLayer1: "Client",
+        techLayer1Text: "HTML / CSS / JS 静态发布入口。",
+        techLayer2: "Rendering",
+        techLayer2Text: "DOM/SVG 路线 + 透明 PNG/WebP。",
+        techLayer3: "State",
+        techLayer3Text: "wave / credit / Trust / enemy。",
+        techLayer4: "Telemetry",
+        techLayer4Text: "channel / share_id / data_scope。",
+        techLayer5: "Local Data",
+        techLayer5Text: "Python + SQLite + Dashboard。",
+        techDiagramClient: "Client",
+        techDiagramSystems: "Systems",
+        techDiagramData: "Data",
+        techDiagramOps: "Ops",
+        artTitle: "美术与动画管线",
+        artIntro: "视觉效果不只是静态图：人物攻击、怪物步行、VFX 分帧合约。",
+        defenderFramesTitle: "PM attack state frames",
+        defenderFramesIntro: "idle → anticipate → lunge → fire → recover",
+        enemyFramesTitle: "Enemy walk cycle frames",
+        enemyFramesIntro: "5-frame walk cycle + Y-sort",
+        vfxFramesTitle: "Defender attack logic",
+        vfxFramesIntro: "每个 Defender 都有自己的攻击语义，标签由 role × risk type 决定。",
+        vfxStep1Title: "Find target",
+        vfxStep1Text: "range + gate + fit",
+        vfxStep2Title: "Pick role verb",
+        vfxStep2Text: "role × risk type",
+        vfxStep3Title: "Apply damage",
+        vfxStep3Text: "capability × level × gate",
+        vfxStep4Title: "Resolve hit",
+        vfxStep4Text: "flash + reward + log",
+        rolePmLogic: "客户、范围、路线优先级",
+        roleQaLogic: "质量门、风险识别、证明",
+        roleSeLogic: "修复、架构、技术设计",
+        roleSdetLogic: "自动化、探测、信号",
+        prototypeNote: "下面 0-5 攻击效果帧只是 prototype 参考，尚未进入正式产品。",
+        keywordScope: "范围 scope",
+        keywordAlign: "对齐 align",
+        keywordPlan: "计划 plan",
+        keywordStory: "叙事 story",
+        motionSpecTitle: "Animation contract",
+        motionSpecIntro: "manifest 关键约束。",
+        motionSpec1: "high / medium / low target FPS",
+        motionSpec2: "enemy walk cycle duration",
+        motionSpec3: "defender / enemy / VFX frame counts",
+        motionSpec4: "character and enemy pivot rule",
+        motionSpec5: "atlas padding contract",
+        motionSpec6: "max visible enemies by quality tier",
+        metricsTitle: "Product Metrics View",
+        metricsIntro: "用 demo sample data 展示本地 Monitor 的运维能力：难度热区、角色策略、地图站位利用率。地图结构来自真实游戏配置。",
+        assetsTitle: "效果图与视觉素材",
+        assetsIntro: "视觉方向、UI 评审稿和原型素材，不等同于全部已进产品资源。",
+        assetVisualButton: "战斗效果图",
+        assetMapsButton: "地图四阶段",
+        assetDefenderButton: "Defender UI",
+        assetSpritesButton: "Sprite / VFX",
+        assetEnemyButton: "Enemy HP UI Exploration",
+        sideAssetTitle: "Defender UI 评审素材",
+        sideAssetText: "角色、站位、按钮、反馈。",
+        sideOverlayTitle: "角色卡评审",
+        sideOverlayText: "可读性 / 站位 / 升级控件",
+        versionsTitle: "Feature / Backlog 漏斗",
+        versionsIntro: "用 Mixpanel 风格看产出过程：Sven 与 Codex 的沟通沉淀了多少能力，其中多少成为 Feature、Backlog、本地版本和 bug。",
+        versionPanelTitle: "Feature release inventory",
+        tableSurface: "Feature Area",
+        tableVersion: "Scope",
+        tableStatus: "State",
+        tableJudgment: "PM Judgment",
+        releaseMapTitle: "Capability status",
+        releaseMapAsOf: "feature / backlog",
+        featureColumnTitle: "Feature",
+        backlogColumnTitle: "Backlog",
+        featureAccess: "Public access & attribution",
+        featureTelemetry: "Telemetry foundation",
+        featureMonitor: "Monitor filter surface",
+        featureRuntime: "Runtime combat visuals",
+        backlogMonitor: "Monitor compare",
+        backlogExperiment: "Experiment layer",
+        backlogQuality: "Performance / quality",
+        featureAccessTip: "Feature: STD public entry, HI public entry, URL attribution parser, public collector fallback.",
+        featureTelemetryTip: "Feature: variant-aware telemetry context, runtime-aware telemetry mode, remote collector path, schema/build/deployment context.",
+        featureMonitorTip: "Feature: dashboard filter surface for build, variant, source, and run dimensions.",
+        featureRuntimeTip: "Feature: independent actor layers, enemy path movement, defender attack motion, projectile + impact.",
+        backlogMonitorTip: "Backlog: STD vs HI dashboard, HI performance telemetry, build compare.",
+        backlogExperimentTip: "Backlog: A/B routing, versioned leaderboard, experiment framework.",
+        backlogQualityTip: "Backlog: quality tier behavior and directional animation.",
+        releaseGap: "21 个能力条目里，13 个当前可作为 Feature 展示，8 个仍属于 Backlog。",
+        backlogTitle: "Feature vs Backlog",
+        backlogScope: "21 tracked",
+        donutCenterLabel: "CAPABILITIES",
+        featureLegend: "Feature",
+        backlogLegend: "Backlog",
+        featureTooltip: "13 个 Feature：STD/HI 入口、telemetry context/mode、collector fallback、URL attribution、dashboard filters、remote collector、actor layers、enemy path movement、defender attack motion、projectile + impact、sprite frames。",
+        backlogTooltip: "8 个 Backlog：STD vs HI dashboard、HI performance telemetry、build compare、quality tier、A/B routing、versioned leaderboard、experiment framework、directional animation。",
+        funnelTitle: "RC Game review funnel",
+        funnelScope: "Mixpanel-style snapshot",
+        funnelTurns: "Project conversation messages",
+        funnelCapabilities: "沉淀能力条目",
+        funnelStatusSplit: "Feature / Backlog split",
+        funnelFeatures: "已可见 Feature",
+        funnelBacklog: "未完成 Backlog",
+        funnelVersions: "本地版本",
+        funnelBugs: "Review bug / regression",
+        funnelStart: "Sven inputs + Codex updates",
+        funnelDrop1: "distilled",
+        funnelDrop2: "feature",
+        funnelCapabilityRate: "candidate output",
+        funnelSplit: "open split",
+        funnelVersionNote: "local versions",
+        funnelVersionCaption: "local version inventory",
+        funnelBugRate: "bugs surfaced",
+        funnelBugCaption: "quality cost",
+        funnelNote: "视觉比例做了压缩，否则 21 个沉淀能力在 5,484 条项目 conversation messages 旁边会几乎不可见。Codex updates 不是按字节算，而是每条进度说明、阶段回复和最终回复各算一条 message。",
+        funnelTurnsTip: "项目级统计：RC Game cwd 下 22 个有效 Codex thread，共 5,484 条 conversation messages，包含 725 条 Sven input + 4,759 条 Codex update messages。Codex response turn 为 626；update message 更多是因为长任务中会有多条进度说明、工具前后说明和最终回复。此统计不含工具调用、系统/开发者注入、AGENTS.md、delegation 启动消息、审批审查线程，以及非 RC Game 线程。",
+        funnelCapabilitiesTip: "从 5,484 条项目 conversation messages 中沉淀出的 21 个可追踪产品能力条目；来源包括 public access / telemetry plan 与 high animation standard。",
+        funnelFeaturesTip: "Feature 标准：当前项目里已经能看到入口、实现、资源、页面表达或可验证行为的能力。按这个标准计 13 个 Feature。",
+        funnelBacklogTip: "Backlog 标准：尚未完整产品化、只停留在计划/设计/待验证状态，或还不能作为稳定能力讲述的条目。按这个标准计 8 个 Backlog。",
+        funnelVersionsTip: "本地版本统计：ringcx-core-defense-mvp 目录下 82 个 ringcx-core-defense-review-* HTML 文件。",
+        funnelBugsTip: "Review 中暴露的 6 类问题：anchor 顶部裁切、启动卡住、资源缺失、Stage Clear 默认 claimed、monitor map mismatch、map tabs 不能切换。",
+        releaseCallout: "直接结论：5,484 条沟通消息沉淀出 21 个能力、82 个本地版本和 6 类 review bug；下一步应该先判断 8 个 Backlog 里哪些影响下一次发布。",
+        footerNote: "Sources: README、SPEC、ARCHITECTURE、BACKLOG、Telemetry plan、视觉素材与参考图。",
+        details: {
+          users: ["User & JTBD", "Player / Reviewer", "", [["看懂", "可玩"], ["判断", "可测"], ["输出", "可交付"]]],
+          release: ["Access & Release", "Public Access", "", [["入口", "公开发布"], ["评审", "视觉效果"], ["Context", "build / channel / scope"]]],
+          experience: ["Experience", "Start, Arena, HUD, Result", "", [["Start", "选图"], ["Battle", "放置 / 升级"], ["Result", "复盘"]]],
+          gameplay: ["Core Gameplay", "Defenders, Risks, Waves, Economy", "", [["Defenders", "PM / QA / SE / SDET"], ["Risks", "Hotfix / VIP / Audit"], ["Economy", "Credit / XP"]]],
+          assets: ["Visual System", "Visual Concepts", "", [["Frames", "attack / walk / VFX"], ["Maps", "4 stages"], ["UI", "HP / slots / cards"]]],
+          data: ["Telemetry & Dashboard", "Local Data Loop", "", [["Events", "session / run / wave"], ["Storage", "SQLite"], ["View", "Command Center"]]]
+        },
+        assets: {
+          visual: ["战斗效果图", "HUD / Risk / Arena / Trust Core"],
+          maps: ["四阶段地图", "S Route / Loop / Merge / VIP Lane"],
+          defender: ["Defender UI 评审过程图", "角色可读性 / 站位拥挤 / 升级按钮"],
+          sprites: ["Sprite 与 VFX 原型素材", "角色/怪物已用于说明；攻击效果帧为 prototype，not yet in product"],
+          enemy: ["Enemy HP UI Exploration", "这是 HP / threat / hit feedback 的方案评审图，不是游戏流程图。"]
+        },
+        assetOverlays: {
+          visual: ["真实战斗画面", "HUD / 风险队列 / 角色卡 / Trust Core"],
+          maps: ["四阶段地图", "路线形态 / 站位密度 / 核心区压力"],
+          defender: ["角色卡评审", "可读性 / 站位拥挤 / 升级控件"],
+          sprites: ["Sprite / VFX 原型", "角色帧 / 怪物帧 / 攻击效果 prototype"],
+          enemy: ["Enemy HP UI Exploration", "血条 / 威胁等级 / 命中反馈"]
+        },
+        versions: [
+          ["Feature", "13 done / visible", "Visible", "stable", "已有入口、实现、资源或页面表达，可作为当前产品能力讲述"],
+          ["Backlog", "8 open", "Open", "candidate", "未完整产品化，下一次发布前需要确认是否进入 scope"],
+          ["本地版本", "82 review HTML", "Inventory", "watch", "ringcx-core-defense-review-* 文件，反映本地评审版本堆叠"],
+          ["Review 质量成本", "6 bug / regression signals", "Risk", "risk", "启动、资源、默认状态、anchor、monitor map、tab interaction 都已经暴露过问题"]
+        ]
+      },
+      en: {
+        navSubtitle: "Game, data, monitor, UI, and release system",
+        navProductLine: "Panorama",
+        navArchitecture: "Architecture",
+        navTechnology: "Tech",
+        navArt: "UI & Art",
+        navMetrics: "Data",
+        navAssets: "Assets",
+        navVersions: "Versions",
+        overline: "Unlocked from Core Defense",
+        heroTitle: "Core Defense Panorama",
+        heroSubtitle: "A full-system view of the experience behind the game: gameplay, telemetry, monitor, UI, visual assets, delivery, and release control.",
+        ctaArchitecture: "Explore panorama",
+        ctaAssets: "View data loop",
+        heroImageTitle: "Game surface",
+        heroImageText: "The playable defense layer sits on top of data, monitoring, UI, assets, and release governance.",
+        productLineTitle: "Core Defense Panorama",
+        productLineIntro: "More than a defense game: the playable game, telemetry, monitor, dashboard, UI, visual assets, delivery, and version control form one demo-ready product system.",
+        signal1Kicker: "Mainline",
+        signal1Title: "HI1.069 local mainline",
+        signal1Body: "Current reviewable feature mainline; Git baseline is also at HI1.069.",
+        signal2Kicker: "Capability split",
+        signal2Title: "21 tracked capabilities",
+        signal2Body: "13 visible Features + 8 unfinished Backlog items.",
+        signal3Kicker: "Priority split",
+        signal3Title: "Feature 13 · Backlog 8",
+        signal3Body: "Counted by completion state, not file count.",
+        signal4Kicker: "Local versions",
+        signal4Title: "82 local versions",
+        signal4Body: "Counted from ringcx-core-defense-review-* HTML files.",
+        architectureTitle: "Core Defense Panorama Map",
+        architectureIntro: "Access, experience, gameplay, data, monitor, UI, assets, and release governance.",
+        filterAll: "All",
+        filterGameplay: "Gameplay",
+        filterData: "Data",
+        filterRelease: "Release",
+        layerAccess: "Users & Access",
+        layerExperience: "Player Experience",
+        layerGameplay: "Core Gameplay",
+        layerData: "Assets & Data",
+        nodeUsersTitle: "Player / Reviewer",
+        nodeUsersText: "Playtest, review, validate delivery",
+        nodeAccessTitle: "Access Layer",
+        nodeAccessText: "public entry, review entry, share links",
+        nodePublicTitle: "Public Share",
+        nodePublicText: "channel, share_id, UTM attribution",
+        nodeVersionTitle: "Release Context",
+        nodeVersionText: "build, channel, data_scope",
+        nodeStartTitle: "Start / Guide",
+        nodeStartText: "Entry, map choice, first-run clarity",
+        nodeArenaTitle: "Battle Arena",
+        nodeArenaText: "Routes, slots, Trust Core",
+        nodeHudTitle: "HUD",
+        nodeHudText: "Credit, Trust, SLA, Wave",
+        nodeResultTitle: "Result / Top 10",
+        nodeResultText: "Score, recap, next-run target",
+        nodeDefenderTitle: "Defender System",
+        nodeDefenderText: "PM, QA, SE, SDET counterplay",
+        nodeRiskTitle: "Risk System",
+        nodeRiskText: "Hotfix, Release, VIP, Audit",
+        nodeWaveTitle: "Wave Pressure",
+        nodeWaveText: "10 waves, bonus incidents",
+        nodeEconomyTitle: "Economy",
+        nodeEconomyText: "Credit, XP, upgrade, replace",
+        nodeAssetsTitle: "Visual Assets",
+        nodeAssetsText: "concept art, maps, UI comparisons",
+        nodeTelemetryTitle: "Telemetry SDK",
+        nodeTelemetryText: "session, run, checkpoint",
+        nodeCollectorTitle: "Local Collector",
+        nodeCollectorText: "SQLite run history, local API",
+        nodeDashboardTitle: "Command Center",
+        nodeDashboardText: "fail wave, usage, build compare",
+        technologyTitle: "Technical Architecture",
+        technologyIntro: "Static entry, DOM/SVG, memory state, local data loop.",
+        techStackTitle: "Runtime stack",
+        techLayer1: "Client",
+        techLayer1Text: "HTML / CSS / JS static public entry.",
+        techLayer2: "Rendering",
+        techLayer2Text: "DOM/SVG routes + transparent PNG/WebP.",
+        techLayer3: "State",
+        techLayer3Text: "wave / credit / Trust / enemy.",
+        techLayer4: "Telemetry",
+        techLayer4Text: "channel / share_id / data_scope.",
+        techLayer5: "Local Data",
+        techLayer5Text: "Python + SQLite + dashboard.",
+        techDiagramClient: "Client",
+        techDiagramSystems: "Systems",
+        techDiagramData: "Data",
+        techDiagramOps: "Ops",
+        artTitle: "Art & Animation Pipeline",
+        artIntro: "Attack, walk, and VFX frame contracts.",
+        defenderFramesTitle: "PM attack state frames",
+        defenderFramesIntro: "idle → anticipate → lunge → fire → recover",
+        enemyFramesTitle: "Enemy walk cycle frames",
+        enemyFramesIntro: "5-frame walk cycle + Y-sort",
+        vfxFramesTitle: "Defender attack logic",
+        vfxFramesIntro: "Each Defender has attack semantics; labels are decided by role × risk type.",
+        vfxStep1Title: "Find target",
+        vfxStep1Text: "range + gate + fit",
+        vfxStep2Title: "Pick role verb",
+        vfxStep2Text: "role × risk type",
+        vfxStep3Title: "Apply damage",
+        vfxStep3Text: "capability × level × gate",
+        vfxStep4Title: "Resolve hit",
+        vfxStep4Text: "flash + reward + log",
+        rolePmLogic: "customer, scope, route priority",
+        roleQaLogic: "quality gates, risk checks, proof",
+        roleSeLogic: "fixes, architecture, technical design",
+        roleSdetLogic: "automation, detection, signal",
+        prototypeNote: "The 0-5 attack-effect frames below are prototype references only; they are not in the product yet.",
+        keywordScope: "scope",
+        keywordAlign: "align",
+        keywordPlan: "plan",
+        keywordStory: "story",
+        motionSpecTitle: "Animation contract",
+        motionSpecIntro: "Manifest constraints.",
+        motionSpec1: "high / medium / low target FPS",
+        motionSpec2: "enemy walk cycle duration",
+        motionSpec3: "defender / enemy / VFX frame counts",
+        motionSpec4: "character and enemy pivot rule",
+        motionSpec5: "atlas padding contract",
+        motionSpec6: "max visible enemies by quality tier",
+        metricsTitle: "Product Metrics View",
+        metricsIntro: "Demo sample data showing local Monitor capabilities: difficulty hotspots, role strategy, and map slot utilization. Map structures come from the real game configuration.",
+        assetsTitle: "Concept Art & Visual Assets",
+        assetsIntro: "Visual direction, UI review sheets, and prototype assets; not all are live product resources.",
+        assetVisualButton: "Battle concept frame",
+        assetMapsButton: "Four-stage maps",
+        assetDefenderButton: "Defender UI",
+        assetSpritesButton: "Sprite / VFX",
+        assetEnemyButton: "Enemy HP UI Exploration",
+        sideAssetTitle: "Defender UI review sheet",
+        sideAssetText: "Characters, slots, buttons, feedback.",
+        sideOverlayTitle: "Defender card review",
+        sideOverlayText: "readability / slots / upgrade controls",
+        versionsTitle: "Feature / Backlog Funnel",
+        versionsIntro: "A Mixpanel-style view of the production flow: Sven and Codex conversations become capabilities, Features, Backlog, local versions, and bugs.",
+        versionPanelTitle: "Feature release inventory",
+        tableSurface: "Feature Area",
+        tableVersion: "Scope",
+        tableStatus: "State",
+        tableJudgment: "PM Judgment",
+        releaseMapTitle: "Capability status",
+        releaseMapAsOf: "feature / backlog",
+        featureColumnTitle: "Feature",
+        backlogColumnTitle: "Backlog",
+        featureAccess: "Public access & attribution",
+        featureTelemetry: "Telemetry foundation",
+        featureMonitor: "Monitor filter surface",
+        featureRuntime: "Runtime combat visuals",
+        backlogMonitor: "Monitor compare",
+        backlogExperiment: "Experiment layer",
+        backlogQuality: "Performance / quality",
+        featureAccessTip: "Feature: STD public entry, HI public entry, URL attribution parser, public collector fallback.",
+        featureTelemetryTip: "Feature: variant-aware telemetry context, runtime-aware telemetry mode, remote collector path, schema/build/deployment context.",
+        featureMonitorTip: "Feature: dashboard filter surface for build, variant, source, and run dimensions.",
+        featureRuntimeTip: "Feature: independent actor layers, enemy path movement, defender attack motion, projectile + impact.",
+        backlogMonitorTip: "Backlog: STD vs HI dashboard, HI performance telemetry, build compare.",
+        backlogExperimentTip: "Backlog: A/B routing, versioned leaderboard, experiment framework.",
+        backlogQualityTip: "Backlog: quality tier behavior and directional animation.",
+        releaseGap: "Of 21 tracked capabilities, 13 are visible Features and 8 remain Backlog.",
+        backlogTitle: "Feature vs Backlog",
+        backlogScope: "21 tracked",
+        donutCenterLabel: "CAPABILITIES",
+        featureLegend: "Feature",
+        backlogLegend: "Backlog",
+        featureTooltip: "13 Features: STD/HI entries, telemetry context/mode, collector fallback, URL attribution, dashboard filters, remote collector, actor layers, enemy path movement, defender attack motion, projectile + impact, sprite frames.",
+        backlogTooltip: "8 Backlog items: STD vs HI dashboard, HI performance telemetry, build compare, quality tier, A/B routing, versioned leaderboard, experiment framework, directional animation.",
+        funnelTitle: "RC Game review funnel",
+        funnelScope: "Mixpanel-style snapshot",
+        funnelTurns: "Project conversation messages",
+        funnelCapabilities: "Tracked capabilities",
+        funnelStatusSplit: "Feature / Backlog split",
+        funnelFeatures: "Feature shipped / visible",
+        funnelBacklog: "Open backlog",
+        funnelVersions: "Local versions",
+        funnelBugs: "Review bugs / regressions",
+        funnelStart: "Sven inputs + Codex updates",
+        funnelDrop1: "distilled",
+        funnelDrop2: "feature",
+        funnelCapabilityRate: "candidate output",
+        funnelSplit: "open split",
+        funnelVersionNote: "local versions",
+        funnelVersionCaption: "local version inventory",
+        funnelBugRate: "bugs surfaced",
+        funnelBugCaption: "quality cost",
+        funnelNote: "Visual scale is compressed so the 21 distilled capabilities remain readable next to 5,484 project conversation messages. Codex updates are not counted by byte; each progress note, phase response, and final response counts as one message.",
+        funnelTurnsTip: "Project-level count: 5,484 conversation messages across 22 valid Codex threads under the RC Game cwd, including 725 Sven inputs + 4,759 Codex update messages. Codex response turns are 626; update messages are higher because long tasks include progress notes, tool-adjacent explanations, and final replies. Excludes tool calls, system/developer injections, AGENTS.md, delegation bootstrap messages, approval-review threads, and non-RC Game threads.",
+        funnelCapabilitiesTip: "21 trackable product capabilities distilled from 5,484 project conversation messages; sources include the public access / telemetry plan and high animation standard.",
+        funnelFeaturesTip: "Feature standard: visible in the current project as an entry point, implementation, asset, page-level representation, or verifiable behavior. This yields 13 Features.",
+        funnelBacklogTip: "Backlog standard: not fully productized yet, only planned/designed/awaiting validation, or not stable enough to present as a product capability. This yields 8 Backlog items.",
+        funnelVersionsTip: "Local version count: 82 ringcx-core-defense-review-* HTML files in ringcx-core-defense-mvp.",
+        funnelBugsTip: "6 issue classes surfaced in review: anchor top clipping, startup stuck, missing assets, Stage Clear default claimed, monitor map mismatch, map tabs not switching.",
+        releaseCallout: "Direct read: 5,484 conversation messages produced 21 capabilities, 82 local versions, and 6 review bug classes; next step is deciding which of the 8 Backlog items affect the next release.",
+        footerNote: "Sources: README, SPEC, ARCHITECTURE, BACKLOG, telemetry plan, visual assets, and reference images.",
+        details: {
+          users: ["User & JTBD", "Player / Reviewer", "", [["Read", "Playable"], ["Judge", "Measurable"], ["Ship", "Deliverable"]]],
+          release: ["Access & Release", "Public Access", "", [["Entry", "public release"], ["Review", "visual concepts"], ["Context", "build / channel / scope"]]],
+          experience: ["Experience", "Start, Arena, HUD, Result", "", [["Start", "Map choice"], ["Battle", "Place / upgrade"], ["Result", "Recap"]]],
+          gameplay: ["Core Gameplay", "Defenders, Risks, Waves, Economy", "", [["Defenders", "PM / QA / SE / SDET"], ["Risks", "Hotfix / VIP / Audit"], ["Economy", "Credit / XP"]]],
+          assets: ["Visual System", "Visual Concepts", "", [["Frames", "attack / walk / VFX"], ["Maps", "4 stages"], ["UI", "HP / slots / cards"]]],
+          data: ["Telemetry & Dashboard", "Local Data Loop", "", [["Events", "session / run / wave"], ["Storage", "SQLite"], ["View", "Command Center"]]]
+        },
+        assets: {
+          visual: ["Battle concept frame", "HUD / Risk / Arena / Trust Core"],
+          maps: ["Four-stage maps", "S Route / Loop / Merge / VIP Lane"],
+          defender: ["Defender UI review process", "character readability / slot crowding / upgrade controls"],
+          sprites: ["Sprite and VFX prototype assets", "defender/enemy frames are explanatory; attack-effect frames are not in product yet"],
+          enemy: ["Enemy HP UI Exploration", "A design review sheet for HP / threat / hit feedback, not a gameplay flow diagram."]
+        },
+        assetOverlays: {
+          visual: ["Real battle frame", "HUD / risk queue / defender cards / Trust Core"],
+          maps: ["Four-stage maps", "route shape / slot density / core pressure"],
+          defender: ["Defender card review", "readability / slot crowding / upgrade controls"],
+          sprites: ["Sprite / VFX prototype", "defender frames / enemy frames / attack-effect prototype"],
+          enemy: ["Enemy HP UI Exploration", "HP bar / threat level / hit feedback"]
+        },
+        versions: [
+          ["Feature", "13 done / visible", "Visible", "stable", "has an entry point, implementation, asset, or page-level representation"],
+          ["Backlog", "8 open", "Open", "candidate", "not fully productized; needs scope decision before the next release"],
+          ["Local versions", "82 review HTML", "Inventory", "watch", "ringcx-core-defense-review-* files, reflecting local review version stacking"],
+          ["Review quality cost", "6 bug / regression signals", "Risk", "risk", "startup, assets, default state, anchor, monitor map, and tab interaction issues have surfaced"]
+        ]
+      }
+    };
+
+    const productLineData = {
+      zh: {
+        core: {
+          kicker: "Product Center",
+          title: "Core Game",
+          teaser: "主游戏连接角色、风险、关卡和 replay loop。",
+          img: "../assets/sprites/high-dev-standard/alpha/defenders/pm/fire.png",
+          body: "RingCX Core Defense 是可玩的产品中心：玩家放置 PM、QA、SE、SDET 防御风险，保护 Customer Trust Core 和 SLA。",
+          metrics: [["4", "Defenders"], ["12", "Waves"], ["Trust", "Core"], ["Replay", "Loop"]],
+          links: [["打开游戏", "../index.html"], ["视觉方向", "../assets/high-visual-reference.png"]],
+          note: "产品线先从可玩主体验建立，再围绕它扩展数据、视觉、交付和复盘证据。"
+        },
+        game: {
+          kicker: "Playable Surface",
+          title: "Main Program",
+          teaser: "地图、defender、enemy、wave、mini-game。",
+          img: "../assets/sprites/high-dev-standard/alpha/enemies/trust-audit-boss/walk-0.png",
+          body: "主程序承载路线、站位、风险移动、角色升级、小游戏挑战和结果反馈，是所有数据和 demo 素材的来源。",
+          metrics: [["Map", "Routes"], ["Role", "Counterplay"], ["Wave", "Pressure"], ["Top 10", "Backlog"]],
+          links: [["主程序", "../index.html"], ["动画标准", "high-animation-dev-standard.md"]],
+          note: "主程序优先保证玩法清晰；任何华丽 UI 都要服从战斗可读性和性能。"
+        },
+        telemetry: {
+          kicker: "Measurement Layer",
+          title: "Data Tracking",
+          teaser: "记录时长、关卡表现、功能使用和性能。",
+          img: "../assets/sprites/high-dev-standard/alpha/vfx/sdet-scan/frame-3.png",
+          body: "Telemetry 记录 session duration、wave score、fail wave、feature usage、mini-game outcome、FPS 和 long frame，用 buffer + batch 降低游戏 loop 压力。",
+          metrics: [["Session", "时长"], ["Wave", "得分/失败"], ["Feature", "使用"], ["FPS", "性能"]],
+          links: [["Telemetry JS", "../local-run-monitor/game-run-telemetry.js"], ["Tracking Plan", "public-access-std-hi-telemetry-plan.md"]],
+          note: "数据层用于产品判断，不采集个人敏感信息，也不在战斗中做同步重 IO。"
+        },
+        dashboard: {
+          kicker: "Insight Surface",
+          title: "Dashboard",
+          teaser: "把事件变成卡点、时长和使用洞察。",
+          img: "../assets/sprites/high-dev-standard/alpha/vfx/impact-ring/frame-4.png",
+          body: "Dashboard 将 run history、失败关卡、功能使用、mini-game 表现和项目投入时间转成 PM 可读的调优信号。",
+          metrics: [["Runs", "历史"], ["Fail", "卡点"], ["Mini", "胜率"], ["Time", "投入"]],
+          links: [["Local Monitor", "../local-run-monitor/index.html"], ["Telemetry Plan", "public-access-std-hi-telemetry-plan.md"]],
+          note: "Dashboard 是验证产品系统的关键，但不阻塞 playable MVP 和 challenge 基础交付。"
+        },
+        visuals: {
+          kicker: "Presentation Layer",
+          title: "Concept Art & Visual Assets",
+          teaser: "效果图、角色、敌人、动效和评审稿。",
+          img: "../assets/sprites/high-dev-standard/alpha/enemies/customer-risk/walk-1.png",
+          body: "视觉层包含战斗效果图、defender/enemy sprite、攻击状态、怪物步行动画、UI 评审稿和海报表达，用于讲清游戏本身背后的设计。",
+          metrics: [["Poster", "开屏"], ["Sprite", "角色/怪物"], ["Motion", "分帧"], ["Review", "评审"]],
+          links: [["效果图", "../assets/high-visual-reference.png"], ["角色评审", "../review-mockups/arena-defender-options/arena-defender-options-contact-sheet.png"]],
+          note: "这里是效果图与评审素材，不包装成“真实游戏截图”，避免对外口径误导。"
+        },
+        delivery: {
+          kicker: "Delivery Workflow",
+          title: "Delivery",
+          teaser: "GitLab、CI/CD、Pages、一键试玩。",
+          img: "../assets/sprites/high-dev-standard/alpha/vfx/qa-shield-pulse/frame-4.png",
+          body: "Delivery 把 works-on-my-machine 推进到 reviewer 可以打开：GitLab repo、CI/CD 配置、Pages 目标、README 入口和合规追踪。",
+          metrics: [["GitLab", "Repo"], ["CI/CD", "Pipeline"], ["Pages", "Bonus"], ["README", "入口"]],
+          links: [["Collector Setup", "public-telemetry-collector-setup.md"], ["Preflight", "hi-preflight-latest.md"]],
+          note: "Pages 是 bonus；如果 runner blocked，应在复盘中记录原因，而不是影响核心交付。"
+        },
+        docs: {
+          kicker: "Learning Evidence",
+          title: "Docs & Backlog",
+          teaser: "文档、复盘、合规追踪和路线图。",
+          img: "../assets/sprites/high-dev-standard/alpha/defenders/qa/idle.png",
+          body: "文档层包含 README、SPEC、ARCHITECTURE、RETROSPECTIVE、BACKLOG 和合规追踪，把一次游戏开发变成可复用的 AI-native workflow 证据。",
+          metrics: [["README", "运行"], ["SPEC", "规则"], ["ARCH", "设计"], ["RETRO", "经验"]],
+          links: [["Tracking Plan", "public-access-std-hi-telemetry-plan.md"], ["Animation Standard", "high-animation-dev-standard.md"], ["Preflight", "hi-preflight-latest.md"]],
+          note: "这个 challenge 的核心不是炫技，而是把 idea、实现、测试、发布和反思串起来。"
+        }
+      },
+      en: {
+        core: {
+          kicker: "Product Center",
+          title: "Core Game",
+          teaser: "The playable center connects roles, risks, waves, and replay.",
+          img: "../assets/sprites/high-dev-standard/alpha/defenders/pm/fire.png",
+          body: "RingCX Core Defense is the playable product center: players place PM, QA, SE, and SDET defenders to protect the Customer Trust Core and SLA.",
+          metrics: [["4", "Defenders"], ["12", "Waves"], ["Trust", "Core"], ["Replay", "Loop"]],
+          links: [["Open Game", "../index.html"], ["Visual Direction", "../assets/high-visual-reference.png"]],
+          note: "The product line starts with a playable experience, then adds data, visuals, delivery, and retrospective evidence around it."
+        },
+        game: {
+          kicker: "Playable Surface",
+          title: "Main Program",
+          teaser: "Maps, defenders, enemies, waves, and mini-games.",
+          img: "../assets/sprites/high-dev-standard/alpha/enemies/trust-audit-boss/walk-0.png",
+          body: "The main program contains routes, slots, enemy movement, defender upgrades, mini-game challenges, and run results. It is the source for telemetry and demo assets.",
+          metrics: [["Map", "Routes"], ["Role", "Counterplay"], ["Wave", "Pressure"], ["Top 10", "Backlog"]],
+          links: [["Main Program", "../index.html"], ["Animation Standard", "high-animation-dev-standard.md"]],
+          note: "Gameplay clarity comes first; premium UI must respect battle readability and performance."
+        },
+        telemetry: {
+          kicker: "Measurement Layer",
+          title: "Data Tracking",
+          teaser: "Track duration, wave performance, feature usage, and FPS.",
+          img: "../assets/sprites/high-dev-standard/alpha/vfx/sdet-scan/frame-3.png",
+          body: "Telemetry captures session duration, wave score, fail wave, feature usage, mini-game outcome, FPS, and long frames with buffered batching to avoid game-loop pressure.",
+          metrics: [["Session", "Duration"], ["Wave", "Score / fail"], ["Feature", "Usage"], ["FPS", "Performance"]],
+          links: [["Telemetry JS", "../local-run-monitor/game-run-telemetry.js"], ["Tracking Plan", "public-access-std-hi-telemetry-plan.md"]],
+          note: "The data layer supports product decisions. It avoids personal sensitive data and synchronous heavy IO during combat."
+        },
+        dashboard: {
+          kicker: "Insight Surface",
+          title: "Dashboard",
+          teaser: "Turn events into blockers, duration, and usage insight.",
+          img: "../assets/sprites/high-dev-standard/alpha/vfx/impact-ring/frame-4.png",
+          body: "The dashboard turns run history, failure hotspots, feature usage, mini-game performance, and project effort into PM-readable tuning signals.",
+          metrics: [["Runs", "History"], ["Fail", "Hotspots"], ["Mini", "Win rate"], ["Time", "Effort"]],
+          links: [["Local Monitor", "../local-run-monitor/index.html"], ["Telemetry Plan", "public-access-std-hi-telemetry-plan.md"]],
+          note: "The dashboard validates the product system, but should not block the playable MVP or required challenge deliverables."
+        },
+        visuals: {
+          kicker: "Presentation Layer",
+          title: "Concept Art & Visual Assets",
+          teaser: "Concept frame, characters, enemies, motion, and reviews.",
+          img: "../assets/sprites/high-dev-standard/alpha/enemies/customer-risk/walk-1.png",
+          body: "The visual layer includes battle concept frames, defender/enemy sprites, attack states, enemy walk frames, UI review sheets, and poster storytelling for explaining the game behind the game.",
+          metrics: [["Poster", "Opening"], ["Sprite", "Roles / risks"], ["Motion", "Frames"], ["Review", "Sheets"]],
+          links: [["Concept Frame", "../assets/high-visual-reference.png"], ["Defender Review", "../review-mockups/arena-defender-options/arena-defender-options-contact-sheet.png"]],
+          note: "These are concept and review assets, not all live gameplay screenshots. The wording stays explicit."
+        },
+        delivery: {
+          kicker: "Delivery Workflow",
+          title: "Delivery",
+          teaser: "GitLab, CI/CD, Pages, and one-click play.",
+          img: "../assets/sprites/high-dev-standard/alpha/vfx/qa-shield-pulse/frame-4.png",
+          body: "Delivery moves the project from works-on-my-machine to reviewer-ready: GitLab repo, CI/CD config, Pages target, README entry, and compliance tracking.",
+          metrics: [["GitLab", "Repo"], ["CI/CD", "Pipeline"], ["Pages", "Bonus"], ["README", "Entry"]],
+          links: [["Collector Setup", "public-telemetry-collector-setup.md"], ["Preflight", "hi-preflight-latest.md"]],
+          note: "Pages is a bonus. If runners are blocked, record the reason in the retrospective instead of blocking core delivery."
+        },
+        docs: {
+          kicker: "Learning Evidence",
+          title: "Docs & Backlog",
+          teaser: "Docs, retrospective, compliance, and roadmap.",
+          img: "../assets/sprites/high-dev-standard/alpha/defenders/qa/idle.png",
+          body: "Documentation includes README, SPEC, ARCHITECTURE, RETROSPECTIVE, BACKLOG, and compliance tracking. It turns the game project into reusable AI-native workflow evidence.",
+          metrics: [["README", "Run"], ["SPEC", "Rules"], ["ARCH", "Design"], ["RETRO", "Lessons"]],
+          links: [["Tracking Plan", "public-access-std-hi-telemetry-plan.md"], ["Animation Standard", "high-animation-dev-standard.md"], ["Preflight", "hi-preflight-latest.md"]],
+          note: "The challenge is not about flashy code; it is about connecting idea, implementation, testing, delivery, and reflection."
+        }
+      }
+    };
+
+    const assetSources = {
+      visual: "../assets/high-visual-reference.png",
+      maps: "../review-mockups/hi-core-focus-all-stages/hi-core-focus-all-stages-contact-sheet.png",
+      defender: "../review-mockups/arena-defender-options/arena-defender-options-contact-sheet.png",
+      sprites: "../assets/sprites/high-dev-standard/previews/vfx-alpha-preview.jpg",
+      enemy: "enemy-hp-ui-options-comparison.svg"
+    };
+
+    const detailVisuals = {
+      users: "url('../assets/high-visual-reference.png')",
+      release: "url('../review-mockups/hi-core-focus-all-stages/hi-core-focus-all-stages-contact-sheet.png')",
+      experience: "url('../assets/high-visual-reference.png')",
+      gameplay: "url('../assets/high-visual-reference.png')",
+      assets: "url('../review-mockups/arena-defender-options/arena-defender-options-contact-sheet.png')",
+      data: "url('../assets/high-visual-reference.png')"
+    };
+
+    const monitorSlotMaps = [
+      {
+        id: "sRoute",
+        name: "S Route",
+        runCount: 92,
+        paths: [[[42,82],[790,82],[790,198],[126,198],[126,322],[790,322],[790,444],[178,444],[178,568],[836,568]]],
+        slots: [
+          ["slot-a1", "North Guard", 168, 155, 64, "QA 32 / PM 21"],
+          ["slot-a2", "North Guard", 334, 155, 42, "PM 18 / SE 14"],
+          ["slot-a3", "North Guard", 500, 155, 38, "QA 17 / SE 13"],
+          ["slot-a4", "North Guard", 666, 155, 58, "PM 30 / QA 20"],
+          ["slot-b1", "Middle Guard", 226, 275, 36, "SDET 15 / QA 12"],
+          ["slot-b2", "Middle Guard", 392, 275, 49, "SE 24 / PM 16"],
+          ["slot-b3", "Middle Guard", 558, 275, 44, "QA 22 / SDET 10"],
+          ["slot-b4", "Middle Guard", 724, 275, 31, "PM 14 / SE 10"],
+          ["slot-c1", "South Guard", 206, 398, 29, "SDET 13 / QA 9"],
+          ["slot-c2", "South Guard", 372, 398, 35, "SE 17 / PM 11"],
+          ["slot-c3", "South Guard", 538, 398, 47, "QA 20 / SE 19"],
+          ["slot-c4", "South Guard", 704, 398, 26, "PM 10 / SDET 8"],
+          ["slot-d1", "Final Guard", 252, 520, 33, "QA 14 / SE 12"],
+          ["slot-d2", "Final Guard", 418, 520, 40, "SE 21 / PM 9"],
+          ["slot-d3", "Final Guard", 584, 520, 46, "QA 23 / SDET 12"],
+          ["slot-d4", "Final Guard", 720, 504, 52, "PM 25 / QA 18"]
+        ]
+      },
+      {
+        id: "spiral",
+        name: "Spiral Queue",
+        runCount: 88,
+        paths: [[[42,82],[830,82],[830,568],[108,568],[108,176],[720,176],[720,468],[230,468],[230,292],[800,292]]],
+        slots: [
+          ["slot-a1", "Outer North", 198, 42, 28, "PM 12 / QA 9"],
+          ["slot-a2", "Outer East", 720, 124, 39, "QA 18 / SE 12"],
+          ["slot-a3", "Outer South", 646, 538, 34, "SE 16 / PM 10"],
+          ["slot-b1", "West Turn", 114, 450, 31, "SDET 14 / QA 9"],
+          ["slot-b2", "Inner North", 342, 134, 44, "PM 21 / QA 15"],
+          ["slot-c1", "Inner East", 646, 226, 57, "QA 28 / PM 18"],
+          ["slot-c2", "Inner South", 554, 430, 36, "SE 16 / SDET 12"],
+          ["slot-c3", "Core Bend", 296, 334, 51, "SE 26 / QA 14"],
+          ["slot-d1", "Center Desk", 430, 252, 48, "PM 24 / SE 14"],
+          ["slot-d2", "Center Desk", 518, 334, 43, "QA 19 / SDET 13"],
+          ["slot-e1", "Final Audit", 706, 250, 37, "PM 16 / QA 11"],
+          ["slot-e2", "Trust Gate", 650, 356, 68, "SE 30 / PM 24"]
+        ]
+      },
+      {
+        id: "splitMerge",
+        name: "Dual Entry",
+        runCount: 76,
+        paths: [
+          [[42,126],[314,126],[314,250],[524,250],[524,420],[752,420],[752,560],[836,560]],
+          [[42,456],[314,456],[314,250],[524,250],[524,420],[752,420],[752,560],[836,560]]
+        ],
+        slots: [
+          ["slot-a1", "North Entry", 146, 86, 41, "QA 18 / PM 14"],
+          ["slot-a2", "South Entry", 146, 416, 39, "SDET 16 / QA 13"],
+          ["slot-a3", "North Bend", 328, 72, 36, "PM 15 / SE 12"],
+          ["slot-b1", "South Bend", 328, 380, 34, "SE 15 / QA 10"],
+          ["slot-b2", "Merge Gate", 426, 206, 61, "QA 29 / PM 18"],
+          ["slot-c1", "Merge Gate", 426, 298, 58, "SE 27 / SDET 16"],
+          ["slot-c2", "Middle Push", 536, 332, 47, "PM 20 / QA 16"],
+          ["slot-c3", "Bottom Gate", 650, 378, 42, "SE 18 / PM 13"],
+          ["slot-d1", "Core Ramp", 626, 500, 38, "QA 16 / SDET 11"],
+          ["slot-d2", "Trust Gate", 742, 476, 50, "PM 22 / QA 19"],
+          ["slot-e1", "Support Pod", 92, 238, 29, "SDET 12 / QA 8"],
+          ["slot-e2", "Support Pod", 526, 514, 32, "SE 14 / PM 9"]
+        ]
+      },
+      {
+        id: "fastLane",
+        name: "Fast Lane",
+        runCount: 69,
+        paths: [[[42,164],[236,164],[236,502],[430,502],[430,126],[624,126],[624,502],[836,502]]],
+        slots: [
+          ["slot-a1", "Entry Guard", 132, 114, 55, "QA 25 / PM 18"],
+          ["slot-a2", "First Turn", 246, 276, 46, "SE 22 / QA 14"],
+          ["slot-a3", "First Turn", 246, 424, 38, "SDET 16 / SE 11"],
+          ["slot-b1", "Middle Guard", 354, 462, 33, "PM 14 / QA 10"],
+          ["slot-b2", "Middle Lift", 436, 334, 52, "QA 24 / SE 17"],
+          ["slot-c1", "Middle Top", 436, 82, 29, "PM 12 / SDET 8"],
+          ["slot-c2", "Second Turn", 612, 220, 48, "SE 23 / PM 15"],
+          ["slot-c3", "Second Turn", 612, 386, 44, "QA 19 / SDET 13"],
+          ["slot-d1", "Final Push", 724, 462, 41, "PM 18 / SE 12"],
+          ["slot-d2", "Trust Gate", 724, 420, 62, "QA 31 / PM 20"],
+          ["slot-e1", "Support Pod", 118, 246, 24, "SDET 10 / QA 7"],
+          ["slot-e2", "Support Pod", 744, 110, 27, "SE 11 / PM 9"]
+        ]
+      }
+    ];
+
+    const detailKicker = document.getElementById("detailKicker");
+    const detailTitle = document.getElementById("detailTitle");
+    const detailBody = document.getElementById("detailBody");
+    const detailList = document.getElementById("detailList");
+    const nodes = [...document.querySelectorAll(".node")];
+    const productButtons = [...document.querySelectorAll("[data-product]")];
+    const productDetailImage = document.getElementById("productDetailImage");
+    const productDetailKicker = document.getElementById("productDetailKicker");
+    const productDetailTitle = document.getElementById("productDetailTitle");
+    const productDetailText = document.getElementById("productDetailText");
+    const productMetricList = document.getElementById("productMetricList");
+    const productLinkList = document.getElementById("productLinkList");
+    const productDetailNote = document.getElementById("productDetailNote");
+    const focusButtons = [...document.querySelectorAll("[data-focus]")];
+    const assetButtons = [...document.querySelectorAll("[data-asset]")];
+    const languageButtons = [...document.querySelectorAll("[data-lang]")];
+    const assetImage = document.getElementById("assetImage");
+    const assetTitle = document.getElementById("assetTitle");
+    const assetText = document.getElementById("assetText");
+    const assetOverlayTitle = document.getElementById("assetOverlayTitle");
+    const assetOverlayText = document.getElementById("assetOverlayText");
+    const versionRows = document.getElementById("versionRows");
+    const backTop = document.getElementById("backTop");
+    const topbar = document.querySelector(".topbar");
+    const panoramaSlotMeta = document.getElementById("panoramaSlotMeta");
+    const panoramaSlotTabs = document.getElementById("panoramaSlotTabs");
+    const panoramaSlotMap = document.getElementById("panoramaSlotMap");
+    const panoramaSlotInsight = document.getElementById("panoramaSlotInsight");
+    let currentLanguage = "en";
+    let currentTopic = "users";
+    let currentAsset = "visual";
+    let currentProduct = "core";
+    let currentMonitorSlotMap = "sRoute";
+
+    function t(key) {
+      return i18n[currentLanguage][key] || key;
+    }
+
+    function applyLanguage(lang) {
+      currentLanguage = lang;
+      document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
+      document.querySelectorAll("[data-i18n]").forEach(node => {
+        node.textContent = t(node.dataset.i18n);
+      });
+      document.querySelectorAll("[data-i18n-title]").forEach(node => {
+        const value = t(node.dataset.i18nTitle);
+        node.setAttribute("title", value);
+        const titleNode = node.querySelector("title");
+        if (titleNode) titleNode.textContent = value;
+      });
+      languageButtons.forEach(button => {
+        button.setAttribute("aria-pressed", String(button.dataset.lang === lang));
+      });
+      renderVersions();
+      renderProductLine(currentProduct);
+      setDetail(currentTopic);
+      setAsset(currentAsset);
+    }
+
+    function renderProductLine(key) {
+      currentProduct = key;
+      const modules = productLineData[currentLanguage];
+      const item = modules[key] || modules.core;
+      productDetailImage.src = item.img;
+      productDetailImage.alt = item.title;
+      productDetailKicker.textContent = item.kicker;
+      productDetailTitle.textContent = item.title;
+      productDetailText.textContent = item.body;
+      productMetricList.innerHTML = item.metrics
+        .map(([label, text]) => `<li><b>${label}</b><span>${text}</span></li>`)
+        .join("");
+      productLinkList.innerHTML = item.links
+        .map(([label, href]) => `<a class="product-link" href="${href}">${label}</a>`)
+        .join("");
+      productDetailNote.textContent = item.note;
+
+      productButtons.forEach(button => {
+        const buttonItem = modules[button.dataset.product] || modules.core;
+        button.querySelector(".product-node-title").textContent = buttonItem.title;
+        button.querySelector(".product-node-text").textContent = buttonItem.teaser;
+        button.classList.toggle("active", button.dataset.product === key);
+      });
+    }
+
+    function setDetail(topic) {
+      currentTopic = topic;
+      const data = i18n[currentLanguage].details[topic] || i18n[currentLanguage].details.users;
+      detailList.closest(".detail-panel").style.setProperty("--detail-visual", detailVisuals[topic] || detailVisuals.users);
+      detailKicker.textContent = data[0];
+      detailTitle.textContent = data[1];
+      detailBody.textContent = data[2];
+      detailList.innerHTML = data[3]
+        .map(([label, text]) => `<li><b>${label}</b><span>${text}</span></li>`)
+        .join("");
+      nodes.forEach(node => node.classList.toggle("active", node.dataset.topic === topic));
+    }
+
+    function setFocus(focus) {
+      focusButtons.forEach(button => {
+        button.setAttribute("aria-pressed", String(button.dataset.focus === focus));
+      });
+      nodes.forEach(node => {
+        const match = focus === "all" || node.dataset.topic === focus;
+        node.style.opacity = match ? "1" : "0.34";
+        node.style.pointerEvents = match ? "auto" : "none";
+      });
+    }
+
+    function setAsset(key) {
+      currentAsset = key;
+      const data = i18n[currentLanguage].assets[key] || i18n[currentLanguage].assets.visual;
+      const overlay = i18n[currentLanguage].assetOverlays[key] || i18n[currentLanguage].assetOverlays.visual;
+      assetImage.src = assetSources[key] || assetSources.visual;
+      assetTitle.textContent = data[0];
+      assetText.textContent = data[1];
+      assetOverlayTitle.textContent = overlay[0];
+      assetOverlayText.textContent = overlay[1];
+      assetButtons.forEach(button => {
+        button.setAttribute("aria-pressed", String(button.dataset.asset === key));
+      });
+    }
+
+    function pathPoints(path) {
+      return path.map(point => point.join(",")).join(" ");
+    }
+
+    function renderMonitorSlotMap(mapId = currentMonitorSlotMap) {
+      const map = monitorSlotMaps.find(item => item.id === mapId) || monitorSlotMaps[0];
+      currentMonitorSlotMap = map.id;
+      const maxUsed = Math.max(...map.slots.map(slot => slot[4]), 1);
+      const topSlots = [...map.slots].sort((a, b) => b[4] - a[4]).slice(0, 4);
+      const topSlotId = topSlots[0][0];
+
+      panoramaSlotMeta.textContent = `${map.runCount} run(s) on ${map.name}`;
+      panoramaSlotTabs.innerHTML = monitorSlotMaps.map(item => `
+        <button type="button" class="${item.id === map.id ? "active" : ""}" data-monitor-map="${item.id}">${item.name}</button>
+      `).join("");
+      panoramaSlotTabs.querySelectorAll("[data-monitor-map]").forEach(button => {
+        button.addEventListener("click", () => renderMonitorSlotMap(button.dataset.monitorMap));
+      });
+
+      panoramaSlotMap.innerHTML = `
+        <div class="slot-usage-layout">
+          <svg class="slot-map" viewBox="0 0 920 650" role="img" aria-label="${map.name} defender slot usage">
+            <rect x="0" y="0" width="920" height="650" rx="10" class="map-bg"></rect>
+            ${map.paths.map(path => `
+              <polyline class="lane-shadow" points="${pathPoints(path)}"></polyline>
+              <polyline class="lane-core" points="${pathPoints(path)}"></polyline>
+            `).join("")}
+            ${map.slots.map(slot => {
+              const [id, name, x, y, used, roles] = slot;
+              const intensity = used ? Math.max(0.18, used / maxUsed) : 0;
+              const radius = used ? 13 + intensity * 18 : 8;
+              const dot = Math.max(7, radius * 0.55);
+              const top = id === topSlotId;
+              return `
+                <g class="slot-node ${used ? "used" : "unused"} ${top ? "top-slot" : ""}" style="--i:${intensity.toFixed(2)}">
+                  <circle cx="${x}" cy="${y}" r="${radius.toFixed(1)}" class="slot-halo"></circle>
+                  ${top ? `<circle cx="${x}" cy="${y}" r="${(radius + 10).toFixed(1)}" class="slot-top-ring"></circle>` : ""}
+                  <circle cx="${x}" cy="${y}" r="${dot.toFixed(1)}" class="slot-dot"></circle>
+                  ${top ? `<text x="${x}" y="${(y - radius - 14).toFixed(1)}" class="slot-top-label">TOP</text>` : ""}
+                  <text x="${x}" y="${y + 4}" class="slot-count">${used}</text>
+                  <title>${name} (${id}): ${used} use(s), ${roles}</title>
+                </g>
+              `;
+            }).join("")}
+          </svg>
+          <aside class="slot-rank">
+            <div class="slot-rank-head">Most Used Slots</div>
+            ${topSlots.map((slot, index) => `
+              <div class="slot-rank-row ${index === 0 ? "top" : ""}">
+                <span>${index + 1}</span>
+                <div><strong>${slot[1]}</strong><em>${slot[0]} / ${slot[5]}</em></div>
+                <b>${slot[4]}</b>
+              </div>
+            `).join("")}
+            <div class="slot-legend"><span></span> Larger circle = more final placements</div>
+          </aside>
+        </div>
+      `;
+      panoramaSlotInsight.textContent = `${map.name} / ${topSlots[0][1]} (${topSlots[0][0]}) is the most-used final hire slot: ${topSlots[0][4]} uses. Metric counts final defenders present at run end.`;
+    }
+
+    function renderVersions() {
+      versionRows.innerHTML = i18n[currentLanguage].versions
+        .map(row => `
+          <tr>
+            <td>${row[0]}</td>
+            <td>${row[1]}</td>
+            <td><span class="badge ${row[3]}">${row[2]}</span></td>
+            <td>${row[4]}</td>
+          </tr>
+        `)
+        .join("");
+    }
+
+    nodes.forEach(node => {
+      node.addEventListener("click", () => setDetail(node.dataset.topic));
+    });
+
+    productButtons.forEach(button => {
+      button.addEventListener("click", () => renderProductLine(button.dataset.product));
+    });
+
+    focusButtons.forEach(button => {
+      button.addEventListener("click", () => setFocus(button.dataset.focus));
+    });
+
+    assetButtons.forEach(button => {
+      button.addEventListener("click", () => setAsset(button.dataset.asset));
+    });
+
+    languageButtons.forEach(button => {
+      button.addEventListener("click", () => applyLanguage(button.dataset.lang));
+    });
+
+    backTop.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    function scrollToHashTarget(behavior = "auto") {
+      const hash = window.location.hash ? decodeURIComponent(window.location.hash.slice(1)) : "";
+      if (!hash) return;
+      const target = document.getElementById(hash);
+      if (!target) return;
+      const topbarHeight = topbar ? topbar.getBoundingClientRect().height : 0;
+      const offset = topbarHeight + (window.matchMedia("(max-width: 760px)").matches ? 18 : 24);
+      const top = Math.max(0, target.getBoundingClientRect().top + window.scrollY - offset);
+      window.scrollTo({ top, behavior });
+    }
+
+    document.querySelectorAll(".nav-link[href^='#']").forEach(link => {
+      link.addEventListener("click", event => {
+        event.preventDefault();
+        window.history.pushState(null, "", link.getAttribute("href"));
+        scrollToHashTarget("smooth");
+      });
+    });
+
+    function handleScrollState() {
+      topbar.classList.toggle("scrolled", window.scrollY > 80);
+      backTop.classList.toggle("visible", window.scrollY > 520);
+    }
+
+    window.addEventListener("scroll", handleScrollState, { passive: true });
+    window.addEventListener("hashchange", () => scrollToHashTarget("auto"));
+
+    renderMonitorSlotMap("sRoute");
+    applyLanguage("en");
+    handleScrollState();
+    requestAnimationFrame(() => scrollToHashTarget("auto"));
+    window.setTimeout(() => scrollToHashTarget("auto"), 260);
+  </script>
+</body>
+</html>

@@ -229,36 +229,6 @@ button {
   color: #dffbff;
   background: rgba(51,199,216,.12);
 }
-.source-badge.netlify {
-  border-color: rgba(51,199,216,.56);
-  color: #dffbff;
-  background: rgba(51,199,216,.14);
-}
-.source-badge.gitlab {
-  border-color: rgba(242,184,75,.58);
-  color: #fff1c9;
-  background: rgba(242,184,75,.14);
-}
-.source-badge.github_pages {
-  border-color: rgba(78,141,247,.58);
-  color: #dce8ff;
-  background: rgba(78,141,247,.14);
-}
-.source-cell {
-  display: grid;
-  gap: 5px;
-  min-width: 190px;
-}
-.source-host {
-  max-width: 280px;
-  color: var(--muted);
-  font-size: 11px;
-  font-weight: 750;
-  line-height: 1.25;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
 .device-badge {
   display: inline-flex;
   align-items: center;
@@ -287,69 +257,6 @@ button {
   border-color: rgba(242,184,75,.54);
   color: #fff1c9;
   background: rgba(242,184,75,.13);
-}
-.leave-badge {
-  display: inline-flex;
-  align-items: center;
-  min-height: 22px;
-  padding: 3px 8px;
-  border: 1px solid rgba(145,164,175,.3);
-  border-radius: 999px;
-  color: var(--steel);
-  background: rgba(255,255,255,.05);
-  font-size: 11px;
-  font-weight: 950;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-.leave-badge.completed,
-.leave-badge.win {
-  border-color: rgba(83,212,125,.54);
-  color: #dbffe6;
-  background: rgba(83,212,125,.13);
-}
-.leave-badge.failed,
-.leave-badge.fail {
-  border-color: rgba(239,90,90,.54);
-  color: #ffd1d1;
-  background: rgba(239,90,90,.13);
-}
-.leave-badge.manual_restart {
-  border-color: rgba(242,184,75,.54);
-  color: #fff1c9;
-  background: rgba(242,184,75,.13);
-}
-.leave-badge.tab_or_browser_close,
-.leave-badge.page_exit,
-.leave-badge.beforeunload {
-  border-color: rgba(51,199,216,.54);
-  color: #dffbff;
-  background: rgba(51,199,216,.13);
-}
-.leave-card.completed,
-.leave-card.win {
-  border-color: rgba(83,212,125,.42);
-}
-.leave-card.failed,
-.leave-card.fail {
-  border-color: rgba(239,90,90,.42);
-}
-.leave-card.manual_restart {
-  border-color: rgba(242,184,75,.42);
-}
-.leave-card.tab_or_browser_close,
-.leave-card.page_exit,
-.leave-card.beforeunload {
-  border-color: rgba(51,199,216,.42);
-}
-.leave-card.failed .source-bars span,
-.leave-card.fail .source-bars span {
-  background: linear-gradient(90deg, var(--red), var(--amber));
-}
-.leave-card.tab_or_browser_close .source-bars span,
-.leave-card.page_exit .source-bars span,
-.leave-card.beforeunload .source-bars span {
-  background: linear-gradient(90deg, var(--cyan), var(--blue));
 }
 .source-count {
   margin-top: 10px;
