@@ -1,13 +1,16 @@
 const apiParam = new URLSearchParams(location.search).get("api");
 const API_KEY = "ringcxCoreDefense.collectorApi.v1";
 const LOCAL_API = "http://127.0.0.1:4328";
-const REMOTE_API = `${location.origin}/.netlify/functions/telemetry`;
+const NETLIFY_COLLECTOR_API = "https://stalwart-dodol-72f038.netlify.app/.netlify/functions/telemetry";
 const isRemoteMonitor = /^https?:$/.test(location.protocol) && !/^(localhost|127\.0\.0\.1)(:|$)/.test(location.host);
+const REMOTE_API = location.host.includes("netlify.app")
+  ? `${location.origin}/.netlify/functions/telemetry`
+  : NETLIFY_COLLECTOR_API;
 const DEFAULT_API = isRemoteMonitor ? REMOTE_API : LOCAL_API;
 const storedApi = localStorage.getItem(API_KEY);
 if (apiParam) {
   localStorage.setItem(API_KEY, apiParam);
-} else if (!storedApi || storedApi === "http://127.0.0.1:4318" || (isRemoteMonitor && /^https?:\/\/(localhost|127\.0\.0\.1)(:|\/|$)/.test(storedApi))) {
+} else if (!storedApi || storedApi === "http://127.0.0.1:4318" || (isRemoteMonitor && (/^https?:\/\/(localhost|127\.0\.0\.1)(:|\/|$)/.test(storedApi) || storedApi === `${location.origin}/.netlify/functions/telemetry`))) {
   localStorage.setItem(API_KEY, DEFAULT_API);
 }
 const API = apiParam || localStorage.getItem(API_KEY) || DEFAULT_API;
