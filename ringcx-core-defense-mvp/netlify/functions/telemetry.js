@@ -87,12 +87,47 @@ function apiPath(event) {
   return raw.replace(/^\/api\/telemetry/, "") || "/";
 }
 
+let cachedStore;
+
+function blobOptions() {
+  const siteID = text(
+    process.env.RC_BLOBS_SITE_ID ||
+    process.env.NETLIFY_BLOBS_SITE_ID ||
+    process.env.NETLIFY_SITE_ID ||
+    process.env.SITE_ID,
+    ""
+  );
+  const token = text(
+    process.env.RC_BLOBS_TOKEN ||
+    process.env.NETLIFY_BLOBS_TOKEN ||
+    process.env.NETLIFY_AUTH_TOKEN,
+    ""
+  );
+  return siteID && token ? { siteID, token } : null;
+}
+
+function storageStatus() {
+  const options = blobOptions();
+  return {
+    mode: options ? "site" : "netlify-runtime",
+    has_site_id: !!(options && options.siteID),
+    has_token: !!(options && options.token)
+  };
+}
+
 function store() {
-  try {
-    return getStore(STORE_NAME);
-  } catch {
-    return getDeployStore(STORE_NAME);
+  if (cachedStore) return cachedStore;
+  const options = blobOptions();
+  if (options) {
+    cachedStore = getStore(STORE_NAME, options);
+    return cachedStore;
   }
+  try {
+    cachedStore = getStore(STORE_NAME);
+  } catch {
+    cachedStore = getDeployStore(STORE_NAME, { deployID: text(process.env.DEPLOY_ID || process.env.NETLIFY_DEPLOY_ID, "") });
+  }
+  return cachedStore;
 }
 
 async function getJson(key, fallback = null) {
@@ -532,7 +567,13 @@ exports.handler = async event => {
     if (event.httpMethod === "POST" && !isOriginAllowed(event)) {
       return response(event, 403, { ok: false, error: "Origin not allowed" });
     }
-    if (path === "/" || path === "/api/health") return response(event, 200, { ok: true, service: "ringcx-defense-netlify-collector" });
+    if (path === "/" || path === "/api/health") {
+      return response(event, 200, {
+        ok: true,
+        service: "ringcx-defense-netlify-collector",
+        storage: storageStatus()
+      });
+    }
     if (event.httpMethod === "POST" && path === "/api/session/start") return sessionStart(event);
     if (event.httpMethod === "POST" && path === "/api/session/end") return sessionEnd(event);
     if (event.httpMethod === "POST" && path === "/api/run/start") return runStart(event);
