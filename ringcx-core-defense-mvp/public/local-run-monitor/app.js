@@ -1,10 +1,16 @@
 const apiParam = new URLSearchParams(location.search).get("api");
 const API_KEY = "ringcxCoreDefense.collectorApi.v1";
-const DEFAULT_API = "http://127.0.0.1:4328";
+const LOCAL_API = "http://127.0.0.1:4328";
+const NETLIFY_COLLECTOR_API = "https://stalwart-dodol-72f038.netlify.app/.netlify/functions/telemetry";
+const isRemoteMonitor = /^https?:$/.test(location.protocol) && !/^(localhost|127\.0\.0\.1)(:|$)/.test(location.host);
+const REMOTE_API = location.host.includes("netlify.app")
+  ? `${location.origin}/.netlify/functions/telemetry`
+  : NETLIFY_COLLECTOR_API;
+const DEFAULT_API = isRemoteMonitor ? REMOTE_API : LOCAL_API;
 const storedApi = localStorage.getItem(API_KEY);
 if (apiParam) {
   localStorage.setItem(API_KEY, apiParam);
-} else if (!storedApi || storedApi === "http://127.0.0.1:4318") {
+} else if (!storedApi || storedApi === "http://127.0.0.1:4318" || (isRemoteMonitor && (/^https?:\/\/(localhost|127\.0\.0\.1)(:|\/|$)/.test(storedApi) || storedApi === `${location.origin}/.netlify/functions/telemetry`))) {
   localStorage.setItem(API_KEY, DEFAULT_API);
 }
 const API = apiParam || localStorage.getItem(API_KEY) || DEFAULT_API;
@@ -116,6 +122,16 @@ function sourceFilterLabel(value) {
   if (value === "local") return "Local";
   if (value === "public_web") return "Public Web";
   return "All sources";
+}
+
+function sourceHost(row) {
+  const origin = row.source_origin || "";
+  if (!origin) return "";
+  try {
+    return new URL(origin).host;
+  } catch (err) {
+    return origin.replace(/^https?:\/\//, "").split("/")[0];
+  }
 }
 
 function setSourceFilter(value, refresh = true) {
@@ -495,10 +511,61 @@ function sourceBadge(row) {
   return `<span class="source-badge ${escapeHtml(group)}">${escapeHtml(label)}</span>`;
 }
 
+function sourceChannel(row) {
+  const host = sourceHost(row);
+  if (row.source_group === "local" || /^file:/.test(row.source_origin || "") || /^(localhost|127\.0\.0\.1)(:|$)/.test(host)) {
+    return { key: "local", label: "Local", host: host || "file/local" };
+  }
+  if (host.includes("netlify.app") || host.includes("netlify")) {
+    return { key: "netlify", label: "Netlify", host };
+  }
+  if (host.includes("pages.git.ringcentral.com") || host.includes("git.ringcentral.com")) {
+    return { key: "gitlab", label: "GitLab Pages", host };
+  }
+  if (host.includes("github.io")) {
+    return { key: "github_pages", label: "GitHub Pages", host };
+  }
+  if (row.source_group === "public_web") {
+    return { key: "public_web", label: "Public Web", host: host || "unknown host" };
+  }
+  return { key: row.source_group || "other", label: row.source_label || "Other", host };
+}
+
+function sourceChannelCell(row) {
+  const channel = sourceChannel(row);
+  const page = row.source_page ? ` · ${row.source_page}` : "";
+  return `
+    <div class="source-cell">
+      <span class="source-badge ${escapeHtml(channel.key)}">${escapeHtml(channel.label)}</span>
+      <span class="source-host">${escapeHtml(channel.host || "-")}${escapeHtml(page)}</span>
+    </div>
+  `;
+}
+
 function deviceBadge(deviceType) {
   const type = deviceType || "unknown";
   const label = type === "desktop" ? "Desktop" : (type === "mobile" ? "Mobile" : (type === "tablet" ? "Tablet" : "Unknown"));
   return `<span class="device-badge ${escapeHtml(type)}">${label}</span>`;
+}
+
+function leaveLabel(leaveType) {
+  const labels = {
+    completed: "Completed",
+    win: "Completed",
+    failed: "Failed",
+    fail: "Failed",
+    manual_restart: "Restart",
+    tab_or_browser_close: "Closed tab/browser",
+    page_exit: "Page exit",
+    beforeunload: "Browser unload",
+    unknown: "Unknown"
+  };
+  return labels[leaveType] || leaveType || "Unknown";
+}
+
+function leaveBadge(leaveType) {
+  const type = leaveType || "unknown";
+  return `<span class="leave-badge ${escapeHtml(type)}">${escapeHtml(leaveLabel(type))}</span>`;
 }
 
 function renderSourceMix(data) {
@@ -555,12 +622,40 @@ function renderDeviceMix(data) {
   }).join("");
 }
 
+function renderLeaveMix(data) {
+  const rows = data.leave_breakdown || [];
+  const total = rows.reduce((sum, row) => sum + (row.run_count || 0), 0);
+  byId("leaveMixMeta").textContent = total ? `${total} ended runs` : "No leave data";
+  if (!rows.length) {
+    byId("leaveMix").innerHTML = `<div class="command-callout">No leave-type data yet. New telemetry will classify wins, failures, restarts, and tab/browser closes.</div>`;
+    return;
+  }
+  byId("leaveMix").innerHTML = rows.map(row => {
+    const share = total ? (row.run_count || 0) / total : 0;
+    const type = row.leave_type || "unknown";
+    return `
+      <article class="source-card leave-card ${escapeHtml(type)}">
+        <div class="source-card-top">
+          ${leaveBadge(type)}
+          <strong>${fmtPct(share)}</strong>
+        </div>
+        <div class="source-count">${fmtNumber(row.run_count || 0)} runs</div>
+        <div class="source-bars">
+          <span style="--w:${Math.max(3, share * 100)}%"></span>
+        </div>
+        <div class="source-stats">Avg ${fmtDuration(row.avg_duration_ms || 0)}</div>
+      </article>
+    `;
+  }).join("");
+}
+
 function renderCommandCenter(data) {
   const sampleSize = data.sample_size || {};
   byId("collectorStatus").innerHTML = `Connected to <code>${API}</code>. Source: <code>${data.source}</code>. Runs: <code>${sampleSize.runs || 0}</code>, checkpoints: <code>${sampleSize.checkpoints || 0}</code>.`;
   renderMission(data);
   renderSourceMix(data);
   renderDeviceMix(data);
+  renderLeaveMix(data);
   renderFunnel(data);
   renderHeatmap(data);
   renderSignals(data);
@@ -735,8 +830,9 @@ function renderRecent(rows) {
       <td>${row.trust_end || 0}</td>
       <td>${row.sla_end || 0}</td>
       <td>${fmtDuration(row.duration_ms)}</td>
+      <td>${leaveBadge(row.leave_type || row.end_reason)}</td>
       <td>${deviceBadge(row.device_type)}</td>
-      <td>${sourceBadge(row)}</td>
+      <td>${sourceChannelCell(row)}</td>
     </tr>
   `).join("");
 }
