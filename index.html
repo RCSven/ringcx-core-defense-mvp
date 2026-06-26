@@ -6454,7 +6454,7 @@
     let musicLoopFrame = 0;
     let mobileDragRole = "";
     let suppressNextDefenderClick = false;
-    let suppressSlotMenuUntil = 0;
+    const mobileJustHiredSlots = new Map();
 
     document.getElementById("waveBtn").addEventListener("click", startWave);
     document.getElementById("pauseBtn").addEventListener("click", togglePause);
@@ -7027,7 +7027,7 @@
         const safeBottom = bounds.bottom - coreHalfHeight - mobileArenaBottomSafePx() - 8;
         return {
           x: clamp(exitX, safeLeft, Math.max(safeLeft, safeRight)),
-          y: clamp(exitY - 82, safeTop, Math.max(safeTop, safeBottom))
+          y: clamp(exitY - 58, safeTop, Math.max(safeTop, safeBottom))
         };
       }
       const safeLeft = mobileLandscape ? bounds.left + 8 : 58;
@@ -7572,7 +7572,7 @@
       state.slotLevels[slotId] = 1;
       state.selectedRole = "";
       state.rolesHiredCount += 1;
-      if (isLandscapeMobileViewport()) suppressSlotMenuUntil = performance.now() + 450;
+      if (isLandscapeMobileViewport()) mobileJustHiredSlots.set(slotId, performance.now() + 2200);
       ensureLocalRunStarted("first_hire");
       const wasFirstDeployment = !previousRole && Object.keys(state.placements).length === 1;
       const slotName = slots.find(s => s.id === slotId).name;
@@ -7584,9 +7584,13 @@
     }
 
     function showSlotMenu(slotId, event) {
-      if (isLandscapeMobileViewport() && performance.now() < suppressSlotMenuUntil) {
-        hideSlotMenu();
-        return;
+      if (isLandscapeMobileViewport()) {
+        const suppressUntil = mobileJustHiredSlots.get(slotId) || 0;
+        if (performance.now() < suppressUntil) {
+          hideSlotMenu();
+          return;
+        }
+        if (suppressUntil) mobileJustHiredSlots.delete(slotId);
       }
       activeSlotMenuState = {
         slotId,
