@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <base href="/ringcx-core-defense-mvp/ringcx-core-defense-mvp/public/">
+  <base href="/ringcx-core-defense-mvp/">
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>RingCX Core Defense HI1.070</title>
@@ -5409,13 +5409,13 @@
         position: relative;
         width: 100%;
         min-width: 0;
-        height: 38px;
+        height: 44px;
         display: grid;
         grid-template-columns: 25px minmax(0, 1fr);
         grid-template-rows: 1fr 1fr;
         column-gap: 5px;
         align-items: center;
-        padding: 4px 8px 4px 5px;
+        padding: 5px 8px 5px 5px;
         border: 1px solid rgba(16,35,63,.13);
         border-radius: 9px;
         background: rgba(255,255,255,.9);
@@ -5466,18 +5466,18 @@
 
       .control-row {
         display: grid;
-        grid-template-columns: 40px auto 120px;
+        grid-template-columns: 44px auto 124px;
         gap: 4px;
         align-items: center;
-        grid-auto-rows: 38px;
-        height: 38px;
+        grid-auto-rows: 44px;
+        height: 44px;
         width: auto;
         max-width: none;
       }
 
       .control-group {
         display: grid;
-        grid-template-columns: repeat(4, 40px);
+        grid-template-columns: repeat(4, 44px);
         gap: 0;
         padding: 0;
         border: 0;
@@ -5491,10 +5491,10 @@
       #musicToggle,
       #resetBtn {
         position: relative;
-        width: 40px;
-        min-width: 40px;
-        height: 38px;
-        min-height: 38px;
+        width: 44px;
+        min-width: 44px;
+        height: 44px;
+        min-height: 44px;
         padding: 0;
         border: 0;
         border-radius: 10px;
@@ -5515,7 +5515,7 @@
         height: 34px;
         display: grid;
         place-items: center;
-        margin: 2px auto;
+        margin: 5px auto;
         border: 1px solid rgba(16,35,63,.13);
         border-radius: 8px;
         background: rgba(255,255,255,.9);
@@ -5534,16 +5534,16 @@
       #resetBtn::before { content: "↺"; font-size: 15px; }
 
       #waveBtn {
-        width: 120px;
-        min-width: 120px;
-        min-height: 38px;
-        height: 38px;
+        width: 124px;
+        min-width: 124px;
+        min-height: 44px;
+        height: 44px;
         grid-column: auto;
         grid-row: auto;
         align-self: center;
         justify-self: start;
         flex: none;
-        padding: 6px 8px;
+        padding: 7px 8px;
         border-width: 2px;
         border-radius: 9px;
         font-size: 10px;
@@ -5959,7 +5959,12 @@
     const HI_ASSET_ROOT = "./assets/sprites/high-dev-standard/alpha";
     const LOCAL_RUN_SCHEMA_VERSION = "run.v1";
     const LOCAL_RUN_COLLECTOR_URL = "http://127.0.0.1:4328";
-    const LOCAL_RUN_SOURCE_PAGE = "ringcx-core-defense-review-0.Y26.0625-HI1.070.html";
+    const LOCAL_RUN_SOURCE_PAGE = "mobile-public-HI1.070.html";
+    const MOBILE_PUBLIC_TELEMETRY_CONTEXT = {
+      build_channel: "mobile_public",
+      player_surface: "mobile_landscape",
+      source_variant: "github_pages_mobile"
+    };
     const ENEMY_RING_PATH_D = "M4 4 A18 18 0 0 0 40 4";
     const LOCAL_RUN_CHECKPOINT_MS = 10000;
     const devParams = new URLSearchParams(location.search);
@@ -7248,7 +7253,7 @@
     }
 
     function mapSvgPreserveAspectRatio() {
-      return isLandscapeMobileViewport() ? "xMidYMid meet" : "none";
+      return "none";
     }
 
     function createEnemyEl(enemy) {
@@ -8291,9 +8296,23 @@
 
     function arenaScreenPoint(x, y) {
       const scale = arenaScale();
-      return {
+      return mobileSafeArenaPoint({
         x: (scale.offsetX || 0) + x * scale.x,
         y: (scale.offsetY || 0) + y * scale.y
+      }, scale);
+    }
+
+    function mobileSafeArenaPoint(point, scale = arenaScale()) {
+      if (!isLandscapeMobileViewport()) return point;
+      const arenaWidth = arena.clientWidth || ARENA_WIDTH;
+      const arenaHeight = arena.clientHeight || ARENA_HEIGHT;
+      const bounds = arenaContentBounds(scale, arenaWidth, arenaHeight);
+      const padX = 30;
+      const padTop = 18;
+      const padBottom = 18;
+      return {
+        x: clamp(point.x, bounds.left + padX, Math.max(bounds.left + padX, bounds.right - padX)),
+        y: clamp(point.y, bounds.top + padTop, Math.max(bounds.top + padTop, bounds.bottom - padBottom))
       };
     }
 
@@ -8342,9 +8361,11 @@
           const count = Math.max(1, Math.floor(len / 190));
           for (let step = 1; step <= count; step += 1) {
             const t = step / (count + 1);
-            const x = (scale.offsetX || 0) + (start[0] + (end[0] - start[0]) * t) * scale.x;
-            const y = (scale.offsetY || 0) + (start[1] + (end[1] - start[1]) * t) * scale.y;
-            arrows.push(`<span class="lane-arrow" style="left:${x}px;top:${y}px;--angle:${angle}deg" aria-hidden="true"></span>`);
+            const point = mobileSafeArenaPoint({
+              x: (scale.offsetX || 0) + (start[0] + (end[0] - start[0]) * t) * scale.x,
+              y: (scale.offsetY || 0) + (start[1] + (end[1] - start[1]) * t) * scale.y
+            }, scale);
+            arrows.push(`<span class="lane-arrow" style="left:${point.x}px;top:${point.y}px;--angle:${angle}deg" aria-hidden="true"></span>`);
           }
         }
       });
@@ -10112,7 +10133,10 @@
         baselineVersion: HI_BASED_ON_STD,
         variant: telemetryVariant(),
         sourcePage: LOCAL_RUN_SOURCE_PAGE,
-        telemetryContext: resolvedTelemetry.context
+        telemetryContext: {
+          ...resolvedTelemetry.context,
+          ...MOBILE_PUBLIC_TELEMETRY_CONTEXT
+        }
       });
       telemetry.flushQueue();
       telemetry.startSession();
