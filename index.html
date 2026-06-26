@@ -7024,10 +7024,10 @@
         const safeLeft = bounds.left + coreHalfWidth + 4;
         const safeRight = bounds.right - coreHalfWidth - 4;
         const safeTop = bounds.top + coreHalfHeight + 8;
-        const safeBottom = bounds.bottom - coreHalfHeight - mobileArenaBottomSafePx() - 8;
+        const safeBottom = bounds.bottom - coreHalfHeight - 4;
         return {
           x: clamp(exitX, safeLeft, Math.max(safeLeft, safeRight)),
-          y: clamp(exitY - 58, safeTop, Math.max(safeTop, safeBottom))
+          y: clamp(exitY - 42, safeTop, Math.max(safeTop, safeBottom))
         };
       }
       const safeLeft = mobileLandscape ? bounds.left + 8 : 58;
