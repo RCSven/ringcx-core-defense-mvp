@@ -5343,6 +5343,13 @@
         border-radius: 10px;
       }
 
+      .arena.is-mobile-fill {
+        background-size:
+          clamp(24px, 4.2vw, 34px) clamp(24px, 4.2vw, 34px),
+          clamp(24px, 4.2vw, 34px) clamp(24px, 4.2vw, 34px),
+          auto;
+      }
+
       .map-art,
       .route-layer,
       .enemy-layer,
@@ -5521,9 +5528,9 @@
       }
 
       #guideBtn::before { content: "?"; }
-      #pauseBtn::before { content: "II"; font-size: 12px; }
+      #pauseBtn::before { content: attr(data-control-state); font-size: 12px; }
       #speedBtn::before { content: attr(data-speed-label); font-size: 12px; }
-      #musicToggle::before { content: "♪"; font-size: 15px; }
+      #musicToggle::before { content: attr(data-control-state); font-size: 14px; }
       #resetBtn::before { content: "↺"; font-size: 15px; }
 
       #waveBtn {
@@ -6548,6 +6555,7 @@
       const pauseBtn = document.getElementById("pauseBtn");
       if (pauseBtn) {
         pauseBtn.textContent = state.paused ? "Resume" : "Pause";
+        pauseBtn.setAttribute("data-control-state", state.paused ? "▶" : "II");
         pauseBtn.classList.toggle("is-active", Boolean(state.paused) && state.pauseReason === "manual");
         pauseBtn.disabled = false;
         pauseBtn.title = state.running ? (state.paused ? "Resume the current wave" : "Pause the current wave") : "Start a wave first";
@@ -6569,6 +6577,7 @@
       musicToggle.classList.toggle("is-on", Boolean(state.musicEnabled));
       musicToggle.classList.toggle("is-active", Boolean(state.musicEnabled));
       musicToggle.setAttribute("aria-pressed", String(Boolean(state.musicEnabled)));
+      musicToggle.setAttribute("data-control-state", state.musicEnabled ? "♪" : "×");
       musicToggle.title = state.musicEnabled ? "Turn background music off" : "Turn background music on";
       musicToggle.textContent = state.musicEnabled ? "Music On" : "Music Off";
     }
@@ -6793,7 +6802,7 @@
       enemyNodeMap.clear();
       enemyLayerEl = null;
       projectileLayerEl = null;
-      arena.className = `arena map-${currentMapId}`;
+      arena.className = `arena map-${currentMapId}${isLandscapeMobileViewport() ? " is-mobile-fill" : ""}`;
       const scale = arenaScale();
       const sx = value => value * scale.x;
       const sy = value => value * scale.y;
@@ -8253,14 +8262,15 @@
       const height = rect.height || arena.clientHeight || ARENA_HEIGHT;
       if (isLandscapeMobileViewport()) {
         const gameplayHeight = Math.max(1, height - mobileArenaBottomSafePx());
-        const uniform = Math.min(width / ARENA_WIDTH, gameplayHeight / ARENA_HEIGHT) || 1;
-        const contentWidth = ARENA_WIDTH * uniform;
-        const contentHeight = ARENA_HEIGHT * uniform;
+        const scaleX = width / ARENA_WIDTH || 1;
+        const scaleY = gameplayHeight / ARENA_HEIGHT || 1;
+        const contentWidth = width;
+        const contentHeight = gameplayHeight;
         return {
-          x: uniform,
-          y: uniform,
-          offsetX: (width - contentWidth) / 2,
-          offsetY: (gameplayHeight - contentHeight) / 2,
+          x: scaleX,
+          y: scaleY,
+          offsetX: 0,
+          offsetY: 0,
           contentWidth,
           contentHeight
         };
