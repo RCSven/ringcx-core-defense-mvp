@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>RingCX Core Defense HI1.070</title>
-  <link rel="preload" as="image" href="./docs/homepage-review-ui/option-b24-core-cry-crystal-right.svg" fetchpriority="high">
+  <link rel="preload" as="image" href="./docs/homepage-review-ui/option-b24-core-cry-crystal-right.svg" fetchpriority="high" media="(min-width: 900px)">
   <style>
     :root {
       --ink: #132037;
@@ -4152,6 +4152,15 @@
       background: rgba(255,255,255,.92);
     }
 
+    .overlay.start-fallback .poster-loading-title,
+    .overlay.start-fallback .poster-loading-subtitle {
+      display: block;
+    }
+
+    .overlay.start-fallback .poster-loading-meter {
+      display: none;
+    }
+
     .poster-actions {
       display: flex;
       justify-content: space-between;
@@ -7149,6 +7158,13 @@
     function preloadStartPoster() {
       beginStartPosterLoadingFeedback();
       const src = startPoster.dataset.src;
+      if (isLandscapeMobileViewport()) {
+        window.setTimeout(() => {
+          setStartPosterProgress(100, "Arena ready. Tap to enter.");
+          markStartPosterFallback();
+        }, 420);
+        return;
+      }
       if (!src) {
         finishStartPosterLoadingFeedback(false);
         return;
@@ -7188,8 +7204,8 @@
         startPosterProgressTimer = 0;
         setStartPosterProgress(100, "Arena preview is still loading. You can enter now.");
         markStartPosterFallback();
-      }, 6500);
-      startPosterHardTimeout = window.setTimeout(() => finish(false), 15000);
+      }, 2200);
+      startPosterHardTimeout = window.setTimeout(() => finish(false), 5000);
     }
 
     function progressPillHtml(stageIndex, stage) {
